@@ -45,11 +45,11 @@ export function Provider({
         localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
         await import('super-hands');
         localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
-        require('./aframe/rotator');
+        await import('./aframe/rotator');
         localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
-        require('./aframe/scaler');
+        await import('./aframe/scaler');
         localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
-        require('./aframe/dragger');
+        await import('./aframe/dragger');
         localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
       }
     })();

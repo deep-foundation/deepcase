@@ -1,8 +1,7 @@
 import { useAuthNode, useDeep } from '@deep-foundation/deeplinks/imports/client';
 import { useLocalStore } from '@deep-foundation/store/local';
 import { useQueryStore } from '@deep-foundation/store/query';
-import React, { useEffect, useRef, useState } from 'react';
-import { useMemo } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { layouts } from './cyto/layouts';
 import { useMediaQuery as useMediaQueryChakra } from '@chakra-ui/react';
 import { Link } from '@deep-foundation/deeplinks/imports/minilinks';
