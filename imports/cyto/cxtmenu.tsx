@@ -1,5 +1,5 @@
 import * as defaults from 'cytoscape-cxtmenu/src/defaults';
-import * as assign from 'cytoscape-cxtmenu/src/assign';
+import assign from 'cytoscape-cxtmenu/src/assign.js';
 import { removeEles, setStyles, createElement, getPixelRatio, getOffset } from 'cytoscape-cxtmenu/src/dom-util';
 
 export const cxtmenu = function(params){
