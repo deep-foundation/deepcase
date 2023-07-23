@@ -8,6 +8,7 @@
   ],
   "scripts": {
     "npm-pull": "npm-pull",
+    "npm-release": "npm-release",
     "package:build": "tsc --project tsconfig.json",
     "package:publish": "npm run build && npm publish --access public"
   },

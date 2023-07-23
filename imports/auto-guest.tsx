@@ -1,6 +1,6 @@
 import { useDeep } from "@deep-foundation/deeplinks/imports/client";
 import { useTokenController } from "@deep-foundation/deeplinks/imports/react-token";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Debug from 'debug';
 import { useSpaceId } from "./hooks";
 import { useEngineConnected } from "./engine";

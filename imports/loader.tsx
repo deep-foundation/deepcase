@@ -2,7 +2,7 @@ import { useQuery, useSubscription } from "@apollo/client";
 import { useDeep, useDeepId } from "@deep-foundation/deeplinks/imports/client";
 import { generateQuery, generateQueryData } from "@deep-foundation/deeplinks/imports/gql";
 import { Link, useMinilinksFilter } from "@deep-foundation/deeplinks/imports/minilinks";
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useBreadcrumbs } from "./hooks";
 import { CatchErrors } from "./react-errors";
 import { useDelayedInterval } from "./use-delayed-interval";

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 export function useRerenderer(interval: number = 1000) {
   const [rerender, setRerender] = useState(0);

@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import React, { createContext, useContext } from "react";
 import { EventEmitter } from "events";
 
 export const ClickEmitterContext = createContext<EventEmitter>(new EventEmitter());

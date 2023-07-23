@@ -2,7 +2,7 @@ import { Alert, AlertIcon, Box, Flex, HStack, IconButton, Popover, PopoverConten
 import { useDeep, useDeepId, useDeepQuery, useDeepSubscription } from "@deep-foundation/deeplinks/imports/client";
 import { Link, useMinilinksFilter, useMinilinksHandle, useMinilinksQuery } from "@deep-foundation/deeplinks/imports/minilinks";
 import { useDebounceCallback } from "@react-hook/debounce";
-import { useState, useMemo, useCallback, useEffect, useRef } from "react";
+import React, { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { TiArrowBackOutline } from "react-icons/ti";
 import { VscChromeClose, VscVersions } from "react-icons/vsc";

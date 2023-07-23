@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useRef } from "react";
+import React, { Dispatch, SetStateAction, useRef } from "react";
 
 export function useRefstarter<S>() {
   return useRef<{ value?: S, setValue?: (S) => any; }>({ setValue: () => {} });
