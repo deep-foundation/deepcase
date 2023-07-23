@@ -60,7 +60,8 @@ export function Provider({
       <QueryStoreProvider>
         <LocalStoreProvider>
           <TokenProvider>
-            <ApolloClientTokenizedProvider options={useMemo(() => ({ client: 'deeplinks-app', path: gqlPath, ssl: gqlSsl, ws: !!process?.browser }), [gqlPath, gqlSsl])}>
+            
+            <ApolloClientTokenizedProvider options={useMemo(() => ({ client: 'deeplinks-app', path: gqlPath, ssl: gqlSsl, ws: !!(process as any)?.browser }), [gqlPath, gqlSsl])}>
               <ProviderConnected>
                 {children}
               </ProviderConnected>
