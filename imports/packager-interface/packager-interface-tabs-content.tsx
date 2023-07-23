@@ -10,10 +10,10 @@ import { useSpaceId } from "../hooks";
 import { useDeep } from '@deep-foundation/deeplinks/imports/client';
 import { Loading } from '../loading-motion-bubble';
 
-const axiosHooks = require("axios-hooks");
-const axios = require("axios");
-const useAxios = axiosHooks.makeUseAxios({ axios: axios.create() });
+import { makeUseAxios } from "axios-hooks";
+import axios from "axios";
 
+const useAxios = makeUseAxios({ axios: axios.create() });
 
 const variantsPackages = {
   open: {

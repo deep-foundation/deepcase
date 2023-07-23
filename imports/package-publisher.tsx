@@ -3,9 +3,9 @@ import { Box, Button, Input, Link, VStack } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { useDeep } from '@deep-foundation/deeplinks/imports/client';
 
-const axiosHooks = require("axios-hooks");
-const axios = require("axios");
-const useAxios = axiosHooks.makeUseAxios({ axios: axios.create() });
+import { makeUseAxios } from "axios-hooks";
+import axios from "axios";
+const useAxios = makeUseAxios({ axios: axios.create() });
 
 export const PackagePublisher = () => {
 

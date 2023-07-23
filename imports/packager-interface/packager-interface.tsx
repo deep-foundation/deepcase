@@ -10,6 +10,9 @@ import { useDeep } from '@deep-foundation/deeplinks/imports/client';
 import fetch from 'node-fetch';
 import { gql } from "@apollo/client";
 
+import { makeUseAxios } from "axios-hooks";
+import axios from "axios";
+
 export const searchNpmPackages = async (query) => {
   const deepPackageKeyword = 'deep-package';
   const textParameter = encodeURIComponent(`${query} keywords:${deepPackageKeyword}`);
@@ -96,9 +99,7 @@ export const getPackageFromNpm = async (packageName) => {
   return data;
 };
 
-const axiosHooks = require("axios-hooks");
-const axios = require("axios");
-const useAxios = axiosHooks.makeUseAxios({ axios: axios.create() });
+const useAxios = makeUseAxios({ axios: axios.create() });
 const makeNpmPackagesUrl = (query) => {
   const deepPackageKeyword = 'deep-package';
   const textParameter = encodeURIComponent(`${query} keywords:${deepPackageKeyword}`);
