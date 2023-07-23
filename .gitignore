@@ -129,3 +129,11 @@ projects/app/electron/app
 /electron/*.provisionprofile
 
 deeplogs.txt
+
+# deepcase
+/*.js
+/*.js.map
+/*.d.ts
+/imports/**/*.js
+/imports/**/*.d.ts
+/imports/**/*.js.map

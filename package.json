@@ -10,7 +10,8 @@
     "npm-pull": "npm-pull",
     "npm-release": "npm-release",
     "package:build": "tsc --project tsconfig.json",
-    "package:publish": "npm run build && npm publish --access public"
+    "package:publish": "npm run build && npm publish --access public",
+    "package:unbuild": "rimraf ./*.js && rimraf ./*.js.map && rimraf ./*.d.ts && (cd ./imports && rimraf ./*.js && rimraf ./*.js.map && rimraf ./*.d.ts && cd ../) && (cd ./benchmarks && rm -f ./*.js; rm -f ./*.js.map; rm -f ./*.d.ts && cd ..) && (cd ./imports/router && rimraf ./*.js && rimraf ./*.js.map && rimraf ./*.d.ts && cd ../..) && (cd ./tests && rimraf ./*.js && rimraf ./*.js.map && rimraf ./*.d.ts && cd ../)"
   },
   "dependencies": {
     "@apollo/client": "^3.7.14",
@@ -21,10 +22,12 @@
     "@chakra-ui/icons": "^2.0.19",
     "@chakra-ui/react": "^2.6.1",
     "@chakra-ui/theme-tools": "^2.0.16",
+    "@deep-foundation/core": "^0.0.2",
     "@deep-foundation/deeplinks": "^0.0.236",
     "@deep-foundation/hasura": "^0.0.46",
     "@deep-foundation/materialized-path": "^0.0.25",
     "@deep-foundation/react-hasura": "^0.0.16",
+    "@deep-foundation/tsx": "^0.0.3",
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
     "@monaco-editor/react": "^4.5.1",
@@ -88,7 +91,7 @@
     "normalize.css": "^8.0.1",
     "promisify-child-process": "^4.1.1",
     "re-resizable": "^6.9.9",
-    "react": "^18.2.0",
+    "react": "*",
     "react-cytoscapejs": "^2.0.0",
     "react-device-detect": "^2.2.3",
     "react-dom": "^18",
@@ -118,18 +121,20 @@
     "web-worker": "^1.2.0",
     "webpack": "^5.84.0",
     "ws": "^8.13.0",
-    "xterm": "^5.1.0",
-    "@deep-foundation/core": "^0.0.2",
-    "@deep-foundation/tsx": "^0.0.3"
+    "xterm": "^5.1.0"
   },
   "engines": {
     "node": "^18.16.1"
+  },
+  "peerDependencies": {
+    "react": "*"
   },
   "devDependencies": {
     "@deep-foundation/npm-automation": "^3.1.18",
     "browser-resolve": "^2.0.0",
     "buffer": "^6.0.3",
     "detective": "^5.2.1",
-    "process": "^0.11.10"
+    "process": "^0.11.10",
+    "ts-node": "^10.9.1"
   }
 }
