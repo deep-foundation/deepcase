@@ -23,7 +23,7 @@ import * as slate from 'slate-react';
 import SoftBreak from 'slate-soft-break';
 import { slateToHtml, htmlToSlate } from 'slate-serializers';
 import isHotkey from 'is-hotkey';
-import Resizable from 're-resizable';
+import * as Resizable from 're-resizable';
 import { useContainer, useSpaceId, useRefAutofill } from './hooks';
 import { CytoEditorPreview } from './cyto/editor-preview';
 import { CustomizableIcon } from './icons-provider';
