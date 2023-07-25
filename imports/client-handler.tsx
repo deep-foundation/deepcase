@@ -186,7 +186,7 @@ export function useFindClientHandler({
         isolation_provider_id: { _eq: deep.idLocal('@deep-foundation/core', 'ClientJSIsolationProvider'), },
         handler: {
           in: {
-            type_id: await deep.id('@deep-foundation/deepcase', 'Context'),
+            type_id: { _eq: await deep.id('@deep-foundation/deepcase', 'Context') },
             from_id: { _in: context }
           },
         },
