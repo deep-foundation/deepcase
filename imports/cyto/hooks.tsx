@@ -467,34 +467,36 @@ export function useLinkReactElements(elements = [], reactElements = [], cy, ml) 
       const [search, setSearch] = useState('');
       const [spaceId] = useSpaceId();
 
-      const { data: handlers } = deep.useDeepQuery({
-        type_id: deep.idLocal('@deep-foundation/core', 'Handler'),
-        in: {
-          type_id: deep.idLocal('@deep-foundation/core', 'HandleClient'),
-          from: {
-            down: {
-              tree_id: { _eq: deep.idLocal('@deep-foundation/core', 'typesTree') },
-              link_id: { _eq: id },
-            },
-          }
-        },
+      const { data: handleClients } = deep.useDeepQuery({
+        type_id: deep.idLocal('@deep-foundation/core', 'HandleClient'),
+        from: {
+          down: {
+            tree_id: { _eq: deep.idLocal('@deep-foundation/core', 'typesTree') },
+            link_id: { _eq: id },
+          },
+        }
       });
 
       useEffect(() => {
         if (!handlerId) {
-          const handler: any = handlers?.[0];
-          if (handler) {
-            setHandlerId(handler.id);
+          const inheritance = [];
+          for (let pointer = deep.minilinks.byId[id]; !!pointer && inheritance[inheritance.length - 1] !== pointer; pointer = pointer?.type) {
+            inheritance.push(pointer);
+            const handleClient: any = handleClients.find(h => h.from_id === pointer.id);
+            if (handleClient) {
+              setHandlerId(handleClient?.to_id);
+              break;
+            }
           }
         }
-      }, [handlers]);
+      }, [handleClients]);
 
-      const handler = handlers.find(h => h.id === handlerId);
-      const elements = handlers?.map(t => ({
-        id: t?.id,
-        src:  t?.inByType[deep.idLocal('@deep-foundation/core', 'Symbol')]?.[0]?.value?.value || t.id,
-        linkName: t?.inByType[deep.idLocal('@deep-foundation/core', 'Contain')]?.[0]?.value?.value || t.id,
-        containerName: t?.inByType[deep.idLocal('@deep-foundation/core', 'Contain')]?.[0]?.from?.value?.value || '',
+      const handleClient = handleClients.find(h => h.to_id === handlerId);
+      const elements = handleClients?.map(t => ({
+        id: t?.to_id,
+        src:  deep.minilinks.byId?.[t?.to_id]?.inByType[deep.idLocal('@deep-foundation/core', 'Symbol')]?.[0]?.value?.value || t.id,
+        linkName: deep.minilinks.byId?.[t?.to_id]?.inByType[deep.idLocal('@deep-foundation/core', 'Contain')]?.[0]?.value?.value || t.id,
+        containerName: deep.minilinks.byId?.[t?.to_id]?.inByType[deep.idLocal('@deep-foundation/core', 'Contain')]?.[0]?.from?.value?.value || '',
       })) || [];
 
       const onCloseCard = useCallback(() => toggleLinkReactElement(id), [id]);
@@ -575,8 +577,8 @@ export function useLinkReactElements(elements = [], reactElements = [], cy, ml) 
               onClick={onCloseCard}
             />
           </Flex>
-          {!handler?.id && <Alert status='error'><AlertIcon />Compatible HandleClient not found.</Alert>}
-          {!!handler?.id && <ClientHandler handlerId={handler?.id} linkId={id} ml={ml} onClose={onCloseCard}/>}
+          {!handleClient?.to_id && <Alert status='error'><AlertIcon />Compatible HandleClient not found.</Alert>}
+          {!!handleClient?.to_id && [<ClientHandler key={`${id}${handleClient?.to_id}`} handlerId={handleClient?.to_id} linkId={id} ml={ml} onClose={onCloseCard}/>]}
         </CatchErrors>
       </div>;
     };
