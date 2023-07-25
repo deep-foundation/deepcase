@@ -242,15 +242,17 @@ export const CytoEditorHandlersSupportHandle = React.memo<any>(function CytoEdit
 export const CytoEditorHandlersSupport = React.memo<any>(function CytoEditorHandlersSupport({
   support,
   linkId,
+  handleredableIds,
 }: {
   support: Link<number>;
   linkId: number;
+  handleredableIds: number[];
 }) {
   const deep = useDeep();
   const { data: handlers } = useDeepSubscription({
     type_id: deep.idLocal('@deep-foundation/core', 'Handler'),
     from_id: support.id,
-    to_id: linkId,
+    to_id: { _in: handleredableIds },
   });
 
   const [container] = useContainer();
@@ -323,8 +325,10 @@ export const CytoEditorHandlersSupport = React.memo<any>(function CytoEditorHand
 
 export const CytoEditorHandlers = React.memo<any>(function CytoEditorHandlers({
   linkId,
+  handleredableIds,
 }: {
   linkId: number;
+  handleredableIds: number[];
 }) {
   const deep = useDeep();
 
@@ -365,7 +369,7 @@ export const CytoEditorHandlers = React.memo<any>(function CytoEditorHandlers({
       <Box h='100%' w='100%' overflowY="scroll" position="absolute">
         <Accordion allowMultiple>
           {supports?.map((support) => {
-            return <CytoEditorHandlersSupport support={support} linkId={linkId}/>;
+            return <CytoEditorHandlersSupport support={support} linkId={linkId} handleredableIds={handleredableIds}/>;
           })}
         </Accordion>
       </Box>

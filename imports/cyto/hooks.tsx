@@ -471,7 +471,12 @@ export function useLinkReactElements(elements = [], reactElements = [], cy, ml) 
         type_id: deep.idLocal('@deep-foundation/core', 'Handler'),
         in: {
           type_id: deep.idLocal('@deep-foundation/core', 'HandleClient'),
-          from_id: deep.minilinks?.byId?.[id]?.type_id,
+          from: {
+            down: {
+              tree_id: { _eq: deep.idLocal('@deep-foundation/core', 'typesTree') },
+              link_id: { _eq: id },
+            },
+          }
         },
       });
 

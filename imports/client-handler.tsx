@@ -160,7 +160,7 @@ export interface ClientHandlerProps extends Partial<ClientHandlerRendererProps> 
   onClose?: () => any,
 }
 
-export function ClientHandler({
+export function useFindClientHandler({
   linkId,
   handlerId,
   context = [],
@@ -170,25 +170,48 @@ export function ClientHandler({
   ...props
 }: ClientHandlerProps) {
   const deep = useDeep();
-  const _ml = ml || deep?.minilinks;
-  const [hid, setHid] = useState(handlerId || 0);
+  const [hid, setHid] = useState<any>();
   useEffect(() => { (async () => {
-    if (handlerId) setHid(handlerId);
-    else {
+    if (hid) return;
+    if (handlerId) {
       const { data: handlers } = await deep.select({
-        type_id: deep.idLocal('@deep-foundation/core', 'Handler'),
-        in: {
-          type_id: await deep.id('@deep-foundation/deepcase', 'Context'),
-          from_id: { _in: context }
+        execution_provider_id: { _eq: deep.idLocal('@deep-foundation/core', 'JSExecutionProvider'), },
+        isolation_provider_id: { _eq: deep.idLocal('@deep-foundation/core', 'ClientJSIsolationProvider'), },
+        handler_id: { _eq: handlerId },
+      }, { table: 'handlers', returning: 'handler_id dist_id src_id' },);
+      if (handlers?.[0]) setHid(handlers?.[0]);
+    } else {
+      const { data: handlers } = await deep.select({
+        execution_provider_id: { _eq: deep.idLocal('@deep-foundation/core', 'JSExecutionProvider'), },
+        isolation_provider_id: { _eq: deep.idLocal('@deep-foundation/core', 'ClientJSIsolationProvider'), },
+        handler: {
+          in: {
+            type_id: await deep.id('@deep-foundation/deepcase', 'Context'),
+            from_id: { _in: context }
+          },
         },
-      });
-      if (handlers?.[0]?.id) setHid(handlers?.[0]?.id);
+      }, { table: 'handlers', returning: 'handler_id dist_id src_id' },);
+      if (handlers?.[0]) setHid(handlers?.[0]);
     }
-  })(); }, [context, handlerId]);
+  })(); }, [context, handlerId, hid]);
+  return hid;
+}
+
+export function ClientHandler(_props: ClientHandlerProps) {
+  const {
+    linkId,
+    handlerId,
+    context = [],
+    ml,
+    onClose,
+    fillSize,
+    ...props
+  } = _props;
+  const deep = useDeep();
+  const _ml = ml || deep?.minilinks;
+  const hid = useFindClientHandler(_props);
   const { data: files } = useDeepSubscription({
-    in: {
-      id: hid,
-    },
+    id: hid?.dist_id || 0,
   });
   const file = files?.[0];
 

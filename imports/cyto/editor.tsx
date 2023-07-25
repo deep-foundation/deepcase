@@ -80,6 +80,31 @@ export function useEditorTabs() {
   };
 }
 
+export function useFindClientHandlerByCode({
+  codeLinkId,
+}: {
+  codeLinkId: number;
+}) {
+  const deep = useDeep();
+  const [hid, setHid] = useState<any>();
+  const prevCodeLinkId = useRef(codeLinkId);
+  useEffect(() => { (async () => {
+    if (codeLinkId === prevCodeLinkId.current) return;
+    const { data: handlers } = await deep.select({
+      execution_provider_id: { _eq: deep.idLocal('@deep-foundation/core', 'JSExecutionProvider'), },
+      isolation_provider_id: { _eq: deep.idLocal('@deep-foundation/core', 'ClientJSIsolationProvider'), },
+      _or: [
+        // @ts-ignore
+        { dist_id: { _eq: codeLinkId } },
+        { src_id: { _eq: codeLinkId } },
+      ],
+    }, { table: 'handlers', returning: 'handler_id dist_id src_id' },);
+    if (handlers?.[0]) setHid(handlers?.[0]);
+    prevCodeLinkId.current = codeLinkId;
+  })(); }, [codeLinkId, hid]);
+  return hid;
+}
+
 export function CytoEditor() {
   const [cytoEditor, setCytoEditor] = useCytoEditor();
   const onClose = useCallback(() => {
@@ -116,25 +141,10 @@ export function CytoEditor() {
   // console.log('editor', 'GeneratedFrom idLocal', deep.idLocal('@deep-foundation/core', 'GeneratedFrom'));
   // console.log('editor', 'tabId', tabId);
 
-  const handlers = deep.useMinilinksSubscription({
-    type_id: deep.idLocal('@deep-foundation/core', 'Handler'),
-    _or: [
-      {
-        to: {
-          out: {
-            type_id: deep.idLocal('@deep-foundation/core', 'GeneratedFrom'),
-            to_id: tabId
-          }
-        },
-      },
-      {
-        to: {
-          to_id: tabId
-        },
-      },
-    ],
+  const hid = useFindClientHandlerByCode({
+    codeLinkId: tabId,
   });
-  const handler = handlers?.[0];
+  const handlerId = hid?.handler_id;
 
   const generatedLink = useMinilinksFilter(
     deep.minilinks,
@@ -157,7 +167,6 @@ export function CytoEditor() {
   const refEditor = useRef<any>();
 
   const [rightArea, setRightArea] = useState('preview');
-  const [generated, setGenerated] = useState('src');
   const [fillSize, setFillSize] = useState(false);
   const [viewSize, setViewSize] = useState<any>({ width: '50%', height: '100%' });
   const [editorMounted, setEditorMounted] = useState(false);
@@ -327,7 +336,7 @@ export function CytoEditor() {
             // ></EditorHandler>
             // </EditorHandlers>) ||
             rightArea === 'handlers' && (
-              <CytoEditorHandlers linkId={generated && generatedLink ? generatedLink?.id : tab?.id} />
+              <CytoEditorHandlers linkId={tab?.id} handleredableIds={generatedLink ? [generatedLink?.id, tab.id] : [tab?.id]} />
             ) ||
             rightArea === 'preview' && <Box
               pos='relative'
@@ -338,13 +347,13 @@ export function CytoEditor() {
               }}
             >
               {[<EditorComponentView
-                key={`${currentLink?.id || 0}-${tabId}-${handler?.id}`}
+                key={`${currentLink?.id || 0}-${tabId}-${handlerId}`}
                 size={viewSize}
                 onChangeSize={(viewSize) => setViewSize(viewSize)}
                 fillSize={fillSize}
                 setFillSize={setFillSize}
               >
-                {handler && [<ClientHandler key={handler?.id} handlerId={handler?.id} fillSize={fillSize} linkId={currentLink?.id} ml={deep.minilinks} />]}
+                {handlerId && [<ClientHandler key={handlerId} handlerId={handlerId} fillSize={fillSize} linkId={currentLink?.id} ml={deep.minilinks} />]}
               </EditorComponentView>]}
             </Box> ||
             rightArea === 'results' && <EditorResults id={tab.id} />
@@ -359,7 +368,6 @@ export function CytoEditor() {
             setCurrentLinkId={(newCurrentLinkId) => {
               setCurrentLinkId(newCurrentLinkId)
             }}
-            generated={generated} setGenerated={setGenerated}
             area={rightArea}
             setArea={(rightArea) => {
               setRightArea(rightArea);

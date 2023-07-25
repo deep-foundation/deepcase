@@ -11,7 +11,7 @@
     "npm-release": "npm-release",
     "package:build": "tsc --project tsconfig.json",
     "package:publish": "npm run build && npm publish --access public",
-    "package:unbuild": "rimraf ./*.js && rimraf ./*.js.map && rimraf ./*.d.ts && (cd ./imports && rimraf ./*.js && rimraf ./*.js.map && rimraf ./*.d.ts && cd ../) && (cd ./tests && rimraf ./*.js && rimraf ./*.js.map && rimraf ./*.d.ts && cd ../)"
+    "package:unbuild": "rimraf ./*.js && rimraf ./*.js.map && rimraf ./*.d.ts && (cd ./imports && rimraf ./*.js && rimraf ./*.js.map && rimraf ./*.d.ts && cd ../)"
   },
   "dependencies": {
     "@apollo/client": "^3.7.14",
@@ -23,7 +23,7 @@
     "@chakra-ui/react": "^2.6.1",
     "@chakra-ui/theme-tools": "^2.0.16",
     "@deep-foundation/core": "~0.0.2",
-    "@deep-foundation/deeplinks": "^0.0.236",
+    "@deep-foundation/deeplinks": "^0.0.258",
     "@deep-foundation/hasura": "^0.0.46",
     "@deep-foundation/materialized-path": "^0.0.25",
     "@deep-foundation/react-hasura": "^0.0.16",
