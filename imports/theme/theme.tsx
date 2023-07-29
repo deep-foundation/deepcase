@@ -95,6 +95,10 @@ const themeChakra = extendTheme({
       sendMessagePlane: {
         default: 'gray.700',
         _dark: 'whiteText',
+      },
+      siteBg: {
+        default: 'whiteBg',
+        _dark: 'gray.700',
       }
     },
   },
