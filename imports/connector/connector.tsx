@@ -17,7 +17,7 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 const parseUrl = (text) : [string, boolean] => {
   try {
     const url = new URL(text);
-    const gqlPath = `${url.hostname}${url.port ? ':' + url.port : ''}${url.pathname}`;
+    const gqlPath = `${url.hostname}${url.port ? ':' + url.port : ''}${url.pathname === '/' ? '' : url.pathname}`;
     const gqlSsl = url.protocol == 'http:' ? false : true;
     return [gqlPath, gqlSsl]
   } catch {
