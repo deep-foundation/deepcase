@@ -16,7 +16,6 @@
   "dependencies": {
     "@apollo/client": "^3.7.14",
     "@belivvr/aframe-react": "^0.4.2",
-    "@capacitor/cli": "^5.0.4",
     "@capacitor/core": "^5.0.4",
     "@chakra-ui/icons": "^2.0.19",
     "@chakra-ui/react": "^2.6.1",
@@ -41,6 +40,7 @@
     "axios-hooks": "^4.0.0",
     "classnames": "^2.3.2",
     "copy-to-clipboard": "^3.3.3",
+    "cytoscape": "^3.25.0",
     "cytoscape-cola": "^2.5.1",
     "cytoscape-cxtmenu": "^3.5.0",
     "cytoscape-d3-force": "^1.1.4",
@@ -85,11 +85,7 @@
   },
   "devDependencies": {
     "@deep-foundation/npm-automation": "^3.1.18",
-    "browser-resolve": "^2.0.0",
-    "buffer": "^6.0.3",
     "depcheck": "^1.4.3",
-    "detective": "^5.2.1",
-    "process": "^0.11.10",
     "ts-node": "^10.9.1"
   }
 }
