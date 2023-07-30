@@ -3,7 +3,7 @@ import { useDeep, useDeepId } from "@deep-foundation/deeplinks/imports/client";
 import { generateQuery, generateQueryData } from "@deep-foundation/deeplinks/imports/gql";
 import { Link, useMinilinksFilter } from "@deep-foundation/deeplinks/imports/minilinks";
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useBreadcrumbs } from "./hooks";
+import { useBreadcrumbs, useShowOpened } from "./hooks";
 import { CatchErrors } from "./react-errors";
 import { useDelayedInterval } from "./use-delayed-interval";
 
@@ -76,7 +76,10 @@ export const DeepLoader = memo(function DeepLoader({
   const deep = useDeep();
   const userId = deep.linkId;
   const [breadcrumbs] = useBreadcrumbs();
+  const [showOpened, setShowOpened] = useShowOpened();
   const { data: HandleCyto } = useDeepId('@deep-foundation/handle-cyto', 'HandleCyto');
+  const { data: Opened } = useDeepId('@deep-foundation/deepcase-opened', 'Opened');
+  const { data: OpenedHandler } = useDeepId('@deep-foundation/deepcase-opened', 'OpenedHandler');
   // console.log({ breadcrumbs });
 
   const spaceQuery = useMemo(() => ({ value: { value: {
@@ -197,6 +200,8 @@ export const DeepLoader = memo(function DeepLoader({
         !l._applies.includes('contains_and_symbols')
         &&
         !!l._applies.find((a: string) => !!~a.indexOf('query-') || a === 'space' || a === 'breadcrumbs')
+        &&
+        (!!showOpened || (!showOpened && l?.type_id !== Opened && l?.type_id !== OpenedHandler))
       ) && (
         (!!l.from_id && (!l.from || !!l.from._applies.includes('not-loaded-ends')))
         ||

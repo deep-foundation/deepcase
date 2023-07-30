@@ -18,6 +18,7 @@ import { useRouter } from 'next/router';
 import { useQueryStore } from '@deep-foundation/store/query';
 import { initializeTraveler } from "./traveler";
 import { MdFolderDelete } from 'react-icons/md';
+import { useOpenedMethods } from "./opened";
 
 export interface IInsertedLink {
   position: { x: number; y: number; };
@@ -423,40 +424,78 @@ export function useLinkInserting(elements = [], reactElements = [], focus, cyRef
 }
 
 export function useLinkReactElements(elements = [], reactElements = [], cy, ml) {
+  const deep = useDeep();
   const [linkReactElements, setLinkReactElements] = useState<{ [key: string]: boolean }>({});
   const linkReactElementsIds = useMemo(() => Object.keys(linkReactElements).filter(key => !!linkReactElements[key]), [linkReactElements]).map(key => parseInt(key), [linkReactElements]);
 
   reactElements.push(...linkReactElementsIds.map(id => (elements.find(e => e.id === id))));
 
   const cyRef = useRefAutofill(cy);
+  const { open, close, isOpened } = useOpenedMethods();
+  const [spaceId] = useSpaceId();
+  const { data: Opened } = useDeepId('@deep-foundation/deepcase-opened', 'Opened');
+  reactElements.push(...(deep.minilinks?.byId?.[spaceId]?.outByType?.[Opened] || [])?.map(l => elements.find(e => e.id === l.to_id)));
 
-  const toggleLinkReactElement = (id: number) => {
-    setLinkReactElements((linkReactElements) => {
-      const cy = cyRef.current;
-      const isEnabling = !linkReactElements[id];
-      if (isEnabling) {
-        cy?.$(`#${id}`).data('Component', AnyLinkComponent);
-        cy?.$(`#${id}`).addClass('unhoverable').removeClass('hover');
-        // cy?.$(`#${id}`).style({
-        //   'shape': 'rectangle',
-        //   'background-opacity': '0',
-        // });
-      } else {
-        cy?.$(`#${id}`).data('Component', undefined);
-        cy?.$(`#${id}`).removeClass('unhoverable');
-        // cy?.$(`#${id}`).style({
-        //   'shape': null,
-        //   width: null,
-        //   height: null,
-        //   'background-opacity': null,
-        //   'border-width': 0,
-        // });
+  useEffect(() => {
+    if (cy) {
+      const opened = cy?.$(`.deepcase-opened`);
+      opened.forEach(o => {
+        const isMustBeOpen = !!reactElements?.find(e => e === +o.id());
+        if (!isMustBeOpen) {
+          cy?.$(`#${o.id()}`).data('Component', undefined);
+          cy?.$(`#${o.id()}`).removeClass('unhoverable');
+          cy?.$(`#${o.id()}`).removeClass('deepcase-opened');
+        }
+      });
+      reactElements?.forEach(el => {
+        const isOpened = cy?.$(`#${el.id}.deepcase-opened`);
+        if (!isOpened?.length) {
+          cy?.$(`#${el.id}`).data('Component', AnyLinkComponent);
+          cy?.$(`#${el.id}`).addClass('unhoverable').removeClass('hover');
+          cy?.$(`#${el.id}`).addClass('deepcase-opened');
+        }
+      });
+    }
+  }, [reactElements]);
+
+  const toggleLinkReactElement = async (id: number) => {
+    const cy = cyRef.current;
+    // const isEnabling = !linkReactElements[id];
+    // if (isEnabling) {
+    //   cy?.$(`#${id}`).data('Component', AnyLinkComponent);
+    //   cy?.$(`#${id}`).addClass('unhoverable').removeClass('hover');
+    //   // cy?.$(`#${id}`).style({
+    //   //   'shape': 'rectangle',
+    //   //   'background-opacity': '0',
+    //   // });
+    // } else {
+    //   cy?.$(`#${id}`).data('Component', undefined);
+    //   cy?.$(`#${id}`).removeClass('unhoverable');
+    //   // cy?.$(`#${id}`).style({
+    //   //   'shape': null,
+    //   //   width: null,
+    //   //   height: null,
+    //   //   'background-opacity': null,
+    //   //   'border-width': 0,
+    //   // });
+    // }
+    if (await isOpened(id)) {
+      await close(id);
+    } else {
+      const { data: handler } = await deep.select({
+        type_id: deep.idLocal('@deep-foundation/core', 'HandleClient'),
+        from: {
+          down: {
+            tree_id: { _eq: deep.idLocal('@deep-foundation/core', 'typesTree') },
+            link_id: { _eq: id },
+          },
+        }
+      });
+      const handlerId = handler?.[0]?.to_id;
+      if (handlerId) {
+        await open(id, handlerId);
       }
-      return {
-        ...linkReactElements,
-        [id]: !linkReactElements[id],
-      };
-    });
+    }
   };
 
   const AnyLinkComponent = useMemo(() => {
@@ -632,7 +671,7 @@ export function useCyInitializer({
 
   const refDragStartedEvent = useRef<any>();
 
-  const { linkReactElements, toggleLinkReactElement } = useLinkReactElements(elements, reactElements, cyRef.current, ml);
+  const { toggleLinkReactElement } = useLinkReactElements(elements, reactElements, cyRef.current, ml);
 
 
   // const relayout = useCallback(() => {

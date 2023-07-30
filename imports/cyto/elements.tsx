@@ -1,7 +1,7 @@
 import { useDeep, useDeepId } from '@deep-foundation/deeplinks/imports/client';
 import json5 from 'json5';
 import { useEffect, useMemo, useRef } from 'react';
-import { useCytoHandlersSwitch, useInsertingCytoStore, useShowFocus, useShowTypes } from '../hooks';
+import { useCytoHandlersSwitch, useInsertingCytoStore, useShowFocus, useShowOpened, useShowTypes } from '../hooks';
 import _ from 'lodash';
 import { CytoHandler } from '../cyto-handler';
 import { useCytoHandlersRules } from './hooks';
@@ -9,6 +9,7 @@ import { useCytoHandlersRules } from './hooks';
 export function useCytoElements(ml, _links, cy, spaceId, cyh) {
   const [showTypes, setShowTypes] = useShowTypes();
   const [showFocus, setShowFocus] = useShowFocus();
+  const [showOpened, setShowOpened] = useShowOpened();
 
   const [cytoHandlers, setCytoHandlers] = useCytoHandlersSwitch();
   const [chr, setChr] = useCytoHandlersRules();
@@ -17,6 +18,8 @@ export function useCytoElements(ml, _links, cy, spaceId, cyh) {
   const oldElements = useRef([]);
   const deep = useDeep();
   const { data: HandleCyto } = useDeepId('@deep-foundation/handle-cyto', 'HandleCyto');
+  const { data: Opened } = useDeepId('@deep-foundation/deepcase-opened', 'Opened');
+  const { data: OpenedHandler } = useDeepId('@deep-foundation/deepcase-opened', 'OpenedHandler');
   
   const links = _links;
   
@@ -41,7 +44,25 @@ export function useCytoElements(ml, _links, cy, spaceId, cyh) {
     }
 
     const focus = link?.inByType?.[deep.idLocal('@deep-foundation/core', 'Focus')]?.find(f => f.from_id === spaceId);
-    const isFocusSpace = (link.type_id === deep.idLocal('@deep-foundation/core', 'Focus') && link._applies.includes('space')) || (link?.to?.type_id === deep.idLocal('@deep-foundation/core', 'Focus') && link._applies.includes('space'));
+
+    const isFocusSpace = (
+      (link.type_id === deep.idLocal('@deep-foundation/core', 'Focus') && link?.from_id === spaceId && link._applies.includes('space'))
+      ||
+      (link?.type_id === deep.idLocal('@deep-foundation/core', 'Contain') && link?.to?.type_id === deep.idLocal('@deep-foundation/core', 'Focus') && link._applies.includes('space'))
+    );
+    const isOpenedSpace = (
+      (link.type_id === Opened && link._applies.includes('space') && link?.from_id === spaceId)
+      ||
+      (
+        link.type_id === OpenedHandler && link._applies.includes('space')
+        &&
+        (link?.from?.type_id === Opened && link?.from?.from_id === spaceId && link._applies.includes('space'))
+      )
+      ||
+      (link?.type_id === deep.idLocal('@deep-foundation/core', 'Contain') && link?.to?.from_id === spaceId && link?.to?.type_id === Opened && link._applies.includes('space'))
+      ||
+      (link?.type_id === deep.idLocal('@deep-foundation/core', 'Contain') && link?.to?.type_id === OpenedHandler && link?.to?.from?.from_id === spaceId && link?.to?.from?.type_id === Opened && link._applies.includes('space'))
+    );
 
     let _value = '';
     let _name = '';
@@ -106,7 +127,7 @@ export function useCytoElements(ml, _links, cy, spaceId, cyh) {
       // focused: true,
     };
 
-    if ((isFocusSpace && showFocus) || !isFocusSpace) {
+    if (((isFocusSpace && showFocus) || !isFocusSpace) && ((isOpenedSpace && showOpened) || !isOpenedSpace)) {
       elementsById[link?.id] = element;
       elements.push(element);
     }
@@ -152,7 +173,24 @@ export function useCytoElements(ml, _links, cy, spaceId, cyh) {
     }
 
     const focus = link?.inByType?.[deep.idLocal('@deep-foundation/core', 'Focus')]?.find(f => f.from_id === spaceId);
-    const isFocusSpace = (link.type_id === deep.idLocal('@deep-foundation/core', 'Focus') && link._applies.includes('space')) || (link?.to?.type_id === deep.idLocal('@deep-foundation/core', 'Focus') && link._applies.includes('space'));
+    const isFocusSpace = (
+      (link.type_id === deep.idLocal('@deep-foundation/core', 'Focus') && link?.from_id === spaceId && link._applies.includes('space'))
+      ||
+      (link?.type_id === deep.idLocal('@deep-foundation/core', 'Contain') && link?.to?.type_id === deep.idLocal('@deep-foundation/core', 'Focus') && link._applies.includes('space'))
+    );
+    const isOpenedSpace = (
+      (link.type_id === Opened && link._applies.includes('space') && link?.from_id === spaceId)
+      ||
+      (
+        link.type_id === OpenedHandler && link._applies.includes('space')
+        &&
+        (link?.from?.type_id === Opened && link?.from?.from_id === spaceId && link._applies.includes('space'))
+      )
+      ||
+      (link?.type_id === deep.idLocal('@deep-foundation/core', 'Contain') && link?.to?.from_id === spaceId && link?.to?.type_id === Opened && link._applies.includes('space'))
+      ||
+      (link?.type_id === deep.idLocal('@deep-foundation/core', 'Contain') && link?.to?.type_id === OpenedHandler && link?.to?.from?.from_id === spaceId && link?.to?.from?.type_id === Opened && link._applies.includes('space'))
+    );
 
     let _value = '';
     let _name = '';
@@ -176,7 +214,7 @@ export function useCytoElements(ml, _links, cy, spaceId, cyh) {
       _symbol = link?.type?.inByType?.[deep.idLocal('@deep-foundation/core', 'Symbol')]?.[0]?.value?.value;
     }
     if (!!cy && (!cyh.drawedCytoHandlers.current[link.id] || !cytoHandlers)) {
-      if ((isFocusSpace && showFocus) || !isFocusSpace) {
+      if (((isFocusSpace && showFocus) || !isFocusSpace) && ((isOpenedSpace && showOpened) || !isOpenedSpace)) {
         if (link.from_id) {
           if (ml?.byId?.[link.from_id] && elementsById[link.from_id]) {
             elements.push({
@@ -222,6 +260,7 @@ export function useCytoElements(ml, _links, cy, spaceId, cyh) {
     const el = elements[i];
     if (el?.data?.source && !elementsById[el?.data?.source] && !cytoHandled[el?.data?.source] && !cyh.drawedCytoHandlers.current[el?.data?.source]) {
       const id = el?.data?.source;
+
       const element = {
         id: id,
         data: {
@@ -229,6 +268,7 @@ export function useCytoElements(ml, _links, cy, spaceId, cyh) {
           label: (
             `${id}\n\n `
           ),
+          reasonEl: el,
         },
         selectable: false,
         classes: [
@@ -249,6 +289,7 @@ export function useCytoElements(ml, _links, cy, spaceId, cyh) {
           label: (
             `${id}\n\n `
           ),
+          reasonEl: el,
         },
         selectable: false,
         classes: [

@@ -7,7 +7,7 @@ import React, { useEffect, useState, ChangeEvent } from "react";
 import { HiMenuAlt2, HiCode, HiOutlineEyeOff } from 'react-icons/hi';
 import { SlClose } from 'react-icons/sl';
 import { Appearance } from "../component-appearance";
-import { useAutoFocusOnInsert, useBreadcrumbs, useContainer, useLayout, useMediaQuery, useReserved, useShowExtra, useShowFocus, useShowTypes, useSpaceId, useTraveler, useLayoutAnimation, useAsyncState, useCytoHandlersSwitch } from "../hooks";
+import { useAutoFocusOnInsert, useBreadcrumbs, useContainer, useLayout, useMediaQuery, useReserved, useShowExtra, useShowFocus, useShowTypes, useSpaceId, useTraveler, useLayoutAnimation, useAsyncState, useCytoHandlersSwitch, useShowOpened } from "../hooks";
 import { useCytoEditor, useCytoHandlersRules } from "./hooks";
 import { variants, buttonVariant, iconVariants, sideVariants, itemVariants } from "./menu-animation-variants";
 import { TbArrowRotaryFirstRight } from "react-icons/tb";
@@ -181,6 +181,7 @@ export function CytoMenu({
   const [container, setContainer] = useContainer();
   const [extra, setExtra] = useShowExtra();
   const [focus, setFocus] = useShowFocus();
+  const [opened, setOpened] = useShowOpened();
   const [cytoHandlers, setCytoHandlers] = useCytoHandlersSwitch();
   const [traveler, setTraveler] = useTraveler();
   const [reserved, setReserved] = useReserved();
@@ -336,6 +337,12 @@ export function CytoMenu({
                   focus
                 </FormLabel>
                 <DeepSwitch id='show-focus' isChecked={focus} onChange={() => setFocus(!focus)} />
+              </FormControl>
+              <FormControl display='flex' alignItems='center'>
+                <FormLabel color='text' htmlFor='show-opened' mb='0' fontSize='sm' mr='0.25rem'>
+                  opened
+                </FormLabel>
+                <DeepSwitch id='show-opened' isChecked={opened} onChange={() => setOpened(!opened)} />
               </FormControl>
               <FormControl display='flex' alignItems='center'>
                 <FormLabel color='text' htmlFor='show-extra-switch' mb='0' fontSize='sm' mr='0.25rem'>
