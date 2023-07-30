@@ -95,6 +95,7 @@ export default function CytoGraph({
   cyRef,
   gqlPath,
   gqlSsl,
+  appVersion = '',
 }: CytoGraphProps){
   // console.time('CytoGraph');
   const deep = useDeep();
@@ -156,7 +157,7 @@ export default function CytoGraph({
         <CytoEditor/>
       </CytoDropZone>
       <Text position="fixed" left={0} bottom={0} p={4}>
-        {pckg.version}
+        ${appVersion} ({pckg.version})
       </Text>
     </div>
   </>);

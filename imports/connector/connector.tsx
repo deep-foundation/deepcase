@@ -133,7 +133,7 @@ const TerminalConnect = React.memo<any>(({
       terminalRef.current = terminal;
       if (terminalBoxRef.current){
         terminal?.open(terminalBoxRef.current);
-        terminal?.writeln('Init started. Please wait, \x1B[1;3;31mit may take few minutes\x1B[0m');
+        terminal?.writeln('Ininitialization has been started. Please wait, \x1B[1;3;31mit may take a while.\x1B[0m');
       }
     })();
   }, []);
@@ -146,6 +146,9 @@ const TerminalConnect = React.memo<any>(({
       setTimeout(async () => {
         console.log('initializingState1', initializingState)
         terminalRef?.current?.resize(terminalRef.current.cols,terminalRef.current.rows);
+        setTimeout(() => {
+          terminalRef?.current?.focus();
+        }, 1500);
         const initResult = await callEngine({ serverUrl, operation: 'init', terminal: terminalRef.current });
         console.log(initResult);
         const migrateResult = await callEngine({ serverUrl, operation: 'migrate', terminal: terminalRef.current });
@@ -168,6 +171,9 @@ const TerminalConnect = React.memo<any>(({
       setTimeout(async() => {
         console.log('initializingState1-r', initializingState);
         terminalRef?.current?.resize(terminalRef.current.cols,terminalRef.current.rows);
+        setTimeout(() => {
+          terminalRef?.current?.focus();
+        }, 1500);
         await callEngine({ serverUrl, operation: 'reset', terminal: terminalRef.current });
         // control.start('shrink');
         console.log('initializingState2-r', initializingState);
@@ -493,7 +499,7 @@ export const Connector = React.memo<any>(({
   const deeplinksGqlSsl = deeplinksSsl;
 
   // const [ portalOpen, setPortal ] = useState(true); 
-  const onClosePortal = () => setPortal(false);
+  // const onClosePortal = () => setPortal(false);
   
   const [remotesString, setRemotesString] = useLocalStorage('remote-routes', '[]');
   const remotes = JSON.parse(remotesString);
@@ -592,7 +598,11 @@ export const Connector = React.memo<any>(({
     })();
   }, []);
 
-  return (<ModalWindow onClosePortal={onClosePortal} portalOpen={portalOpen}>
+  return (<ModalWindow onClosePortal={() => {
+    if (init == InitializingState.launched){
+      setPortal(false);
+    }
+  }} portalOpen={portalOpen}>
       <Box 
         display='flex'
         flexDirection='column'
