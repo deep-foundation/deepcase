@@ -18,6 +18,7 @@ import * as bs from 'react-icons/bs';
 import * as fi from 'react-icons/fi';
 import * as tb from 'react-icons/tb';
 import * as ci from 'react-icons/ci';
+import { IconContext } from 'react-icons';
 import * as editor from 'slate';
 import * as slate from 'slate-react';
 import SoftBreak from 'slate-soft-break';
@@ -100,6 +101,7 @@ r.list = {
   'react-icons/fi': fi,
   'react-icons/ci': ci,
   'react-icons/tb': tb,
+  'react-icons' : IconContext,
   'react-linkify': Linkify,
   '@rjsf/core': rjsfCore,
   '@rjsf/chakra-ui': rjsfChakra,
