@@ -157,7 +157,7 @@ export default function CytoGraph({
         <CytoEditor/>
       </CytoDropZone>
       <Text position="fixed" left={0} bottom={0} p={4}>
-        ${appVersion} ({pckg.version})
+        {appVersion} ({pckg.version})
       </Text>
     </div>
   </>);
