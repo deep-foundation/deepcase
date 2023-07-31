@@ -36,7 +36,7 @@ export function Provider({
   //   googleAnalyticsAccounts={['G-DC5RRWLRNV']}
   // >
   // </Analitics>
-  useEffect(() => {
+useEffect(() => {
     (async () => {
       localStorage.logs = 0;
       if (typeof (window) !== undefined) {
@@ -46,11 +46,19 @@ export function Provider({
         localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
         await import('super-hands');
         localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
-        await import('./aframe/rotator');
+        require('./aframe/components/rotator');
         localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
-        await import('./aframe/scaler');
+        require('./aframe/components/scaler');
         localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
-        await import('./aframe/dragger');
+        require('./aframe/components/dragger');
+        localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
+        require('./aframe/components/menu');
+        localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
+        require('./aframe/components/el-movement');
+        localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
+        require('./aframe/components/collider');
+        localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
+        await import('aframe-environment-component');
         localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
       }
     })();
