@@ -2,6 +2,7 @@ import { TokenProvider, useTokenController } from '@deep-foundation/deeplinks/im
 import { ApolloClientTokenizedProvider } from '@deep-foundation/react-hasura/apollo-client-tokenized-provider';
 import { LocalStoreProvider } from '@deep-foundation/store/local';
 import { QueryStoreProvider } from '@deep-foundation/store/query';
+import { CookiesStoreProvider } from '@deep-foundation/store/cookies';
 
 import { ChakraProvider } from '@chakra-ui/react';
 import themeChakra from './theme/theme';
@@ -58,16 +59,17 @@ export function Provider({
   return (<>
     <ThemeProviderCustom theme={themeCustom}>
       <QueryStoreProvider>
-        <LocalStoreProvider>
-          <TokenProvider>
-            
-            <ApolloClientTokenizedProvider options={useMemo(() => ({ client: 'deeplinks-app', path: gqlPath, ssl: gqlSsl, ws: !!(process as any)?.browser }), [gqlPath, gqlSsl])}>
-              <ProviderConnected>
-                {children}
-              </ProviderConnected>
-            </ApolloClientTokenizedProvider>
-          </TokenProvider>
-        </LocalStoreProvider>
+        <CookiesStoreProvider>
+          <LocalStoreProvider>
+            <TokenProvider>
+              <ApolloClientTokenizedProvider options={useMemo(() => ({ client: 'deeplinks-app', path: gqlPath, ssl: gqlSsl, ws: !!(process as any)?.browser }), [gqlPath, gqlSsl])}>
+                <ProviderConnected>
+                  {children}
+                </ProviderConnected>
+              </ApolloClientTokenizedProvider>
+            </TokenProvider>
+          </LocalStoreProvider>
+        </CookiesStoreProvider>
       </QueryStoreProvider>
     </ThemeProviderCustom>
   </>)
