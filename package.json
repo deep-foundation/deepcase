@@ -87,7 +87,7 @@
     "react": "*"
   },
   "devDependencies": {
-    "@deep-foundation/npm-automation": "^3.1.18",
+    "@deep-foundation/npm-automation": "^18.1.1",
     "depcheck": "^1.4.3",
     "ts-node": "^10.9.1"
   }
