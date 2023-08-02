@@ -7,8 +7,8 @@
     "deep-package"
   ],
   "scripts": {
-    "npm-pull": "npx npm-pull",
-    "npm-release": "npm i -g @deep-foundation/npm-automation; npm-release",
+    "npm-pull": "npm run npm-pull",
+    "npm-release": "npm run npm-release",
     "package:build": "tsc --project tsconfig.json",
     "package:publish": "npm run build && npm publish --access public",
     "package:unbuild": "rimraf ./*.js && rimraf ./*.js.map && rimraf ./*.d.ts && (cd ./imports && rimraf ./*.js && rimraf ./*.js.map && rimraf ./*.d.ts && cd ../)"
