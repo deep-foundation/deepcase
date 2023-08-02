@@ -122,6 +122,13 @@ export async function evalClientHandler({
   error?: any;
   data?: any;
 }> {
+  (deep as any).import = async (path: string) : Promise<any> => {
+    try {
+      return r(path);
+    } catch(e) {
+      return await import(path);
+    }
+  };
   return await deepclientEvalClientHandler({
     value, deep, input: {
       require: r,
