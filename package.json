@@ -1,14 +1,14 @@
 {
   "name": "@deep-foundation/deepcase",
-  "version": "0.0.51",
+  "version": "0.0.52",
   "license": "Unlicense",
   "type": "module",
   "keywords": [
     "deep-package"
   ],
   "scripts": {
-    "npm-pull": "npm run npm-pull",
-    "npm-release": "npm run npm-release",
+    "npm-pull": "npm-pull",
+    "npm-release": "npm-release",
     "package:build": "tsc --project tsconfig.json",
     "package:publish": "npm run build && npm publish --access public",
     "package:unbuild": "rimraf ./*.js && rimraf ./*.js.map && rimraf ./*.d.ts && (cd ./imports && rimraf ./*.js && rimraf ./*.js.map && rimraf ./*.d.ts && cd ../)"
