@@ -25,7 +25,7 @@ import SoftBreak from 'slate-soft-break';
 import { slateToHtml, htmlToSlate } from 'slate-serializers';
 import isHotkey from 'is-hotkey';
 import * as Resizable from 're-resizable';
-import { useContainer, useSpaceId, useRefAutofill } from './hooks';
+import { useContainer, useSpaceId, useRefAutofill, useFocusMethods, useShowExtra, useBreadcrumbs, useTraveler } from './hooks';
 import { CytoEditorPreview } from './cyto/editor-preview';
 import { CustomizableIcon } from './icons-provider';
 import { useChackraColor, useChackraGlobal } from './get-color';
@@ -42,6 +42,7 @@ import * as aframeReact from '@belivvr/aframe-react';
 import { Entity, Scene } from 'aframe-react';
 import { CatchErrors } from './react-errors';
 import _ from 'lodash';
+import md5 from "md5";
 const MonacoEditor = dynamic(() => import('@monaco-editor/react').then(m => m.default), { ssr: false });
 
 export const r: any = (path) => {
@@ -82,6 +83,10 @@ r.list = {
   '@deep-foundation/deepcase': {
     useContainer,
     useSpaceId,
+    useFocusMethods,
+    useBreadcrumbs,
+    useShowExtra,
+    useTraveler,
     CytoEditorPreview,
     CustomizableIcon,
     Resize,
@@ -97,6 +102,9 @@ r.list = {
     useChackraColor,
     useChackraGlobal,
   },
+  '@deep-foundation/deeplinks': {
+    useMinilinksFilter
+  },
   'react-icons/bs': bs,
   'react-icons/fi': fi,
   'react-icons/ci': ci,
@@ -107,7 +115,8 @@ r.list = {
   '@rjsf/chakra-ui': rjsfChakra,
   '@rjsf/validator-ajv8': rjsfValidator,
   '@belivvr/aframe-react': aframeReact,
-  'aframe-react': { Entity, Scene }
+  'aframe-react': { Entity, Scene },
+  'md5': md5
 };
 
 export async function evalClientHandler({
