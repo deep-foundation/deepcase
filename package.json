@@ -21,7 +21,7 @@
     "@chakra-ui/react": "^2.6.1",
     "@chakra-ui/theme-tools": "^2.0.16",
     "@deep-foundation/core": "~0.0.2",
-    "@deep-foundation/deeplinks": "^0.0.267",
+    "@deep-foundation/deeplinks": "^0.0.268",
     "@deep-foundation/react-hasura": "^0.0.16",
     "@deep-foundation/tsx": "~0.0.3",
     "@emotion/react": "^11.11.0",
