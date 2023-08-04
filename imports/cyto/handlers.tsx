@@ -78,7 +78,7 @@ export const CytoEditorHandlersSupportHandle = React.memo<any>(function CytoEdit
   const isLink = ['HandleInsert', 'HandleUpdate', 'HandleDelete'].includes(HandleName);
   const isRoute = HandleName === 'HandleRoute';
   const isPort = HandleName === 'HandlePort';
-  const isShedule = HandleName === 'HandleShedule';
+  const isSchedule = HandleName === 'HandleSchedule';
   const isClient = HandleName === 'HandleClient';
 
   const Handle = useCallback((
