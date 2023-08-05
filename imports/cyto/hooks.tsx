@@ -24,6 +24,7 @@ export interface IInsertedLink {
   position: { x: number; y: number; };
   from: number; to: number;
   alterResolve?: (link: Link<number>) => void;
+  props?: any;
 };
 
 export interface IUpdatedLink {
@@ -58,8 +59,8 @@ export function CytoReactLinksCardInsertNode({
   return <>
     {!!Finder && <ClientHandler
       linkId={spaceId} context={[ Finder ]} ml={deep.minilinks}
-      search={''}
       onChange={l => setSelectedLink(l)}
+      {...(insertingLink?.props ? insertingLink?.props : { search: '' })}
     />}
     <SlideFade in={!!selectedLink} offsetX='-0.5rem' style={{position: 'absolute', bottom: 0, right: '-2.8rem'}}>
       <IconButton
@@ -574,8 +575,9 @@ export function useLinkReactElements(elements = [], reactElements = [], cy, ml) 
                   elements={elements.filter(el => (!!el?.linkName?.includes && el?.linkName?.toLocaleLowerCase()?.includes(search) || el?.containerName?.includes && el?.containerName?.toLocaleLowerCase()?.includes(search)))}
                   search={search}
                   onSearch={e => setSearch(e.target.value)}
-                  onSubmit={async (id) => {
-                    setHandlerId(id);
+                  onSubmit={async (hid) => {
+                    close(id);
+                    open(id, hid);
                     onClose();
                   }}
                   fillSize
@@ -943,7 +945,10 @@ export function useCyInitializer({
           content: 'insert',
           select: function(el, ev){
             setTimeout(()=>{
-              openInsertCard({ position: ev.position, from: 0, to: 0 });
+              openInsertCard({
+                position: ev.position, from: 0, to: 0,
+                props: { query: `{ type_id: { _id: ['@deep-foundadtion/core', 'Package'] } }` },
+              });
             },1);
           }
         },
@@ -957,35 +962,38 @@ export function useCyInitializer({
         {
           content: 'query',
           select: function(el, ev){
-            openInsertCard({ position: ev.position, from: 0, to: 0, alterResolve: async (link) => {
-              deep.insert({
-                type_id: await deep.id('@deep-foundation/deepcase', 'Traveler'),
-                from_id: link?.id,
-                in: { data: {
-                  type_id: await deep.id('@deep-foundation/core', 'Contain'),
-                  from_id: spaceId,
-                } },
-                to: { data: {
-                  type_id: await deep.id('@deep-foundation/core', 'Query'),
-                  object: { data: { value: { id: link?.id } } },
-                  in: { data: [
-                    {
-                      type_id: await deep.id('@deep-foundation/core', 'Contain'),
-                      from_id: spaceId,
-                    },
-                    {
-                      type_id: await deep.id('@deep-foundation/core', 'Active'),
-                      from_id: spaceId,
-                      in: { data: {
+            openInsertCard({
+              position: ev.position, from: 0, to: 0,
+              alterResolve: async (link) => {
+                deep.insert({
+                  type_id: await deep.id('@deep-foundation/deepcase', 'Traveler'),
+                  from_id: link?.id,
+                  in: { data: {
+                    type_id: await deep.id('@deep-foundation/core', 'Contain'),
+                    from_id: spaceId,
+                  } },
+                  to: { data: {
+                    type_id: await deep.id('@deep-foundation/core', 'Query'),
+                    object: { data: { value: { id: link?.id } } },
+                    in: { data: [
+                      {
                         type_id: await deep.id('@deep-foundation/core', 'Contain'),
                         from_id: spaceId,
-                      } },
-                    },
-                  ] },
-                } },
-              });
-              if (autoFocusRef.current) focus(link?.id, ev?.position);
-            } });
+                      },
+                      {
+                        type_id: await deep.id('@deep-foundation/core', 'Active'),
+                        from_id: spaceId,
+                        in: { data: {
+                          type_id: await deep.id('@deep-foundation/core', 'Contain'),
+                          from_id: spaceId,
+                        } },
+                      },
+                    ] },
+                  } },
+                });
+                if (autoFocusRef.current) focus(link?.id, ev?.position);
+              },
+            });
           }
         },
       ]
