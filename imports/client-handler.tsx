@@ -43,6 +43,7 @@ import { Entity, Scene } from 'aframe-react';
 import { CatchErrors } from './react-errors';
 import _ from 'lodash';
 import md5 from "md5";
+import { v4 as uuidv4 } from 'uuid';
 const MonacoEditor = dynamic(() => import('@monaco-editor/react').then(m => m.default), { ssr: false });
 
 export const r: any = (path) => {
@@ -116,7 +117,8 @@ r.list = {
   '@rjsf/validator-ajv8': rjsfValidator,
   '@belivvr/aframe-react': aframeReact,
   'aframe-react': { Entity, Scene },
-  'md5': md5
+  'md5': md5,
+  'uuid': uuidv4
 };
 
 export async function evalClientHandler({
