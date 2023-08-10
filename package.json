@@ -50,6 +50,7 @@
     "cytoscape-deep-d3-force": "^1.2.3",
     "cytoscape-edge-connections": "^0.5.0",
     "cytoscape-edgehandles": "^4.0.1",
+    "d3-force-3d": "^3.0.5",
     "debug": "^4.3.4",
     "framer-motion": "^10.12.16",
     "immutable": "^4.3.0",

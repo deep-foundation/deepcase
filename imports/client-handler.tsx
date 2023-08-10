@@ -44,6 +44,7 @@ import { CatchErrors } from './react-errors';
 import _ from 'lodash';
 import md5 from "md5";
 import { v4 as uuidv4 } from 'uuid';
+import * as d3d from 'd3-force-3d';
 const MonacoEditor = dynamic(() => import('@monaco-editor/react').then(m => m.default), { ssr: false });
 
 export const r: any = (path) => {
@@ -118,7 +119,8 @@ r.list = {
   '@belivvr/aframe-react': aframeReact,
   'aframe-react': { Entity, Scene },
   'md5': md5,
-  'uuid': uuidv4
+  'uuid': uuidv4,
+  'd3-force-3d': d3d,
 };
 
 export async function evalClientHandler({
