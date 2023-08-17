@@ -1,6 +1,5 @@
 // @ts-nocheck
 import AFRAME from "aframe";
-import * as THREE from "three";
 
 AFRAME.registerComponent('el-movement', {
   init: function () { },

@@ -56,6 +56,8 @@ useEffect(() => {
         localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
         await import('./aframe/components/el-movement');
         localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
+        await import('./aframe/components/tick');
+        localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
         await import('./aframe/components/collider');
         localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
         await import('aframe-environment-component');
