@@ -47,8 +47,6 @@ import { v4 as uuidv4 } from 'uuid';
 import * as d3d from 'd3-force-3d';
 import * as D3 from 'd3';
 import WordCloud from 'react-d3-cloud';
-// import * as peerJS from "peerjs";
-import peerJS from "peerjs";
 const MonacoEditor = dynamic(() => import('@monaco-editor/react').then(m => m.default), { ssr: false });
 
 export const r: any = (path) => {
@@ -126,8 +124,7 @@ r.list = {
   'uuid': uuidv4,
   'd3-force-3d': d3d,
   'd3': D3,
-  'react-d3-cloud': WordCloud,
-  'peerjs': peerJS
+  'react-d3-cloud': WordCloud
 };
 
 export async function evalClientHandler({
@@ -143,10 +140,14 @@ export async function evalClientHandler({
   data?: any;
 }> {
   (deep as any).import = async (path: string) : Promise<any> => {
-    try {
-      return r(path);
-    } catch(e) {
-      return await import(path);
+    if (path == 'peerjs') {
+      return await import('peerjs');
+    } else {
+      try {
+        return r(path);
+      } catch(e) {
+        return await import(path);
+      }
     }
   };
   return await deepclientEvalClientHandler({
