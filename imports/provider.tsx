@@ -38,30 +38,18 @@ export function Provider({
   // </Analitics>
 useEffect(() => {
     (async () => {
-      localStorage.logs = 0;
       if (typeof (window) !== undefined) {
         await import ('aframe');
-        localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
         await import('aframe-forcegraph-component');
-        localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
         await import('super-hands');
-        localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
         await import('./aframe/components/rotator');
-        localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
         await import('./aframe/components/scaler');
-        localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
         await import('./aframe/components/dragger');
-        localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
         await import('./aframe/components/menu');
-        localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
         await import('./aframe/components/el-movement');
-        localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
         await import('./aframe/components/tick');
-        localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
         await import('./aframe/components/collider');
-        localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
         await import('aframe-environment-component');
-        localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
       }
     })();
   }, []);

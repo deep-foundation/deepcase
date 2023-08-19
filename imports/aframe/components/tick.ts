@@ -1,15 +1,27 @@
 // @ts-nocheck
 import AFRAME from "aframe";
 
+const parseFn = function (prop) {
+  if (typeof prop === 'function') { return prop }
+  else return null;  // already a function
+};
+
 AFRAME.registerComponent('use-engine-tick', {
-  schema:{
-    onEngineTick:{ default: undefined }
+  schema: {
+    onEngineTick: { parse: parseFn, default: () => { } },
+    throttle: { type: "number" }
   },
-  tick: function () {
+  update: function () {
     const d = this.data;
-    if (typeof d.onEngineTick === 'function') {
+    // Set up the tick throttling.
+    if (d.throttle) {
+      this.tick = AFRAME.utils.throttleTick(this.tick, d.throttle, this);
+    }
+  },
+  tick: function (t, dt) {
+    const d = this.data;
+    if (d.onEngineTick) {
       d.onEngineTick();
     }
-    // this.el.emit('use-engine-tick', {  el : this.el })
   }
 });
