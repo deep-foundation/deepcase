@@ -47,7 +47,8 @@ import { v4 as uuidv4 } from 'uuid';
 import * as d3d from 'd3-force-3d';
 import * as D3 from 'd3';
 import WordCloud from 'react-d3-cloud';
-import * as peerJS from "peerjs";
+// import * as peerJS from "peerjs";
+import peerJS from "peerjs";
 const MonacoEditor = dynamic(() => import('@monaco-editor/react').then(m => m.default), { ssr: false });
 
 export const r: any = (path) => {
