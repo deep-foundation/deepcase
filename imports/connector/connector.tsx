@@ -494,10 +494,18 @@ export const Connector = React.memo<any>(({
     setValueRemote(value);
   }, 500);
 
-  const browserURI = document?.baseURI ? document?.baseURI + "api" : document?.baseURI;
-  const [deeplinksPath, deeplinksSsl] = parseUrl(browserURI || deeplinksUrl);
-  const defaultGqlPath = deeplinksPath + '/gql';
-  const defaultGqlSsl = deeplinksSsl;
+  const [deeplinksPath, deeplinksSsl] = parseUrl(deeplinksUrl);
+  const [defaultGqlPath, setDefaultGqlPath] = useState(deeplinksPath + '/gql');
+  const [defaultGqlSsl, setDefaultGqlSsl] = useState(deeplinksSsl);
+
+  useEffect(() => {
+    const browserURI = document?.baseURI;
+    if (browserURI) {
+      const [browserPath, browserSsl] = parseUrl(browserURI);
+      setDefaultGqlPath(browserPath + "api");
+      setDefaultGqlSsl(browserSsl)
+    }
+  }, [])
 
   // const [ portalOpen, setPortal ] = useState(true); 
   // const onClosePortal = () => setPortal(false);
