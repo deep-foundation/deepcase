@@ -104,8 +104,8 @@ const TerminalConnect = React.memo<any>(({
   setGqlPath,
   setGqlSsl,
   setPortal,
-  deeplinksGqlPath,
-  deeplinksGqlSsl,
+  defaultGqlPath,
+  defaultGqlSsl,
 }:{
   initializingState?: InitializingState; 
   closeTerminal: () => any; 
@@ -115,8 +115,8 @@ const TerminalConnect = React.memo<any>(({
   setGqlPath: (path: string) => any;
   setGqlSsl: (ssl: boolean) => any;
   setPortal: (state?: boolean) => any;
-  deeplinksGqlPath: string;
-  deeplinksGqlSsl: boolean;
+  defaultGqlPath: string;
+  defaultGqlSsl: boolean;
 }) => {
   const terminalBoxRef = useRef<any>();
   const terminalRef = useRef<any>();
@@ -159,8 +159,8 @@ const TerminalConnect = React.memo<any>(({
 
         await delay(2000);
         setInitLocal(InitializingState.launched);
-        setGqlPath(deeplinksGqlPath);
-        setGqlSsl(deeplinksGqlSsl);
+        setGqlPath(defaultGqlPath);
+        setGqlSsl(defaultGqlSsl);
         await delay(2000);
         setPortal(false);
       }, 2000);
@@ -494,9 +494,10 @@ export const Connector = React.memo<any>(({
     setValueRemote(value);
   }, 500);
 
-  const [deeplinksPath, deeplinksSsl] = parseUrl(deeplinksUrl);
-  const deeplinksGqlPath = deeplinksPath + '/gql';
-  const deeplinksGqlSsl = deeplinksSsl;
+  const browserURI = document?.baseURI ? document?.baseURI + "api" : document?.baseURI;
+  const [deeplinksPath, deeplinksSsl] = parseUrl(browserURI || deeplinksUrl);
+  const defaultGqlPath = deeplinksPath + '/gql';
+  const defaultGqlSsl = deeplinksSsl;
 
   // const [ portalOpen, setPortal ] = useState(true); 
   // const onClosePortal = () => setPortal(false);
@@ -574,8 +575,8 @@ export const Connector = React.memo<any>(({
         await delay(1000);
         setInitLocal(InitializingState.launched);
         if (!gqlPath){
-          setGqlPath(deeplinksGqlPath);
-          setGqlSsl(deeplinksGqlSsl);
+          setGqlPath(defaultGqlPath);
+          setGqlSsl(defaultGqlSsl);
         }
       }
     })();
@@ -795,8 +796,8 @@ export const Connector = React.memo<any>(({
                     ariaLabelRight="delete local deepcase"
                     // ComponentRightIcon={IoStopOutline}
                     onClickLeft={() => {
-                      setGqlPath(deeplinksGqlPath);
-                      setGqlSsl(deeplinksGqlSsl);
+                      setGqlPath(defaultGqlPath);
+                      setGqlSsl(defaultGqlSsl);
                       setPortal(false);
                     }}
                     leftButtonId="goToDeep"
@@ -840,8 +841,8 @@ export const Connector = React.memo<any>(({
             setGqlPath={(path) => setGqlPath(path)}
             setGqlSsl={(ssl) => setGqlSsl(ssl)}
             setPortal={(state) => setPortal(state)}
-            deeplinksGqlPath={deeplinksGqlPath}
-            deeplinksGqlSsl={deeplinksGqlSsl}
+            defaultGqlPath={defaultGqlPath}
+            defaultGqlSsl={defaultGqlSsl}
           />
         </ConnectorGrid>
       </Box>
