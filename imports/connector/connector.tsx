@@ -502,7 +502,7 @@ export const Connector = React.memo<any>(({
     const browserURI = document?.baseURI;
     if (browserURI) {
       const [browserPath, browserSsl] = parseUrl(browserURI);
-      setDefaultGqlPath(browserPath + "api");
+      setDefaultGqlPath(browserPath + "/api/gql");
       setDefaultGqlSsl(browserSsl)
     }
   }, [])
