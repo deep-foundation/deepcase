@@ -603,7 +603,7 @@ export const Connector = React.memo<any>(({
       // console.log('docker', dockerComposeStatus);
       // console.log('docker', dockerComposeStatus?.data?.result?.stdout.toString());
       // console.log('docker', !/^-?[a-z0-9]+\r?\n?$/.test(dockerComposeStatus?.data?.result?.stdout.toString()));
-      if (!/^-?[a-z0-9.]+\r?\n?$/.test(dockerComposeStatus?.data?.result?.stdout.toString())) setIsExistDocker(false);
+      if (!/^-?[a-z0-9.-]+\r?\n?$/.test(dockerComposeStatus?.data?.result?.stdout.toString())) setIsExistDocker(false);
     })();
   }, []);
 
