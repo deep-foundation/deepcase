@@ -47,6 +47,7 @@ import { v4 as uuidv4 } from 'uuid';
 import * as d3d from 'd3-force-3d';
 import * as D3 from 'd3';
 import WordCloud from 'react-d3-cloud';
+import ReactResizeDetector from 'react-resize-detector';
 const MonacoEditor = dynamic(() => import('@monaco-editor/react').then(m => m.default), { ssr: false });
 
 export const r: any = (path) => {
@@ -124,7 +125,8 @@ r.list = {
   'uuid': uuidv4,
   'd3-force-3d': d3d,
   'd3': D3,
-  'react-d3-cloud': WordCloud
+  'react-d3-cloud': WordCloud,
+  'react-resize-detector': ReactResizeDetector,
 };
 
 export async function evalClientHandler({

@@ -353,10 +353,7 @@ export function CytoEditor() {
                 fillSize={fillSize}
                 setFillSize={setFillSize}
               >
-                <div>
-                  handlerId: {handlerId}
-                  {handlerId && [<ClientHandler key={handlerId} handlerId={handlerId} fillSize={fillSize} linkId={currentLink?.id} ml={deep.minilinks} />]}
-                </div>
+                {handlerId && [<ClientHandler key={handlerId} handlerId={handlerId} fillSize={fillSize} linkId={currentLink?.id} ml={deep.minilinks} />]}
               </EditorComponentView>]}
             </Box> ||
             rightArea === 'results' && <EditorResults id={tab.id} />
