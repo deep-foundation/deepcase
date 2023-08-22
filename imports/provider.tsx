@@ -39,7 +39,9 @@ export function Provider({
 useEffect(() => {
     (async () => {
       if (typeof (window) !== undefined) {
+        localStorage.logs = 0;
         await import ('aframe');
+        localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
         await import('aframe-forcegraph-component');
         await import('super-hands');
         await import('./aframe/components/rotator');

@@ -247,10 +247,12 @@ export function ClientHandler(_props: ClientHandlerProps) {
 
   const [Component, setComponent] = React.useState<any>(null);
 
+  console.log('ClientHandler root', { linkId, handlerId, context, file, hid, files, Component });
   const lastEvalRef = useRef(0);
   useEffect(() => {
+    if (!hid) return;
     const value = file?.value?.value;
-    console.log('ClientHandler evalClientHandler', { file, value });
+    console.log('ClientHandler evalClientHandler', { linkId, handlerId, context, file, value, hid, files });
     if (!value) {
       return;
     }
@@ -264,7 +266,7 @@ export function ClientHandler(_props: ClientHandlerProps) {
         console.log('ClientHandler evalClientHandler outdated', { file, data, error, evalId, 'lastEvalRef.current': lastEvalRef.current });
       }
     });
-  }, [file?.value?.value]);
+  }, [file?.value?.value, hid]);
 
   return (<>
     {(typeof (Component) === 'function')

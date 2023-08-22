@@ -761,7 +761,7 @@ export function useCyInitializer({
     const tapstart = function(evt){
       var node = evt.target;
       refDragStartedEvent.current = evt;
-      // node.mouseHoverDragging = true;
+      node.mouseHoverDragging = true;
     };
     let dragendData: any = undefined;
     const tapend = function(evt){

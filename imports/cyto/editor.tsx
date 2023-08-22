@@ -87,9 +87,9 @@ export function useFindClientHandlerByCode({
 }) {
   const deep = useDeep();
   const [hid, setHid] = useState<any>();
-  const prevCodeLinkId = useRef(codeLinkId);
+  const prevCodeLinkId = useRef<number>();
   useEffect(() => { (async () => {
-    if (codeLinkId === prevCodeLinkId.current) return;
+    if (!codeLinkId || codeLinkId === prevCodeLinkId.current) return;
     const { data: handlers } = await deep.select({
       execution_provider_id: { _eq: deep.idLocal('@deep-foundation/core', 'JSExecutionProvider'), },
       isolation_provider_id: { _eq: deep.idLocal('@deep-foundation/core', 'ClientJSIsolationProvider'), },
@@ -353,7 +353,10 @@ export function CytoEditor() {
                 fillSize={fillSize}
                 setFillSize={setFillSize}
               >
-                {handlerId && [<ClientHandler key={handlerId} handlerId={handlerId} fillSize={fillSize} linkId={currentLink?.id} ml={deep.minilinks} />]}
+                <div>
+                  handlerId: {handlerId}
+                  {handlerId && [<ClientHandler key={handlerId} handlerId={handlerId} fillSize={fillSize} linkId={currentLink?.id} ml={deep.minilinks} />]}
+                </div>
               </EditorComponentView>]}
             </Box> ||
             rightArea === 'results' && <EditorResults id={tab.id} />
