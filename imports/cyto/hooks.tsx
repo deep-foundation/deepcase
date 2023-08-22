@@ -429,16 +429,17 @@ export function useLinkReactElements(elements = [], reactElements = [], cy, ml) 
   const [linkReactElements, setLinkReactElements] = useState<{ [key: string]: boolean }>({});
   const linkReactElementsIds = useMemo(() => Object.keys(linkReactElements).filter(key => !!linkReactElements[key]), [linkReactElements]).map(key => parseInt(key), [linkReactElements]);
 
-  reactElements.push(...linkReactElementsIds.map(id => (elements.find(e => e.id === id))));
+  reactElements.push(...linkReactElementsIds.map(id => (elements.find(e => e.id === id))).filter(i => !!i));
 
   const cyRef = useRefAutofill(cy);
   const { open, close, isOpened } = useOpenedMethods();
   const [spaceId] = useSpaceId();
   const { data: Opened } = useDeepId('@deep-foundation/deepcase-opened', 'Opened');
-  reactElements.push(...(deep.minilinks?.byId?.[spaceId]?.outByType?.[Opened] || [])?.map(l => elements.find(e => e.id === l.to_id)));
+
+  reactElements.push(...((deep.minilinks?.byId?.[spaceId]?.outByType?.[Opened] || [])?.map(l => elements.find(e => e.id === l.to_id))).filter(i => !!i));
 
   useEffect(() => {
-    if (cy) {
+    if (cy && Opened) {
       const opened = cy?.$(`.deepcase-opened`);
       opened.forEach(o => {
         const isMustBeOpen = !!reactElements?.find(e => e === +o.id());
@@ -457,7 +458,7 @@ export function useLinkReactElements(elements = [], reactElements = [], cy, ml) 
         }
       });
     }
-  }, [reactElements]);
+  }, [reactElements, Opened]);
 
   const toggleLinkReactElement = async (id: number) => {
     const cy = cyRef.current;

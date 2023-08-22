@@ -255,7 +255,7 @@ export function ClientHandler(_props: ClientHandlerProps) {
 
   const [Component, setComponent] = React.useState<any>(null);
 
-  console.log('ClientHandler root', { linkId, handlerId, context, file, hid, files, Component });
+  // console.log('ClientHandler root', { linkId, handlerId, context, file, hid, files, Component });
   const lastEvalRef = useRef(0);
   useEffect(() => {
     if (!hid) return;
