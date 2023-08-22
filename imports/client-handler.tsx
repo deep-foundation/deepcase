@@ -48,7 +48,11 @@ import * as d3d from 'd3-force-3d';
 import * as D3 from 'd3';
 import WordCloud from 'react-d3-cloud';
 import ReactResizeDetector from 'react-resize-detector';
+import queryStore from '@deep-foundation/store/query';
+import localStore from '@deep-foundation/store/local';
 const MonacoEditor = dynamic(() => import('@monaco-editor/react').then(m => m.default), { ssr: false });
+
+
 
 export const r: any = (path) => {
   if (r.list[path]) return r.list[path];
@@ -127,6 +131,8 @@ r.list = {
   'd3': D3,
   'react-d3-cloud': WordCloud,
   'react-resize-detector': ReactResizeDetector,
+  '@deep-foundation/store/query': queryStore,
+  '@deep-foundation/store/local': localStore,
 };
 
 export async function evalClientHandler({
