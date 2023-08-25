@@ -52,7 +52,13 @@ import queryStore from '@deep-foundation/store/query';
 import localStore from '@deep-foundation/store/local';
 const MonacoEditor = dynamic(() => import('@monaco-editor/react').then(m => m.default), { ssr: false });
 
-
+DeepClient.resolveDependency = async (path: string) : Promise<any> => {
+  if (path == 'peerjs') {
+    return await import('peerjs');
+  } else {
+    return r(path);
+  }
+};
 
 export const r: any = (path) => {
   if (r.list[path]) return r.list[path];
@@ -147,17 +153,6 @@ export async function evalClientHandler({
   error?: any;
   data?: any;
 }> {
-  (deep as any).import = async (path: string) : Promise<any> => {
-    if (path == 'peerjs') {
-      return await import('peerjs');
-    } else {
-      try {
-        return r(path);
-      } catch(e) {
-        return await import(path);
-      }
-    }
-  };
   return await deepclientEvalClientHandler({
     value, deep, input: {
       require: r,
