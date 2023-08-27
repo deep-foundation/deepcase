@@ -1,7 +1,10 @@
 import React from 'react';
 
 export class CatchErrors extends React.Component<{
+  error?: any;
+  onMounted?: (setError: (error?: any) => void) => void;
   errorRenderer?: (error: Error, reset: () => any) => React.ReactNode;
+  reset?: () => any;
   children: any;
 },any> {
   reset: () => any;
@@ -12,6 +15,7 @@ export class CatchErrors extends React.Component<{
 
     this.reset = () => {
       this.setState({ error: undefined });
+      this?.props?.reset && this?.props?.reset();
     };
   }
 
@@ -22,12 +26,16 @@ export class CatchErrors extends React.Component<{
   componentDidCatch(error, errorInfo) {
     console.log('componentDidCatch', error, errorInfo);
   }
+  componentDidMounted() {
+    this?.props?.onMounted && this?.props?.onMounted((error) => this.setState({ error: error }));
+  }
 
   errorRenderer = (error, reset) => <></>;
 
   render() {
-    if (this.state.error) {
-      return this?.props?.errorRenderer ? this?.props?.errorRenderer(this.state.error, this.reset) : this?.errorRenderer(this.state.error, this.reset);
+    const error = this.props.error || this.state.error;
+    if (error) {
+      return this?.props?.errorRenderer ? this?.props?.errorRenderer(error, this.reset) : this?.errorRenderer(error, this.reset);
     }
 
     return this.props.children; 
