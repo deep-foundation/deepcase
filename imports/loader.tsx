@@ -24,7 +24,8 @@ export function DeepLoaderActive({
   const deep = useDeep();
   const subQuery = useMemo(() => {
     const v = (queryLink?.value?.value);
-    const variables = deep.serializeQuery(v);
+    // @ts-ignore
+    const variables = deep.serializeQuery(v, 'links', deep?.unvertualizeId);
     const where = variables?.where;
     return generateQuery({
       operation: subscription ? 'subscription' : 'query',
@@ -379,8 +380,8 @@ export const DeepLoader = memo(function DeepLoader({
       }}
     /></>
     {queries?.map((f, i) => (<DeepLoaderActive
-      key={`DEEPCASE_QUERY_${f.id}`}
-      name={`DEEPCASE_QUERY_${f.id}`}
+      key={`DEEPCASE_QUERY_${f.id < 0 && 'vi'}${Math.abs(f.id)}`}
+      name={`DEEPCASE_QUERY_${f.id < 0 && 'vi'}${Math.abs(f.id)}`}
       query={f}
       onChange={(r) => {
         deep.minilinks?.apply(r, `query-${f.id}`);
