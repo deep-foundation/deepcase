@@ -4,7 +4,7 @@ import * as THREE from "three";
 
 AFRAME.registerComponent("scaler", {
   init: function () {
-    this.graph = document.querySelector("[forcegraph]");
+    this.graph = document.getElementById("deepgraph");
     const rightController = document.getElementById("right");
     const leftController = document.getElementById("left");
     this.resizeStarted = false; // Resizing starts with both hands or controllers are active.

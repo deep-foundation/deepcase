@@ -4,7 +4,7 @@ import * as THREE from "three";
 
 AFRAME.registerComponent("dragger", {
   init: function () {
-    const graph = document.querySelector("[forcegraph]");
+    const graph = document.getElementById("deepgraph");
     const rightController = document.getElementById("right");
     const leftController = document.getElementById("left");
     this.dragDisabled = false; // Set true when both grips are pressed or both pinches are started 

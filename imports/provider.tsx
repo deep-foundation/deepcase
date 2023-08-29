@@ -44,13 +44,6 @@ useEffect(() => {
         localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
         await import('aframe-forcegraph-component');
         await import('super-hands');
-        await import('./aframe/components/rotator');
-        await import('./aframe/components/scaler');
-        await import('./aframe/components/dragger');
-        await import('./aframe/components/menu');
-        await import('./aframe/components/el-movement');
-        await import('./aframe/components/tick');
-        await import('./aframe/components/collider');
         await import('aframe-environment-component');
       }
     })();

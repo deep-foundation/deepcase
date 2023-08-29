@@ -55,6 +55,18 @@ const MonacoEditor = dynamic(() => import('@monaco-editor/react').then(m => m.de
 DeepClient.resolveDependency = async (path: string) : Promise<any> => {
   if (path == 'peerjs') {
     return await import('peerjs');
+  } else if (path == 'node-sound') {
+    return await import('./aframe/components/node-sound');
+  } else if (path == 'dragger') {
+    return await import('./aframe/components/dragger');
+  } else if (path == 'rotator') {
+    return await import('./aframe/components/rotator');
+  } else if (path == 'scaler') {
+    return await import('./aframe/components/scaler');
+  } else if (path == 'use-engine-tick') {
+    return await import('./aframe/components/tick');
+  } else if (path == 'el-movement') {
+    return await import('./aframe/components/el-movement');
   } else {
     return r(path);
   }
