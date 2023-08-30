@@ -1,70 +1,68 @@
 // @ts-nocheck
 import AFRAME from "aframe";
-import THREE from "three";
 
 AFRAME.registerComponent('node-sound', {
   schema: {
-    type_id: { type: 'number', default: 0 },
+    id: { type: 'number', default: 1 },
     wave: { type: 'string', default: 'sine' },
     minFreq: { type: 'number', default: 200 },
     maxFreq: { type: 'number', default: 3000 },
-    volume: { type: 'number', default: 1 },
+    volume: { type: 'number', default: 0.5 },
     panningModel: { type: "string", default: 'HRTF' },
     distanceModel: { type: "string", default: 'inverse' },
     refDistance: { type: 'number', default: 1 },
     maxDistance: { type: 'number', default: 10000 },
     rolloffFactor: { type: 'number', default: 1 },
-    throttle: { type: 'number', default: 0 },
     coneInnerAngle: { type: 'number', default: 360 },
     coneOuterAngle: { type: 'number', default: 360 },
-    coneOuterGain: { type: 'number', default: 1 }
+    coneOuterGain: { type: 'number', default: 1 },
+    throttle: { type: 'number', default: 0 },
+    timeout: { type: 'number', default: 5000 },
   },
 
   init: function () {
-    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-    // const typeId = this.data.type_id !== undefined ? this.data.type_id : 0;
-
-    const hash = function (id) {
-      let hashValue = 0;
-      const str = id.toString();
-      for (let i = 0; i < str.length; i++) {
-        const char = str.charCodeAt(i);
-        hashValue = ((hashValue << 5) - hashValue) + char;
-        hashValue |= 0; // Convert to 32bit integer
-      }
-      return Math.abs(hashValue) % 1000000; // Ensure positive value and limit the range
-    };
-
-    // Map the hashed value to the desired frequency range
-    const hashedValue = hash(this.data.type_id);
-    const normalizedHash = hashedValue / 1000000; // Since we limited the hash range to 1,000,000
-    const frequencyFloat = this.data.minFreq + normalizedHash * (this.data.maxFreq - this.data.minFreq);
-
-    // Round and clamp the frequency
-    const frequency = Math.round(frequencyFloat);
-    const clampedFrequency = Math.min(Math.max(frequency, this.data.minFreq), this.data.maxFreq);
-
-    this.oscillator = this.audioContext.createOscillator();
-    this.oscillator.type = this.data.wave;
-    this.oscillator.frequency.setValueAtTime(clampedFrequency, this.audioContext.currentTime);
-
-    this.panner = this.audioContext.createPanner();
-    this.panner.panningModel = this.data.panningModel;
-    this.panner.distanceModel = this.data.distanceModel;
-    this.panner.refDistance = this.data.refDistance;
-    this.panner.maxDistance = this.data.maxDistance;
-    this.panner.rolloffFactor = this.data.rolloffFactor;
-    this.panner.coneInnerAngle = this.data.coneInnerAngle;
-    this.panner.coneOuterAngle = this.data.coneOuterAngle;
-    this.panner.coneOuterGain = this.data.coneOuterGain;
-
-    this.oscillator.connect(this.panner);
-    this.panner.connect(this.audioContext.destination);
-
-    this.oscillator.start();
-
-    this.camera = document.getElementById('camera');
+      const hash = function (id) {
+        let hashValue = 0;
+        const str = id.toString();
+        for (let i = 0; i < str.length; i++) {
+          const char = str.charCodeAt(i);
+          hashValue = ((hashValue << 5) - hashValue) + char;
+          hashValue |= 0; // Convert to 32bit integer
+        }
+        return Math.abs(hashValue) % 1000000; // Ensure positive value and limit the range
+      };
+  
+      // Map the hashed value to the desired frequency range
+      const hashedValue = hash(this.data.id);
+      const normalizedHash = hashedValue / 1000000; // Since we limited the hash range to 1,000,000
+      const frequencyFloat = this.data.minFreq + normalizedHash * (this.data.maxFreq - this.data.minFreq);
+  
+      // Round and clamp the frequency
+      const frequency = Math.round(frequencyFloat);
+      const clampedFrequency = Math.min(Math.max(frequency, this.data.minFreq), this.data.maxFreq);
+  
+      this.oscillator = this.audioContext.createOscillator();
+      this.oscillator.type = this.data.wave;
+      this.oscillator.frequency.setValueAtTime(clampedFrequency, this.audioContext.currentTime);
+  
+      this.panner = this.audioContext.createPanner();
+      this.panner.panningModel = this.data.panningModel;
+      this.panner.distanceModel = this.data.distanceModel;
+      this.panner.refDistance = this.data.refDistance;
+      this.panner.maxDistance = this.data.maxDistance;
+      this.panner.rolloffFactor = this.data.rolloffFactor;
+      this.panner.coneInnerAngle = this.data.coneInnerAngle;
+      this.panner.coneOuterAngle = this.data.coneOuterAngle;
+      this.panner.coneOuterGain = this.data.coneOuterGain;
+  
+      this.oscillator.connect(this.panner);
+      this.panner.connect(this.audioContext.destination);
+  
+      this.oscillator.start();
+  
+      this.camera = document.getElementById('camera');
 
     if (this.data.throttle > 0) {
       this.tick = AFRAME.utils.throttleTick(this.tick, this.data.throttle, this);
