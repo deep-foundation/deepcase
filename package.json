@@ -87,7 +87,7 @@
     "xterm": "^5.1.0"
   },
   "engines": {
-    "node": "^18.16.1"
+    "node": "^18"
   },
   "peerDependencies": {
     "react": "*"
