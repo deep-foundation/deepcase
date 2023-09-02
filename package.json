@@ -74,6 +74,7 @@
     "react-linkify": "^1.0.0-alpha",
     "react-resize-detector": "^9.1.0",
     "react-yandex-metrika": "^2.6.0",
+    "recharts": "^2.8.0",
     "slate": "^0.94.1",
     "slate-history": "^0.93.0",
     "slate-react": "^0.94.2",

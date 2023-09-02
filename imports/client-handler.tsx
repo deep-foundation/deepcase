@@ -50,6 +50,7 @@ import WordCloud from 'react-d3-cloud';
 import ReactResizeDetector from 'react-resize-detector';
 import queryStore from '@deep-foundation/store/query';
 import localStore from '@deep-foundation/store/local';
+import * as recharts from 'recharts';
 const MonacoEditor = dynamic(() => import('@monaco-editor/react').then(m => m.default), { ssr: false });
 
 DeepClient.resolveDependency = async (path: string) : Promise<any> => {
@@ -151,6 +152,7 @@ r.list = {
   'react-resize-detector': ReactResizeDetector,
   '@deep-foundation/store/query': queryStore,
   '@deep-foundation/store/local': localStore,
+  'recharts': recharts,
 };
 
 export async function evalClientHandler({
