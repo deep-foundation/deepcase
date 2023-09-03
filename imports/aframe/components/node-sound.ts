@@ -17,55 +17,121 @@ AFRAME.registerComponent('node-sound', {
     coneOuterAngle: { type: 'number', default: 360 },
     coneOuterGain: { type: 'number', default: 1 },
     throttle: { type: 'number', default: 0 },
-    timeout: { type: 'number', default: 5000 },
+    timeout: { type: 'number', default: 1000 },
+    attack: { type: "number", default: 3.0 },
+    bufferSize: { type: 'number', default: 1024 },
+    sampleRate: { type: 'number', default: 44100 }
   },
 
   init: function () {
-      this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const self = this;
+    this.isSoundInitialized = false; // Flag to track if sound is initialized
 
-      const hash = function (id) {
-        let hashValue = 0;
-        const str = id.toString();
-        for (let i = 0; i < str.length; i++) {
-          const char = str.charCodeAt(i);
-          hashValue = ((hashValue << 5) - hashValue) + char;
-          hashValue |= 0; // Convert to 32bit integer
+    if (self.data.id) {
+      // Set timeout before sound starts playing
+      setTimeout(function () {
+        const hash = function (id) {
+          let hashValue = 0;
+          const str = id.toString();
+          for (let i = 0; i < str.length; i++) {
+            const char = str.charCodeAt(i);
+            hashValue = ((hashValue << 5) - hashValue) + char;
+            hashValue |= 0; // Convert to 32bit integer
+          }
+          return Math.abs(hashValue) % 1000000; // Ensure positive value and limit the range
+        };
+
+        // Map the hashed value to the desired frequency range
+        const hashedValue = hash(self.data.id);
+        const normalizedHash = hashedValue / 1000000; // Since we limited the hash range to 1,000,000
+        const frequencyFloat = self.data.minFreq + normalizedHash * (self.data.maxFreq - self.data.minFreq);
+
+        // Round and clamp the frequency
+        const frequency = Math.round(frequencyFloat);
+        const clampedFrequency = Math.min(Math.max(frequency, self.data.minFreq), self.data.maxFreq);
+
+        // Set the oscillator options
+        self.oscillator = self.audioContext.createOscillator({
+          type: self.data.wave,
+          frequency: clampedFrequency,
+          bufferSize: self.data.bufferSize,
+          sampleRate: self.data.sampleRate
+        });
+
+        self.oscillator.frequency.setValueAtTime(clampedFrequency, self.audioContext.currentTime);
+
+        // Check if volume is finite, set to 0 if it's not
+        if (!isFinite(self.data.volume)) {
+          self.data.volume = 0;
         }
-        return Math.abs(hashValue) % 1000000; // Ensure positive value and limit the range
-      };
-  
-      // Map the hashed value to the desired frequency range
-      const hashedValue = hash(this.data.id);
-      const normalizedHash = hashedValue / 1000000; // Since we limited the hash range to 1,000,000
-      const frequencyFloat = this.data.minFreq + normalizedHash * (this.data.maxFreq - this.data.minFreq);
-  
-      // Round and clamp the frequency
-      const frequency = Math.round(frequencyFloat);
-      const clampedFrequency = Math.min(Math.max(frequency, this.data.minFreq), this.data.maxFreq);
-  
-      this.oscillator = this.audioContext.createOscillator();
-      this.oscillator.type = this.data.wave;
-      this.oscillator.frequency.setValueAtTime(clampedFrequency, this.audioContext.currentTime);
-  
-      this.panner = this.audioContext.createPanner();
-      this.panner.panningModel = this.data.panningModel;
-      this.panner.distanceModel = this.data.distanceModel;
-      this.panner.refDistance = this.data.refDistance;
-      this.panner.maxDistance = this.data.maxDistance;
-      this.panner.rolloffFactor = this.data.rolloffFactor;
-      this.panner.coneInnerAngle = this.data.coneInnerAngle;
-      this.panner.coneOuterAngle = this.data.coneOuterAngle;
-      this.panner.coneOuterGain = this.data.coneOuterGain;
-  
-      this.oscillator.connect(this.panner);
-      this.panner.connect(this.audioContext.destination);
-  
-      this.oscillator.start();
-  
-      this.camera = document.getElementById('camera');
 
-    if (this.data.throttle > 0) {
-      this.tick = AFRAME.utils.throttleTick(this.tick, this.data.throttle, this);
+        self.panner = self.audioContext.createPanner();
+        self.panner.panningModel = self.data.panningModel;
+        self.panner.distanceModel = self.data.distanceModel;
+        self.panner.refDistance = self.data.refDistance;
+        self.panner.maxDistance = self.data.maxDistance;
+        self.panner.rolloffFactor = self.data.rolloffFactor;
+        self.panner.coneInnerAngle = self.data.coneInnerAngle;
+        self.panner.coneOuterAngle = self.data.coneOuterAngle;
+        self.panner.coneOuterGain = self.data.coneOuterGain;
+
+        // Create a gain node and ramp up the volume gradually
+        self.gainNode = self.audioContext.createGain();
+        self.gainNode.gain.setValueAtTime(0.0000001, self.audioContext.currentTime); // set to very low value to avoid clicks
+        self.gainNode.gain.exponentialRampToValueAtTime(self.data.volume, self.audioContext.currentTime + self.data.attack); // 3 second attack time
+
+        self.oscillator.connect(self.gainNode); // Connect to gain node instead of Panner
+        self.gainNode.connect(self.panner); // Then connect to Panner
+        self.panner.connect(self.audioContext.destination);
+
+        self.oscillator.start();
+
+        self.camera = document.getElementById('camera');
+        self.isSoundInitialized = true; // Flag that sound is initialized
+
+        if (self.data.throttle > 0) {
+          self.tick = AFRAME.utils.throttleTick(self.tick, self.data.throttle, self);
+        }
+      }, self.data.timeout); // Timeout value from component schema
+    }
+
+  },
+
+  tick: function () {
+    if (!this.isSoundInitialized) return; // Return if sound is not initialized
+
+    const { x, y, z } = this.el.getAttribute('position');
+
+    if (!this.lastPosition ||
+      (x !== this.lastPosition.x || y !== this.lastPosition.y || z !== this.lastPosition.z)) {
+      this.panner.setPosition(x, y, z);
+      this.lastPosition = { x, y, z };
+    }
+
+    if (this.camera && this.camera.object3D) {
+      const { x: cameraX, y: cameraY, z: cameraZ } = this.camera.getAttribute('position');
+      const cameraPosition = { x: cameraX, y: cameraY, z: cameraZ };
+
+      if (!this.lastCameraPosition ||
+        (cameraX !== this.lastCameraPosition.x || cameraY !== this.lastCameraPosition.y || cameraZ !== this.lastCameraPosition.z)) {
+        this.audioContext.listener.setPosition(cameraX, cameraY, cameraZ);
+        this.lastCameraPosition = cameraPosition;
+      }
+
+      const { x: rotationX, y: rotationY, z: rotationZ } = this.camera.getAttribute('rotation');
+      const rotation = { x: rotationX, y: rotationY, z: rotationZ };
+
+      if (!this.lastRotation ||
+        (rotationX !== this.lastRotation.x || rotationY !== this.lastRotation.y || rotationZ !== this.lastRotation.z)) {
+        const forwardVector = new THREE.Vector3().setFromEuler(new THREE.Euler(-this.degToRad(rotation.x), -this.degToRad(rotation.y), -this.degToRad(rotation.z), "YXZ"));
+        const upVector = new THREE.Vector3(0, 1, 0);
+        if (this.camera.object3D.quaternion) {
+          upVector.applyQuaternion(this.camera.object3D.quaternion);
+          this.audioContext.listener.setOrientation(forwardVector.x, forwardVector.y, forwardVector.z, upVector.x, upVector.y, upVector.z);
+        }
+        this.lastRotation = rotation;
+      }
     }
   },
 
@@ -73,31 +139,8 @@ AFRAME.registerComponent('node-sound', {
     return degrees * Math.PI / 180;
   },
 
-  tick: function () {
-    const position = this.el.getAttribute('position');
-    this.panner.setPosition(position.x, position.y, position.z);
-
-    const cameraPosition = this.camera.getAttribute('position');
-    this.audioContext.listener.setPosition(cameraPosition.x, cameraPosition.y, cameraPosition.z);
-
-    // Get the rotation of the camera in Euler angles
-    const rotation = this.camera.getAttribute('rotation');
-
-    // Convert the Euler angles to a forward vector
-    const forwardVector = {
-      x: -Math.sin(this.degToRad(rotation.y)) * Math.cos(this.degToRad(rotation.x)),
-      y: Math.sin(this.degToRad(rotation.x)),
-      z: -Math.cos(this.degToRad(rotation.y)) * Math.cos(this.degToRad(rotation.x))
-    };
-
-    // Use a constant up vector (assuming the camera's up vector is always pointing up)
-    const upVector = { x: 0, y: 1, z: 0 };
-
-    // Set the orientation of the listener
-    this.audioContext.listener.setOrientation(forwardVector.x, forwardVector.y, forwardVector.z, upVector.x, upVector.y, upVector.z);
-  },
-
   remove: function () {
+    if (!this.isSoundInitialized) return;
     this.oscillator.stop();
   }
 });
