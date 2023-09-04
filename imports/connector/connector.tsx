@@ -497,13 +497,17 @@ export const Connector = React.memo<any>(({
   const [deeplinksPath, deeplinksSsl] = parseUrl(deeplinksUrl);
   const [defaultGqlPath, setDefaultGqlPath] = useState(deeplinksPath + '/gql');
   const [defaultGqlSsl, setDefaultGqlSsl] = useState(deeplinksSsl);
+  const [defaultServerUrl, setDefaultServerUrl] = useState(serverUrl);
 
   useEffect(() => {
-    const browserURI = document?.baseURI;
-    if (browserURI) {
-      const [browserPath, browserSsl] = parseUrl(browserURI);
-      setDefaultGqlPath(browserPath + "/api/gql");
-      setDefaultGqlSsl(browserSsl)
+    if (typeof window !== 'undefined') {
+      const browserURI = window?.location?.origin;
+      if (browserURI) {
+        const [browserPath, browserSsl] = parseUrl(browserURI);
+        setDefaultGqlPath(browserPath + "/api/gql");
+        setDefaultGqlSsl(browserSsl);
+        setDefaultServerUrl(browserURI);
+      }
     }
   }, [])
 
@@ -592,13 +596,13 @@ export const Connector = React.memo<any>(({
 
   useEffect(() => {
     (async () => {
-      const dockerStatus = await callEngine({ serverUrl, operation: 'dock' });
+      const dockerStatus = await callEngine({ serverUrl: defaultServerUrl, operation: 'dock' });
       // console.log('docker', dockerStatus);
       // console.log('docker', dockerStatus?.data?.result?.stdout?.[0]);
       // console.log('docker', dockerStatus?.data?.result?.stdout?.[0] !== '{');
       console.log('dockerStatusObj', dockerStatus);
       if (dockerStatus?.data?.result?.stdout?.[0] !== '{') setIsExistDocker(false);
-      const dockerComposeStatus = await callEngine({ serverUrl, operation: 'compose' });
+      const dockerComposeStatus = await callEngine({ serverUrl: defaultServerUrl, operation: 'compose' });
       console.log('dockerComposeStatusObj', dockerComposeStatus);
       // console.log('docker', dockerComposeStatus);
       // console.log('docker', dockerComposeStatus?.data?.result?.stdout.toString());
@@ -845,7 +849,7 @@ export const Connector = React.memo<any>(({
             initializingState={init} 
             setInitLocal={(state)=>setInitLocal(state)}
             key={21121}
-            serverUrl={serverUrl}
+            serverUrl={defaultServerUrl}
             setGqlPath={(path) => setGqlPath(path)}
             setGqlSsl={(ssl) => setGqlSsl(ssl)}
             setPortal={(state) => setPortal(state)}
