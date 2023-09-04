@@ -41,7 +41,9 @@ useEffect(() => {
       if (typeof (window) !== undefined) {
         localStorage.logs = 0;
         await import ('aframe');
-        localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
+        if (localStorage?.debug && localStorage.debug.length > 0) {
+          localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
+        }
         await import('aframe-forcegraph-component');
         await import('super-hands');
         await import('aframe-environment-component');
