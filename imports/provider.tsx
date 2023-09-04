@@ -41,7 +41,7 @@ useEffect(() => {
       if (typeof (window) !== undefined) {
         localStorage.logs = 0;
         await import ('aframe');
-        if (localStorage?.debug && localStorage.debug.length > 0) {
+        if (localStorage?.debug?.length > 0) {
           localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
         }
         await import('aframe-forcegraph-component');
