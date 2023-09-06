@@ -14,7 +14,7 @@ import { useLocalStorage } from 'usehooks-ts';
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-const parseUrl = (text) : [string, boolean] => {
+export const parseUrl = (text) : [string, boolean] => {
   try {
     const url = new URL(text);
     const gqlPath = `${url.hostname}${url.port ? ':' + url.port : ''}${url.pathname === '/' ? '' : url.pathname}`;
@@ -510,6 +510,16 @@ export const Connector = React.memo<any>(({
       }
     }
   }, [])
+
+  console.log("connector-urls", {
+    deeplinksPath,
+    deeplinksSsl,
+    serverUrl
+  }, {
+    defaultGqlPath,
+    defaultGqlSsl,
+    defaultServerUrl
+  });
 
   // const [ portalOpen, setPortal ] = useState(true); 
   // const onClosePortal = () => setPortal(false);
