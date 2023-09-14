@@ -57,7 +57,16 @@ useEffect(() => {
         <CookiesStoreProvider>
           <LocalStoreProvider>
             <TokenProvider>
-              <ApolloClientTokenizedProvider options={useMemo(() => ({ client: 'deeplinks-app', path: gqlPath, ssl: gqlSsl, ws: !!(process as any)?.browser }), [gqlPath, gqlSsl])}>
+              <ApolloClientTokenizedProvider options={useMemo(() => ({
+                client: 'deeplinks-app', path: gqlPath, ssl: gqlSsl, ws: !!(process as any)?.browser,
+                fetchPolicy: 'no-cache',
+                query: {
+                  fetchPolicy: 'no-cache',
+                },
+                watchQuery: {
+                  fetchPolicy: 'no-cache',
+                },
+               }), [gqlPath, gqlSsl])}>
                 <ProviderConnected>
                   {children}
                 </ProviderConnected>

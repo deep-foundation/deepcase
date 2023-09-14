@@ -159,7 +159,7 @@ const DeepSwitch = React.memo(({
   )
 })
 
-export function CytoMenu({
+export const CytoMenu = React.memo(function CytoMenu({
   cyRef,
   gqlPath,
   gqlSsl,
@@ -418,7 +418,7 @@ export function CytoMenu({
       </>
     </Appearance>
   </Box>);
-}
+}, () => true);
 
 const Travelers = () => {
   const deep = useDeep();
@@ -511,7 +511,7 @@ const CytoHandlersMenu = () => {
   </ButtonGroup>
 };
 
-export const MenuSearch = ({ cyRef, bg }: { cyRef?: any; bg?: any; }) => {
+export const MenuSearch = React.memo(({ cyRef, bg }: { cyRef?: any; bg?: any; }) => {
   const deep = useDeep();
   const [value, setValue] = useState('');
 
@@ -634,4 +634,4 @@ export const MenuSearch = ({ cyRef, bg }: { cyRef?: any; bg?: any; }) => {
       </PopoverContent>
     </Popover>
   </>;
-};
+}, () => true);
