@@ -11,7 +11,8 @@
     "npm-release": "npm-release",
     "package:build": "tsc --project tsconfig.json",
     "package:publish": "npm run build && npm publish --access public",
-    "package:unbuild": "rimraf ./*.js && rimraf ./*.js.map && rimraf ./*.d.ts && (cd ./imports && rimraf ./*.js && rimraf ./*.js.map && rimraf ./*.d.ts && cd ../)"
+    "package:unbuild": "rimraf ./*.js && rimraf ./*.js.map && rimraf ./*.d.ts && (cd ./imports && rimraf ./*.js && rimraf ./*.js.map && rimraf ./*.d.ts && cd ../)",
+    "package:watch": "tsc -w --project tsconfig.json"
   },
   "dependencies": {
     "@apollo/client": "^3.7.14",
