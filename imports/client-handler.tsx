@@ -70,6 +70,8 @@ DeepClient.resolveDependency = async (path: string) : Promise<any> => {
     return await import('./aframe/components/el-movement');
   } else if (path == 'aframe-extras') {
     return await import('aframe-extras');
+  } else if (path == 'aframe') {
+    return await import('aframe');
   } else {
     return r(path);
   }
