@@ -310,10 +310,7 @@ export function CytoEditor() {
             }}
           />}
 
-              let _value;
-              try {
-                _value = table === 'strings' ? value : table === 'numbers' ? parseFloat(value) : table === 'objects' ? json5.parse(value) : undefined;
-              } catch (error) { }
+              
 
               if (!deep.minilinks.byId[tab.id]?.value) {
                 await deep.insert({ link_id: tab.id, value: _value }, {
