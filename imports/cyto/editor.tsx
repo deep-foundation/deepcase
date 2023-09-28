@@ -285,12 +285,20 @@ export function CytoEditor() {
             }))}
             setTabs={(tabs) => setTabs(tabs)}
             onClose={(tab) => {
+              if (tab.id === undefined) {
+                console.error('Tab ID is undefined');
+                return;
+              }
               if (tabs.length === 1 && tabs[0]?.id === tab.id) onClose();
               closeTab(tab.id);
               setValue(tabId, undefined);
               focusEditor();
             }}
             onClick={(tab) => {
+              if (tab.id === undefined) {
+                console.error('Tab ID is undefined');
+                return;
+              }
               activeTab(tab.id);
               focusEditor();
             }}
@@ -299,6 +307,8 @@ export function CytoEditor() {
               const Value = await deep.id({ in: { type_id: { _id: ['@deep-foundation/core', 'Value'] }, from: { typed: { id: { _eq: tab.id } } } } });
               const table = Value === deep.idLocal('@deep-foundation/core', 'String') ? 'strings' : Value === deep.idLocal('@deep-foundation/core', 'Number') ? 'numbers' : Value === deep.idLocal('@deep-foundation/core', 'Object') ? 'objects' : undefined;
               const type = Value === deep.idLocal('@deep-foundation/core', 'String') ? 'string' : Value === deep.idLocal('@deep-foundation/core', 'Number') ? 'number' : Value === deep.idLocal('@deep-foundation/core', 'Object') ? 'object' : 'undefined';
+            }}
+          />}
 
               let _value;
               try {
