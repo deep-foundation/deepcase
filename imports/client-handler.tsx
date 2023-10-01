@@ -50,6 +50,7 @@ import WordCloud from 'react-d3-cloud';
 import ReactResizeDetector from 'react-resize-detector';
 import queryStore from '@deep-foundation/store/query';
 import localStore from '@deep-foundation/store/local';
+import * as themeTools from '@chakra-ui/theme-tools';
 import * as recharts from 'recharts';
 const MonacoEditor = dynamic(() => import('@monaco-editor/react').then(m => m.default), { ssr: false });
 
@@ -157,6 +158,7 @@ r.list = {
   '@deep-foundation/store/query': queryStore,
   '@deep-foundation/store/local': localStore,
   'recharts': recharts,
+  '@chakra-ui/theme-tools': themeTools,
 };
 
 export async function evalClientHandler({
