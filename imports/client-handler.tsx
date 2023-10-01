@@ -52,9 +52,9 @@ import queryStore from '@deep-foundation/store/query';
 import localStore from '@deep-foundation/store/local';
 import * as themeTools from '@chakra-ui/theme-tools';
 import * as recharts from 'recharts';
-import i18n from "i18next";
-import LanguageDetector from 'i18next-browser-languagedetector';
-import reacti18next from "react-i18next";
+import * as i18n from "i18next";
+import * as LanguageDetector from 'i18next-browser-languagedetector';
+import * as reacti18next from "react-i18next";
 const MonacoEditor = dynamic(() => import('@monaco-editor/react').then(m => m.default), { ssr: false });
 
 DeepClient.resolveDependency = async (path: string) : Promise<any> => {
