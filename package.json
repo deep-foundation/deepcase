@@ -100,7 +100,7 @@
     "react": "*"
   },
   "devDependencies": {
-    "@deep-foundation/npm-automation": "^18.1.10",
+    "@deep-foundation/npm-automation": "^18.1.11",
     "depcheck": "^1.4.3",
     "ts-node": "^10.9.1"
   }
