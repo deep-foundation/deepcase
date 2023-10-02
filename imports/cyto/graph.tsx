@@ -34,7 +34,7 @@ import { useCyInitializer } from './hooks';
 import { CytoHandlers, useCytoHandlers, useCytoHandlersApply } from '../cyto-handler';
 
 const CytoscapeComponent = dynamic<any>(
-  () => import('react-cytoscapejs').then((m) => m.default),
+  () => import('deep.react-cytoscapejs').then((m) => m.default),
   { ssr: false }
 );
 
