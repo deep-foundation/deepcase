@@ -120,7 +120,7 @@ export function useCytoElements(ml, _links, cy, spaceId, cyh) {
       
       ...(has_focus ? {
         position: !existed ? focus?.value?.value : {},
-        locked: !!focus,
+        // locked: !!focus,
       } : {}),
       focused: !!focus,
       // locked: true,

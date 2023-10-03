@@ -1006,23 +1006,23 @@ export function useCyInitializer({
     };
 
     const updatedListener = (oldLink, newLink) => {
-      // on update link or link value - unlock reposition lock
-      if (
-        newLink.type_id === deep.idLocal('@deep-foundation/core', 'Focus') && newLink?.value?.value?.x &&
+      // // on update link or link value - unlock reposition lock
+      // if (
+      //   newLink.type_id === deep.idLocal('@deep-foundation/core', 'Focus') && newLink?.value?.value?.x &&
         
-        // if true - we remember how WE lock it, ok, we have updatefrom db...
-        // if undefined - we not know lock/not lock... just update from db...
-        // if false - we must stop update from db, we already unlock it on client, and not need to update focus from db... it mistake
-        // this line - fix it
-        locking[newLink.to_id] !== false
-      ) {
-        const node = ncy.$(`node#${newLink.to_id}`);
-        if (!node.mouseHoverDragging) {
-          node.unlock();
-          // node.position(newLink?.value?.value);
-          node.lock();
-        }
-      }
+      //   // if true - we remember how WE lock it, ok, we have updatefrom db...
+      //   // if undefined - we not know lock/not lock... just update from db...
+      //   // if false - we must stop update from db, we already unlock it on client, and not need to update focus from db... it mistake
+      //   // this line - fix it
+      //   locking[newLink.to_id] !== false
+      // ) {
+      //   const node = ncy.$(`node#${newLink.to_id}`);
+      //   if (!node.mouseHoverDragging) {
+      //     node.unlock();
+      //     // node.position(newLink?.value?.value);
+      //     node.lock();
+      //   }
+      // }
     };
 
     const viewport = (event) => {

@@ -64,8 +64,8 @@ export function useCytoFocusMethods(cy) {
         const id = el?.data('link')?.id;
         const locking = lockingRef.current;
         if (id) {
-          locking[id] = true;
-          el.lock();
+          // locking[id] = true;
+          // el.lock();
           const focused = await focus(id, position);
           return focused;
         }
@@ -79,8 +79,8 @@ export function useCytoFocusMethods(cy) {
         const locking = lockingRef.current;
         const id = el?.data('link')?.id;
         if (id) {
-          el.unlock();
-          locking[id] = false;
+          // el.unlock();
+          // locking[id] = false;
           const focused = await unfocus(id);
           return focused;
         }
