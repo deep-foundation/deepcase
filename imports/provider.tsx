@@ -36,20 +36,20 @@ export function Provider({
   //   googleAnalyticsAccounts={['G-DC5RRWLRNV']}
   // >
   // </Analitics>
-useEffect(() => {
-    (async () => {
-      if (typeof (window) !== undefined) {
-        localStorage.logs = 0;
-        await import ('aframe');
-        if (localStorage?.debug?.length > 0) {
-          localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
-        }
-        await import('aframe-forcegraph-component');
-        await import('super-hands');
-        await import('aframe-environment-component');
-      }
-    })();
-  }, []);
+// useEffect(() => {
+//     (async () => {
+//       if (typeof (window) !== undefined) {
+//         localStorage.logs = 0;
+//         await import ('aframe');
+//         if (localStorage?.debug?.length > 0) {
+//           localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
+//         }
+//         await import('aframe-forcegraph-component');
+//         await import('super-hands');
+//         await import('aframe-environment-component');
+//       }
+//     })();
+//   }, []);
 
   return (<>
     <ThemeProviderCustom theme={themeCustom}>
