@@ -60,6 +60,8 @@ const MonacoEditor = dynamic(() => import('@monaco-editor/react').then(m => m.de
 DeepClient.resolveDependency = async (path: string) : Promise<any> => {
   if (path == 'peerjs') {
     return await import('peerjs');
+  } else if (path == 'emoji-picker-react') {
+    return await import('emoji-picker-react');
   } else if (path == 'node-sound') {
     return await import('./aframe/components/node-sound');
   } else if (path == 'dragger') {
