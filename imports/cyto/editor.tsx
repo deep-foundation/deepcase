@@ -21,9 +21,10 @@ import {
   MenuGroup,
   MenuOptionGroup,
   MenuDivider,
+  Divider,
 } from '@chakra-ui/react';
 import { useDeep, useDeepSubscription } from '@deep-foundation/deeplinks/imports/client';
-import { useMinilinksFilter } from '@deep-foundation/deeplinks/imports/minilinks';
+import { Link, useMinilinksFilter } from '@deep-foundation/deeplinks/imports/minilinks';
 import { useLocalStore } from '@deep-foundation/store/local';
 import { useDebounceCallback } from '@react-hook/debounce';
 import json5 from 'json5';
@@ -143,7 +144,15 @@ export function List({ link }) {
   </>;
 }
 
-export function Item({ link }) {
+export function Item({
+  link,
+  openable = false,
+  deletable = false,
+}: {
+  link: Link<number>;
+  openable?: boolean;
+  deletable?: boolean;
+}) {
   const [opened, setOpened] = useState(false);
   const [spaceId] = useSpaceId();
   const deep = useDeep();
@@ -221,7 +230,8 @@ export function Item({ link }) {
         </>}
         {/* <Box>{currentSymbol} | {typeSymbol}</Box> */}&nbsp;
         <Editable
-          selectAllOnFocus defaultValue={deep.nameLocal(link.id)} display="inline"
+          selectAllOnFocus defaultValue={deep.nameLocal(link.id) == link.id ? '' : deep.nameLocal(link.id)}
+          placeholder={link.type_id === deep.idLocal('@deep-foundation/core', 'Package') ? link?.value?.value : link.id} display="inline"
           onSubmit={async (value) => {
             if (deep.minilinks.byId[link.id].inByType[deep.idLocal('@deep-foundation/core', 'Contain')]?.[0]?.value) {
               await deep.update({ link: { type_id: deep.idLocal('@deep-foundation/core', 'Contain'), to_id: link.id } }, { value: value }, { table: 'strings' });
@@ -237,36 +247,37 @@ export function Item({ link }) {
       </Box>
       {/* <Box fontSize='xs'>{link.id} <Box display="inline" color="grey">({link.type_id} {deep.nameLocal(link.type_id)})</Box></Box> */}
       {/* <Box fontSize='xs'>{link.type_id} {deep.nameLocal(link.type_id)}</Box> */}
-      <IconButton
-        isRound={true}
-        aria-label='open level'
-        fontSize='20px'
+      <Box 
         position='absolute'
         right={1}
         top={1}
-        size='xs'
-        onClick={() => setOpened(o => !o)}
-        icon={opened ? <ChevronDownIcon /> : <ChevronLeftIcon />}
-      />
-      <IconButton
-        isRound={true}
-        aria-label='open level'
-        fontSize='20px'
-        position='absolute'
-        right={8}
-        top={1}
-        size='xs'
-        onClick={async () => {
-          if (confirm(`Delete ${link.id} ${deep.nameLocal(link.id)} (${deep.nameLocal(link.type_id)})`)) {
-            await deep.delete({ _or: [
-              { type_id: deep.idLocal('@deep-foundation/core', 'Contain'), from_id: spaceId, to_id: link.id },
-              { id: link.id },
-            ], });
-          }
-          setTabs(tabs.filter((tab) => tab.id !== link.id));
-        }}
-        icon={<SmallCloseIcon />}
-      />
+      >
+        {deletable && <IconButton
+          isRound={true}
+          aria-label='open level'
+          fontSize='20px'
+          size='xs'
+          onClick={async () => {
+            if (confirm(`Delete ${link.id} ${deep.nameLocal(link.id)} (${deep.nameLocal(link.type_id)})`)) {
+              await deep.delete({ _or: [
+                { type_id: deep.idLocal('@deep-foundation/core', 'Contain'), from_id: spaceId, to_id: link.id },
+                { id: link.id },
+              ], });
+            }
+            setTabs(tabs.filter((tab) => tab.id !== link.id));
+          }}
+          icon={<SmallCloseIcon />}
+        />}
+        &nbsp;
+        {openable && <IconButton
+          isRound={true}
+          aria-label='open level'
+          fontSize='20px'
+          size='xs'
+          onClick={() => setOpened(o => !o)}
+          icon={opened ? <ChevronDownIcon /> : <ChevronLeftIcon />}
+        />}
+      </Box>
     </Button>
     {opened && <List link={link}/>}
   </>;
@@ -277,7 +288,9 @@ export function CytoEditorNav() {
   const [spaceId] = useSpaceId();
   const links = deep.useMinilinksSubscription({ in: { type_id: deep.idLocal('@deep-foundation/core', 'Contain'), from_id: spaceId } });
   return <div style={{ position: 'absolute', left: 0, top: 0, width: 300, height: '100%' }}>
-    {links.map(l => <Item link={l}/>)}
+    <Item link={deep.minilinks.byId[spaceId]}/>
+    <Divider/>
+    {links.map(l => <Item openable deletable link={l}/>)}
     <FinderPopover link={deep.minilinks.byId[spaceId]}
       search={''}
       onSubmit={async (link) => {
