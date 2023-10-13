@@ -1,4 +1,27 @@
-import { Box, IconButton, Modal, ModalContent, ModalOverlay, useColorMode } from '@chakra-ui/react';
+import {
+  Box, Button, IconButton, Modal, ModalContent, ModalOverlay, useColorMode,
+  Editable,
+  EditableInput,
+  EditableTextarea,
+  EditablePreview,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverBody,
+  PopoverFooter,
+  PopoverArrow,
+  PopoverCloseButton,
+  PopoverAnchor,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuItemOption,
+  MenuGroup,
+  MenuOptionGroup,
+  MenuDivider,
+} from '@chakra-ui/react';
 import { useDeep, useDeepSubscription } from '@deep-foundation/deeplinks/imports/client';
 import { useMinilinksFilter } from '@deep-foundation/deeplinks/imports/minilinks';
 import { useLocalStore } from '@deep-foundation/store/local';
@@ -18,6 +41,9 @@ import { EditorTextArea } from '../editor/editor-textarea';
 import { CatchErrors } from '../react-errors';
 import { CytoEditorHandlers } from './handlers';
 import { useCytoEditor } from './hooks';
+import { useSpaceId } from '../hooks';
+import { CheckIcon, ChevronDownIcon, ChevronLeftIcon, CloseIcon, SmallCloseIcon } from '@chakra-ui/icons';
+import EmojiPicker from 'emoji-picker-react';
 
 
 const MonacoEditor = dynamic(() => import('@monaco-editor/react').then(m => m.default), { ssr: false });
@@ -103,6 +129,151 @@ export function useFindClientHandlerByCode({
     prevCodeLinkId.current = codeLinkId;
   })(); }, [codeLinkId, hid]);
   return hid;
+}
+
+export function List({ link }) {
+  const deep = useDeep();
+  const {
+    data: contained
+  } = deep.useDeepSubscription({ in: { type_id: deep.idLocal('@deep-foundation/core', 'Contain'), from_id: link.id } });
+  return <>
+    {<Box sx={{ paddingLeft: 4 }}>
+      {contained.map(c => <Item link={c}/>)}
+    </Box>}
+  </>;
+}
+
+export function Item({ link }) {
+  const [opened, setOpened] = useState(false);
+  const [spaceId] = useSpaceId();
+  const deep = useDeep();
+  const {
+    tab,
+    tabs,
+    closeTab,
+    setTab,
+    activeTab,
+    tabId,
+    setTabs,
+    addTab,
+  } = useEditorTabs();
+  const [currentSymbolLink] = deep.useMinilinksSubscription({ type_id: deep.idLocal('@deep-foundation/core', 'Symbol'), to_id: link?.id });
+  const currentSymbol = currentSymbolLink?.value?.value;
+  const [typeSymbolLink] = deep.useMinilinksSubscription({ type_id: deep.idLocal('@deep-foundation/core', 'Symbol'), to_id: link?.type_id });
+  const typeSymbol = typeSymbolLink?.value?.value;
+  return <>
+    <Button
+      sx={{ position: 'relative', display: 'block' }} width="100%" textAlign="left"
+      isActive={tab?.id === link?.id}
+      p={1}
+      variant={"ghost"}
+      onDoubleClick={() => {
+        // alert(123)
+      }}
+      onClick={() => {
+        addTab({
+          id: link.id, saved: true,
+          initialValue: deep.stringify(link?.value?.value),
+        });
+        activeTab(link.id);
+      }}
+    >
+      <Box>
+        {!!currentSymbol && <>
+          <IconButton
+            variant={'outline'}
+            size="xs"
+            icon={<>{currentSymbol}</>}
+            aria-label={'icon change'}
+            onClick={async () => {
+              await deep.delete({ _or: [
+                { type_id: deep.idLocal('@deep-foundation/core', 'Contain'), from_id: spaceId, to: { type_id: deep.idLocal('@deep-foundation/core', 'Symbol'), from_id: link.id } },
+                { type_id: deep.idLocal('@deep-foundation/core', 'Symbol'), from_id: link.id },
+              ], });
+            }}
+          />
+        </>}
+        {!currentSymbol && <>
+          <Popover>
+            <PopoverTrigger>
+              <IconButton
+                variant={'solid'}
+                size="xs"
+                icon={<>{typeSymbol || ''}</>}
+                aria-label={'icon change'}
+              />
+            </PopoverTrigger>
+            <PopoverContent>
+              <EmojiPicker onEmojiClick={async ({ emoji }) => {
+                if (!link?.inByType?.[deep.idLocal('@deep-foundation/core', 'Symbol')]?.[0]?.id) {
+                  await deep.insert({
+                    type_id: deep.idLocal('@deep-foundation/core', 'Symbol'), to_id: link.id, from_id: link.id,
+                    string: { data: { value: emoji } },
+                    in: { data: { type_id: deep.idLocal('@deep-foundation/core', 'Contain'), from_id: spaceId } },
+                  });
+                } else {
+                  await deep.update({ link_id: link?.inByType?.[deep.idLocal('@deep-foundation/core', 'Symbol')]?.[0]?.id }, { value: emoji }, { table: 'strings' });
+                }
+                // if (!link?.type?.inByType?.[deep.idLocal('@deep-foundation/core', 'Symbol')]?.[0]?.id) return;
+              }}/>
+            </PopoverContent>
+          </Popover>
+        </>}
+        {/* <Box>{currentSymbol} | {typeSymbol}</Box> */}&nbsp;
+        <Editable
+          selectAllOnFocus defaultValue={deep.nameLocal(link.id)} display="inline"
+          onSubmit={async (value) => {
+            await deep.update({ link: { type_id: deep.idLocal('@deep-foundation/core', 'Contain'), to_id: link.id } }, { value: value }, { table: 'strings' });
+          }}
+          onCancel={(value) => {}}
+        >
+          <EditablePreview w="calc(100% - 32px)" />
+          <EditableInput w="calc(100% - 32px)"/>
+        </Editable>
+      </Box>
+      {/* <Box fontSize='xs'>{link.id} <Box display="inline" color="grey">({link.type_id} {deep.nameLocal(link.type_id)})</Box></Box> */}
+      {/* <Box fontSize='xs'>{link.type_id} {deep.nameLocal(link.type_id)}</Box> */}
+      <IconButton
+        isRound={true}
+        aria-label='open level'
+        fontSize='20px'
+        position='absolute'
+        right={1}
+        top={1}
+        size='xs'
+        onClick={() => setOpened(o => !o)}
+        icon={opened ? <ChevronDownIcon /> : <ChevronLeftIcon />}
+      />
+      <IconButton
+        isRound={true}
+        aria-label='open level'
+        fontSize='20px'
+        position='absolute'
+        right={8}
+        top={1}
+        size='xs'
+        onClick={async () => {
+          if (confirm(`Delete ${link.id} ${deep.nameLocal(link.id)} (${deep.nameLocal(link.type_id)})`)) {
+            await deep.delete({ _or: [
+              { type_id: deep.idLocal('@deep-foundation/core', 'Contain'), from_id: spaceId, to_id: link.id },
+              { id: link.id },
+            ], });
+          }
+        }}
+        icon={<SmallCloseIcon />}
+      />
+    </Button>
+    {opened && <List link={link}/>}
+  </>;
+}
+
+export function CytoEditorNav() {
+  const deep = useDeep();
+  const [spaceId] = useSpaceId();
+  const links = deep.useMinilinksSubscription({ in: { type_id: deep.idLocal('@deep-foundation/core', 'Contain'), from_id: spaceId } });
+  return <div style={{ position: 'absolute', left: 0, top: 0, width: 300, height: '100%' }}>
+    {links.map(l => <Item link={l}/>)}
+  </div>;
 }
 
 export function CytoEditor() {
@@ -195,18 +366,29 @@ export function CytoEditor() {
 
   const { colorMode } = useColorMode();
 
+  useEffect(() => {
+    console.log('AAA MOUNT');
+    return () => console.log('AAA UNMOUNT');
+  }, []);
+  useEffect(() => {
+    console.log('AAA UPDATED');
+  });
+
   return <>
     <Modal isOpen={cytoEditor} onClose={onClose} size='full' onEsc={onClose}>
       <ModalOverlay />
-      <ModalContent sx={{ height: '100vh', overflow: 'initial' }}>
+      <ModalContent sx={{ height: '100vh', overflow: 'initial', position: 'relative' }}>
         <EditorGrid
           sash
           editorTextAreaElement={<>{[
+            <CytoEditorNav/>,
             <Box
               key={tabId}
               sx={{
                 pos: 'relative',
-                height: '100%'
+                left: 300,
+                height: '100%',
+                width: 'calc(100% - 300px)',
               }}
             >
               <EditorTextArea
@@ -254,6 +436,7 @@ export function CytoEditor() {
                 }}
                 onMount={() => setEditorMounted(true)}
               />
+              {/* <div style={{ position: 'absolute', left: 300, top: 0, width: 'calc(100% - 300px)', height: '100%', background: 'green', opacity: 0.5 }}></div> */}
               <Box
                 w='100%'
                 pos='absolute'

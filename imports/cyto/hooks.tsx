@@ -415,6 +415,7 @@ export function useLinkInserting(elements = [], reactElements = [], focus, cyRef
     cyRef.current.on('ehcomplete', ehcomplete);
     cyRef.current.on('tap', tap);
     return () => {
+      if (!cyRef.current) return;
       cyRef.current.removeListener('ehstop', ehstop);
       cyRef.current.removeListener('ehcomplete', ehcomplete);
       cyRef.current.removeListener('tap', tap);
