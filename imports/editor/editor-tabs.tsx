@@ -105,7 +105,7 @@ export const EditorTab = React.memo<any>(({
   const [containLink] = deep.useMinilinksSubscription({ type_id: deep.idLocal('@deep-foundation/core', 'Contain'), to_id: id });
   const typeSymbol = typeSymbolLink?.value?.value;
   const symbol = currentSymbol || typeSymbol || '';
-  const title = containLink?.value?.value;
+  const title = containLink?.value?.value || id;
 
   return (<Reorder.Item
       value={tab}
