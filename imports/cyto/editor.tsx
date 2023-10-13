@@ -148,10 +148,12 @@ export function Item({
   link,
   openable = false,
   deletable = false,
+  children = null,
 }: {
   link: Link<number>;
   openable?: boolean;
   deletable?: boolean;
+  children?: any;
 }) {
   const [opened, setOpened] = useState(false);
   const [spaceId] = useSpaceId();
@@ -252,6 +254,7 @@ export function Item({
         right={1}
         top={1}
       >
+        {children}
         {deletable && <IconButton
           isRound={true}
           aria-label='open level'
@@ -288,31 +291,29 @@ export function CytoEditorNav() {
   const [spaceId] = useSpaceId();
   const links = deep.useMinilinksSubscription({ in: { type_id: deep.idLocal('@deep-foundation/core', 'Contain'), from_id: spaceId } });
   return <div style={{ position: 'absolute', left: 0, top: 0, width: 300, height: '100%' }}>
-    <Item link={deep.minilinks.byId[spaceId]}/>
+    <Item link={deep.minilinks.byId[spaceId]}>
+      <FinderPopover link={deep.minilinks.byId[spaceId]}
+        search={''}
+        onSubmit={async (link) => {
+          await deep.insert({
+            type_id: deep.idLocal('@deep-foundation/core', 'Contain'),
+            string: { data: { value: '' } },
+            from_id: spaceId,
+            to: { data: { type_id: link.id } },
+          });
+        }}
+      >
+        <IconButton
+          isRound={true}
+          aria-label='open level'
+          fontSize='20px'
+          size='xs'
+          icon={<><SmallAddIcon/></>}
+        />
+      </FinderPopover>
+    </Item>
     <Divider/>
     {links.map(l => <Item openable deletable link={l}/>)}
-    <FinderPopover link={deep.minilinks.byId[spaceId]}
-      search={''}
-      onSubmit={async (link) => {
-        await deep.insert({
-          type_id: deep.idLocal('@deep-foundation/core', 'Contain'),
-          string: { data: { value: '' } },
-          from_id: spaceId,
-          to: { data: { type_id: link.id } },
-        });
-      }}
-    >
-      <IconButton
-        isRound={true}
-        aria-label='open level'
-        fontSize='20px'
-        position='absolute'
-        right={1}
-        bottom={1}
-        size='xs'
-        icon={<><SmallAddIcon/></>}
-      />
-    </FinderPopover>
   </div>;
 }
 
