@@ -3,7 +3,7 @@ import * as icons from '@chakra-ui/icons';
 import dynamic from 'next/dynamic';
 import { DeepClient, useDeep, useDeepSubscription } from "@deep-foundation/deeplinks/imports/client";
 import { evalClientHandler as deepclientEvalClientHandler } from '@deep-foundation/deeplinks/imports/client-handler';
-import { useMinilinksFilter } from "@deep-foundation/deeplinks/imports/minilinks";
+import { useMinilinksFilter, useMinilinksSubscription } from "@deep-foundation/deeplinks/imports/minilinks";
 import axios from 'axios';
 import * as axiosHooks from 'axios-hooks';
 import * as classnames from 'classnames';
@@ -273,10 +273,13 @@ export function ClientHandler(_props: ClientHandlerProps) {
   const deep = useDeep();
   const _ml = ml || deep?.minilinks;
   const hid = useFindClientHandler(_props);
-  const { data: files } = useDeepSubscription({
+  const [syncFile] = deep.useMinilinksSubscription({
     id: hid?.dist_id || 0,
   });
-  const file = files?.[0];
+  const { data: files } = useDeepSubscription({
+    id: !syncFile ? hid?.dist_id || 0 : 0,
+  });
+  const file = syncFile || files?.[0];
 
   const [{ Component, errored } = {} as any, setState] = React.useState<any>({ Component: undefined, errored: undefined });
 

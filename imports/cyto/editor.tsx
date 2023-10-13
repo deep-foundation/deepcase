@@ -40,9 +40,9 @@ import { CloseButton, EditorTabs } from '../editor/editor-tabs';
 import { EditorTextArea } from '../editor/editor-textarea';
 import { CatchErrors } from '../react-errors';
 import { CytoEditorHandlers } from './handlers';
-import { useCytoEditor } from './hooks';
+import { FinderPopover, useCytoEditor } from './hooks';
 import { useSpaceId } from '../hooks';
-import { CheckIcon, ChevronDownIcon, ChevronLeftIcon, CloseIcon, SmallCloseIcon } from '@chakra-ui/icons';
+import { AddIcon, CheckIcon, ChevronDownIcon, ChevronLeftIcon, CloseIcon, SmallAddIcon, SmallCloseIcon } from '@chakra-ui/icons';
 import EmojiPicker from 'emoji-picker-react';
 
 
@@ -223,7 +223,11 @@ export function Item({ link }) {
         <Editable
           selectAllOnFocus defaultValue={deep.nameLocal(link.id)} display="inline"
           onSubmit={async (value) => {
-            await deep.update({ link: { type_id: deep.idLocal('@deep-foundation/core', 'Contain'), to_id: link.id } }, { value: value }, { table: 'strings' });
+            if (deep.minilinks.byId[link.id].inByType[deep.idLocal('@deep-foundation/core', 'Contain')]?.[0]?.value) {
+              await deep.update({ link: { type_id: deep.idLocal('@deep-foundation/core', 'Contain'), to_id: link.id } }, { value: value }, { table: 'strings' });
+            } else {
+              await deep.insert({ link_id: deep.minilinks.byId[link.id].inByType[deep.idLocal('@deep-foundation/core', 'Contain')]?.[0]?.id, value: value }, { table: 'strings' });
+            }
           }}
           onCancel={(value) => {}}
         >
@@ -259,6 +263,7 @@ export function Item({ link }) {
               { id: link.id },
             ], });
           }
+          setTabs(tabs.filter((tab) => tab.id !== link.id));
         }}
         icon={<SmallCloseIcon />}
       />
@@ -273,6 +278,28 @@ export function CytoEditorNav() {
   const links = deep.useMinilinksSubscription({ in: { type_id: deep.idLocal('@deep-foundation/core', 'Contain'), from_id: spaceId } });
   return <div style={{ position: 'absolute', left: 0, top: 0, width: 300, height: '100%' }}>
     {links.map(l => <Item link={l}/>)}
+    <FinderPopover link={deep.minilinks.byId[spaceId]}
+      search={''}
+      onSubmit={async (link) => {
+        await deep.insert({
+          type_id: deep.idLocal('@deep-foundation/core', 'Contain'),
+          string: { data: { value: '' } },
+          from_id: spaceId,
+          to: { data: { type_id: link.id } },
+        });
+      }}
+    >
+      <IconButton
+        isRound={true}
+        aria-label='open level'
+        fontSize='20px'
+        position='absolute'
+        right={1}
+        bottom={1}
+        size='xs'
+        icon={<><SmallAddIcon/></>}
+      />
+    </FinderPopover>
   </div>;
 }
 
@@ -463,7 +490,6 @@ export function CytoEditor() {
           editorTabsElement={<EditorTabs
             tabs={tabs.map((tab) => ({
               ...tab,
-              title: `${tab.id} ${deep.minilinks.byId[tab.id]?.inByType?.[deep.idLocal('@deep-foundation/core', 'Contain')]?.[0]?.value?.value || ''}`.trim(),
               active: tabId === tab.id,
             }))}
             setTabs={(tabs) => setTabs(tabs)}

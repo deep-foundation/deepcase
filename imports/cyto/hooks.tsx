@@ -43,6 +43,66 @@ export interface IInsertedLinkProps {
   insertLinkRef?: any;
 }
 
+export function FinderPopover({
+    link,
+    onSubmit,
+    onChange,
+    children,
+    PopoverProps = {},
+    ClientHandlerProps = {},
+    query = undefined,
+    search = undefined,
+  }: {
+    link: Link<number>;
+    onSubmit: (link) => void;
+    onChange?: (link) => void;
+    children?: any;
+    PopoverProps?: any;
+    ClientHandlerProps?: any;
+    query?: any;
+    search?: string;
+  }) {
+  const deep = useDeep();
+  const [selectedLink, setSelectedLink] = useState<Link<number>>();
+  const { onOpen, onClose, isOpen } = useDisclosure();
+  return <Popover
+    isLazy
+    placement='right-start'
+    onOpen={onOpen} onClose={onClose} isOpen={isOpen}
+    {...PopoverProps}
+  >
+    <PopoverTrigger>
+      {children}
+    </PopoverTrigger>
+    <PopoverContent h={72}>
+      <ClientHandler fillSize query={query} search={search}
+        link={link} context={[969]} ml={deep.minilinks}
+        onChange={l => {
+          onChange && onChange(l);
+          setSelectedLink(l);
+        }}
+        {...(ClientHandlerProps)}
+      />
+      <SlideFade in={!!selectedLink} offsetX='-0.5rem' style={{position: 'absolute', bottom: 0, right: '-2.8rem'}}>
+        <IconButton
+          isRound
+          variant='solid'
+          bg='primary'
+          // color='white'
+          aria-label='submit button'
+          icon={<BsCheck2 />}
+          onClick={async () => {
+            if (selectedLink) {
+              onClose && onClose();
+              onSubmit && onSubmit(selectedLink);
+            }
+          }}
+        />
+      </SlideFade>
+    </PopoverContent>
+  </Popover>;
+}
+
 export function CytoReactLinksCardInsertNode({
   insertingLink, setInsertingLink,
   ml, ehRef, returningRef, insertLinkRef,
