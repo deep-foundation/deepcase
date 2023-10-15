@@ -232,7 +232,7 @@ export function Item({
         </>}
         {/* <Box>{currentSymbol} | {typeSymbol}</Box> */}&nbsp;
         <Editable
-          selectAllOnFocus defaultValue={deep.nameLocal(link.id) == link.id ? '' : deep.nameLocal(link.id)}
+          selectAllOnFocus defaultValue={deep.nameLocal(link.id) == `${link.id}` ? '' : deep.nameLocal(link.id)}
           placeholder={link.type_id === deep.idLocal('@deep-foundation/core', 'Package') ? link?.value?.value : link.id} display="inline"
           onSubmit={async (value) => {
             if (deep.minilinks.byId[link.id].inByType[deep.idLocal('@deep-foundation/core', 'Contain')]?.[0]?.value) {
