@@ -273,13 +273,10 @@ export function ClientHandler(_props: ClientHandlerProps) {
   const deep = useDeep();
   const _ml = ml || deep?.minilinks;
   const hid = useFindClientHandler(_props);
-  const [syncFile] = deep.useMinilinksSubscription({
+  const { data: files } = useDeepSubscription({
     id: hid?.dist_id || 0,
   });
-  const { data: files } = useDeepSubscription({
-    id: !syncFile ? hid?.dist_id || 0 : 0,
-  });
-  const file = syncFile || files?.[0];
+  const file = files?.[0];
 
   const [{ Component, errored } = {} as any, setState] = React.useState<any>({ Component: undefined, errored: undefined });
 

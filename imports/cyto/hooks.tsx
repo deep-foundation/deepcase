@@ -43,7 +43,7 @@ export interface IInsertedLinkProps {
   insertLinkRef?: any;
 }
 
-export function FinderPopover({
+export const FinderPopover = React.memo(function FinderPopover({
     link,
     onSubmit,
     onChange,
@@ -65,6 +65,7 @@ export function FinderPopover({
   const deep = useDeep();
   const [selectedLink, setSelectedLink] = useState<Link<number>>();
   const { onOpen, onClose, isOpen } = useDisclosure();
+  console.log('FinderPopover')
   return <Popover
     isLazy
     placement='right-start'
@@ -101,7 +102,7 @@ export function FinderPopover({
       </SlideFade>
     </PopoverContent>
   </Popover>;
-}
+}, () => true);
 
 export function CytoReactLinksCardInsertNode({
   insertingLink, setInsertingLink,
