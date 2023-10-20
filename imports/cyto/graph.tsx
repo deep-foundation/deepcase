@@ -30,7 +30,7 @@ import { CytoReactLayout } from './react';
 import { useCytoStylesheets } from './stylesheets';
 import { CytoGraphProps } from './types';
 
-import { useCyInitializer } from './hooks';
+import { useCyInitializer, useCytoEditor } from './hooks';
 import { CytoHandlers, useCytoHandlers, useCytoHandlersApply } from '../cyto-handler';
 
 const CytoscapeComponent = dynamic<any>(
@@ -129,6 +129,7 @@ export default function CytoGraph({
 
   const { layout, setLayout } = useLayout();
   const [ layoutAnimation ] = useLayoutAnimation();
+  const [cytoEditor, setCytoEditor] = useCytoEditor();
 
   const returning = (<>
     <CytoHandlers handled={cytoHandled} elementsById={elementsById} onChange={onChange}/>
@@ -138,7 +139,7 @@ export default function CytoGraph({
         cy={cy}
         gqlPath={gqlPath}
         gqlSsl={gqlSsl}>
-        <CytoscapeComponent
+        {<CytoscapeComponent
           cy={(_cy) => {
             if (!cy) onLoaded(_cy);
           }}
@@ -149,7 +150,7 @@ export default function CytoGraph({
           pan={cytoViewportRef?.current?.value?.pan}
           zoom={cytoViewportRef?.current?.value?.zoom}
           style={ { width: '100%', height: '100vh' } }
-        />
+        />}
         {!!cy && <CytoReactLayout
           cy={cy}
           elements={reactElements}
