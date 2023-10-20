@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { isAndroid, isIOS } from 'react-device-detect';
 import { VscChromeClose } from 'react-icons/vsc';
 import { useChackraColor } from '../get-color';
-import { useDeep } from '@deep-foundation/deeplinks/imports/client';
 
 interface ITab {
   id: number;
@@ -90,6 +89,7 @@ export const EditorTab = React.memo<any>(({
 }:ITabProps) => {
   const {
     id,
+    title,
     saved = false,
     loading = false,
     active = false,
@@ -97,15 +97,6 @@ export const EditorTab = React.memo<any>(({
   const gray900 = useChackraColor('gray.900');
   const white = useChackraColor('white');
   const { colorMode } = useColorMode();
-  const deep = useDeep();
-
-  const [currentSymbolLink] = deep.useMinilinksSubscription({ type_id: deep.idLocal('@deep-foundation/core', 'Symbol'), to_id: id || 0 });
-  const currentSymbol = currentSymbolLink?.value?.value;
-  const [typeSymbolLink] = deep.useMinilinksSubscription({ type_id: deep.idLocal('@deep-foundation/core', 'Symbol'), to_id: deep.minilinks.byId[id]?.type_id || 0 });
-  const [containLink] = deep.useMinilinksSubscription({ type_id: deep.idLocal('@deep-foundation/core', 'Contain'), to_id: id });
-  const typeSymbol = typeSymbolLink?.value?.value;
-  const symbol = currentSymbol || typeSymbol || '';
-  const title = containLink?.value?.value || id;
 
   return (<Reorder.Item
       value={tab}
@@ -153,7 +144,7 @@ export const EditorTab = React.memo<any>(({
         // }}
       >
         <Box flex='1' mr='2'>
-          {symbol ? `${symbol} ` : ''}{title}
+          {title}
         </Box>
         {isIOS || isAndroid
         ? <IconButton
@@ -245,9 +236,10 @@ return (<Reorder.Group
     values={tabs}
   >
     <AnimatePresence initial={false}>
-      {tabs.map(t =>
-        <EditorTab key={t} tab={t} onClick={onClick} onSaveTab={onSaveTab} onClose={onClose} />
-      )}
-    </AnimatePresence>
-  </Reorder.Group>)
+        {tabs.map(t =>
+          <EditorTab key={t} tab={t} onClick={onClick} onSaveTab={onSaveTab} onClose={onClose} />
+        )}
+      </AnimatePresence>
+    </Reorder.Group>
+  )
 })

@@ -3,7 +3,7 @@ import * as icons from '@chakra-ui/icons';
 import dynamic from 'next/dynamic';
 import { DeepClient, useDeep, useDeepSubscription } from "@deep-foundation/deeplinks/imports/client";
 import { evalClientHandler as deepclientEvalClientHandler } from '@deep-foundation/deeplinks/imports/client-handler';
-import { useMinilinksFilter, useMinilinksSubscription } from "@deep-foundation/deeplinks/imports/minilinks";
+import { useMinilinksFilter } from "@deep-foundation/deeplinks/imports/minilinks";
 import axios from 'axios';
 import * as axiosHooks from 'axios-hooks';
 import * as classnames from 'classnames';
