@@ -78,6 +78,8 @@ DeepClient.resolveDependency = async (path: string) : Promise<any> => {
     return await import('aframe-extras');
   } else if (path == 'aframe') {
     return await import('aframe');
+  } else if (path == '@amcharts/amcharts5') {
+    return await import('@amcharts/amcharts5');
   } else {
     return r(path);
   }
