@@ -1,11 +1,36 @@
-import { Box, IconButton, Modal, ModalContent, ModalOverlay, useColorMode } from '@chakra-ui/react';
+import {
+  Box, Button, IconButton, Modal, ModalContent, ModalOverlay, useColorMode,
+  Editable,
+  EditableInput,
+  EditableTextarea,
+  EditablePreview,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverBody,
+  PopoverFooter,
+  PopoverArrow,
+  PopoverCloseButton,
+  PopoverAnchor,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuItemOption,
+  MenuGroup,
+  MenuOptionGroup,
+  MenuDivider,
+  Divider,
+  Portal,
+} from '@chakra-ui/react';
 import { useDeep, useDeepSubscription } from '@deep-foundation/deeplinks/imports/client';
-import { useMinilinksFilter } from '@deep-foundation/deeplinks/imports/minilinks';
+import { Link, useMinilinksFilter } from '@deep-foundation/deeplinks/imports/minilinks';
 import { useLocalStore } from '@deep-foundation/store/local';
 import { useDebounceCallback } from '@react-hook/debounce';
 import json5 from 'json5';
 import dynamic from 'next/dynamic';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { VscClearAll } from 'react-icons/vsc';
 import { ClientHandler, ClientHandlerRenderer, evalClientHandler } from '../client-handler';
 import { EditorComponentView } from '../editor/editor-component-view';
@@ -17,7 +42,10 @@ import { CloseButton, EditorTabs } from '../editor/editor-tabs';
 import { EditorTextArea } from '../editor/editor-textarea';
 import { CatchErrors } from '../react-errors';
 import { CytoEditorHandlers } from './handlers';
-import { useCytoEditor } from './hooks';
+import { FinderPopover, useCytoEditor } from './hooks';
+import { useSpaceId } from '../hooks';
+import { AddIcon, CheckIcon, ChevronDownIcon, ChevronLeftIcon, CloseIcon, SmallAddIcon, SmallCloseIcon } from '@chakra-ui/icons';
+import EmojiPicker from 'emoji-picker-react';
 
 
 const MonacoEditor = dynamic(() => import('@monaco-editor/react').then(m => m.default), { ssr: false });
@@ -105,6 +133,212 @@ export function useFindClientHandlerByCode({
   return hid;
 }
 
+export function List({ link }) {
+  const deep = useDeep();
+  const {
+    data: contained
+  } = deep.useDeepSubscription({ in: { type_id: deep.idLocal('@deep-foundation/core', 'Contain'), from_id: link.id } });
+  return <>
+    {<Box sx={{ paddingLeft: 4 }}>
+      {contained.map(c => <Item link={c}/>)}
+    </Box>}
+  </>;
+}
+
+export const Item = React.memo(function Item({
+  link,
+  openable = false,
+  deletable = false,
+  children = null,
+  portalRef,
+  closeTab,
+  activeTab,
+  addTab,
+  isActive = false,
+}: {
+  link: Link<number>;
+  openable?: boolean;
+  deletable?: boolean;
+  children?: any;
+  portalRef?: any;
+  closeTab?: (id: number) => void;
+  activeTab?: (id: number) => void;
+  addTab?: (tab: any) => void;
+  isActive?: boolean;
+}) {
+  const [opened, setOpened] = useState(false);
+  const [spaceId] = useSpaceId();
+  const deep = useDeep();
+  const [currentSymbolLink] = deep.useMinilinksSubscription({ type_id: deep.idLocal('@deep-foundation/core', 'Symbol'), to_id: link.id });
+  const [typeSymbolLink] = deep.useMinilinksSubscription({ type_id: deep.idLocal('@deep-foundation/core', 'Symbol'), to_id: link.type_id });
+  const currentSymbol = currentSymbolLink?.value?.value;
+  const typeSymbol = typeSymbolLink?.value?.value;
+  return <>
+    <Button
+      sx={{ position: 'relative', display: 'block' }} width="100%" textAlign="left"
+      isActive={isActive}
+      p={1}
+      variant={"ghost"}
+      onDoubleClick={() => {
+        // alert(123)
+      }}
+      onClick={(event: any) => {
+        if (event?.target == event?.currentTarget || event?.target?.type != 'button') {
+          addTab({
+            id: link.id, saved: true,
+            initialValue: deep.stringify(link?.value?.value),
+          });
+          activeTab(link.id);
+        }
+      }}
+    >
+      <Box>
+        {!!currentSymbol && <>
+          <IconButton
+            variant={'outline'}
+            size="xs"
+            icon={<>{currentSymbol}</>}
+            aria-label={'icon change'}
+            onClick={async () => {
+              await deep.delete({ _or: [
+                { type_id: deep.idLocal('@deep-foundation/core', 'Contain'), from_id: spaceId, to: { type_id: deep.idLocal('@deep-foundation/core', 'Symbol'), from_id: link.id } },
+                { type_id: deep.idLocal('@deep-foundation/core', 'Symbol'), from_id: link.id },
+              ], });
+            }}
+          />
+        </>}
+        {!currentSymbol && <>
+          <Popover>
+            <PopoverTrigger>
+              <IconButton
+                variant={'solid'}
+                size="xs"
+                icon={<>{typeSymbol || ''}</>}
+                aria-label={'icon change'}
+              />
+            </PopoverTrigger>
+            <Portal containerRef={portalRef}>
+              <PopoverContent>
+                <EmojiPicker onEmojiClick={async ({ emoji }) => {
+                  if (!link?.inByType?.[deep.idLocal('@deep-foundation/core', 'Symbol')]?.[0]?.id) {
+                    await deep.insert({
+                      type_id: deep.idLocal('@deep-foundation/core', 'Symbol'), to_id: link.id, from_id: link.id,
+                      string: { data: { value: emoji } },
+                      in: { data: { type_id: deep.idLocal('@deep-foundation/core', 'Contain'), from_id: spaceId } },
+                    });
+                  } else {
+                    await deep.update({ link_id: link?.inByType?.[deep.idLocal('@deep-foundation/core', 'Symbol')]?.[0]?.id }, { value: emoji }, { table: 'strings' });
+                  }
+                  // if (!link?.type?.inByType?.[deep.idLocal('@deep-foundation/core', 'Symbol')]?.[0]?.id) return;
+                }}/>
+              </PopoverContent>
+            </Portal>
+          </Popover>
+        </>}
+        {/* <Box>{currentSymbol} | {typeSymbol}</Box> */}&nbsp;
+        <Editable
+          selectAllOnFocus defaultValue={deep.nameLocal(link.id) == `${link.id}` ? '' : deep.nameLocal(link.id)}
+          placeholder={link.type_id === deep.idLocal('@deep-foundation/core', 'Package') ? link?.value?.value : link.id} display="inline"
+          onSubmit={async (value) => {
+            if (deep.minilinks.byId[link.id].inByType[deep.idLocal('@deep-foundation/core', 'Contain')]?.[0]?.value) {
+              await deep.update({ link: { type_id: deep.idLocal('@deep-foundation/core', 'Contain'), to_id: link.id } }, { value: value }, { table: 'strings' });
+            } else {
+              await deep.insert({ link_id: deep.minilinks.byId[link.id].inByType[deep.idLocal('@deep-foundation/core', 'Contain')]?.[0]?.id, value: value }, { table: 'strings' });
+            }
+          }}
+          onCancel={(value) => {}}
+        >
+          <EditablePreview w="calc(100% - 32px)" />
+          <EditableInput w="calc(100% - 32px)"/>
+        </Editable>
+      </Box>
+      {/* <Box fontSize='xs'>{link.id} <Box display="inline" color="grey">({link.type_id} {deep.nameLocal(link.type_id)})</Box></Box> */}
+      {/* <Box fontSize='xs'>{link.type_id} {deep.nameLocal(link.type_id)}</Box> */}
+      <Box 
+        position='absolute'
+        right={1}
+        top={1}
+      >
+        {children}
+        {deletable && <IconButton
+          isRound={true}
+          aria-label='open level'
+          fontSize='20px'
+          size='xs'
+          onClick={async () => {
+            if (confirm(`Delete ${link.id} ${deep.nameLocal(link.id)} (${deep.nameLocal(link.type_id)})`)) {
+              await deep.delete({ _or: [
+                { type_id: deep.idLocal('@deep-foundation/core', 'Contain'), from_id: spaceId, to_id: link.id },
+                { id: link.id },
+              ], });
+              closeTab(link.id);
+            }
+          }}
+          icon={<SmallCloseIcon />}
+        />}
+        &nbsp;
+        {openable && <IconButton
+          isRound={true}
+          aria-label='open level'
+          fontSize='20px'
+          size='xs'
+          onClick={() => setOpened(o => !o)}
+          icon={opened ? <ChevronDownIcon /> : <ChevronLeftIcon />}
+        />}
+      </Box>
+    </Button>
+    {opened && <List link={link}/>}
+  </>;
+});
+
+export function CytoEditorNav({
+  portalRef
+}: {
+  portalRef?: any;
+}) {
+  const deep = useDeep();
+  const [spaceId] = useSpaceId();
+  const links = deep.useMinilinksSubscription({ in: { type_id: deep.idLocal('@deep-foundation/core', 'Contain'), from_id: spaceId } });
+  const {
+    tab,
+    tabs,
+    setTab,
+    activeTab,
+    tabId,
+    setTabs,
+    addTab,
+    closeTab,
+  } = useEditorTabs();
+
+  return <>
+    <div style={{ position: 'absolute', left: 0, top: 0, width: 300, height: '100%', overflowY: 'scroll' }}>
+      {!!deep.minilinks.byId[spaceId] && <Item link={deep.minilinks.byId[spaceId]} portalRef={portalRef} closeTab={closeTab} activeTab={activeTab} addTab={addTab} isActive={+tab?.id === +spaceId}>
+        <FinderPopover link={deep.minilinks.byId[spaceId]}
+          search={''}
+          onSubmit={async (link) => {
+            await deep.insert({
+              type_id: deep.idLocal('@deep-foundation/core', 'Contain'),
+              string: { data: { value: '' } },
+              from_id: spaceId,
+              to: { data: { type_id: link.id } },
+            });
+          }}
+        >
+          <IconButton
+            isRound={true}
+            aria-label='open level'
+            fontSize='20px'
+            size='xs'
+            icon={<><SmallAddIcon/></>}
+          />
+        </FinderPopover>
+      </Item>}
+      <Divider/>
+      {links.map(l => <Item openable deletable link={l} portalRef={portalRef} closeTab={closeTab} activeTab={activeTab} addTab={addTab}  isActive={+tab?.id === +l.id}/>)}
+    </div>
+  </>;
+}
+
 export function CytoEditor() {
   const [cytoEditor, setCytoEditor] = useCytoEditor();
   const onClose = useCallback(() => {
@@ -121,6 +355,7 @@ export function CytoEditor() {
     tabId,
     setTabs,
   } = useEditorTabs();
+  const portalRef = useRef();
 
   const [currentLinkId, setCurrentLinkId] = useState(tab?.id || 0);
   const { data: [currentLink = deep?.minilinks?.byId[tab?.id]] = [] } = useDeepSubscription({
@@ -182,11 +417,6 @@ export function CytoEditor() {
     refEditor?.current?.editor?.focus();
   }, []);
 
-  useEffect(() => {
-    import('@monaco-editor/react').then(m => { });
-  }, []);
-
-
   const languages = refEditor.current?.monaco.languages.getLanguages();
   const validationTS = refEditor.current?.monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
     noSemanticValidation: true,
@@ -195,18 +425,30 @@ export function CytoEditor() {
 
   const { colorMode } = useColorMode();
 
+  useEffect(() => {
+    console.log('AAA MOUNT');
+    return () => console.log('AAA UNMOUNT');
+  }, []);
+  useEffect(() => {
+    console.log('AAA UPDATED');
+  });
+
   return <>
     <Modal isOpen={cytoEditor} onClose={onClose} size='full' onEsc={onClose}>
       <ModalOverlay />
-      <ModalContent sx={{ height: '100vh', overflow: 'initial' }}>
+      <ModalContent sx={{ height: '100vh', overflow: 'initial', position: 'relative' }}>
+        <div ref={portalRef}/>
         <EditorGrid
           sash
           editorTextAreaElement={<>{[
+            <CytoEditorNav portalRef={portalRef}/>,
             <Box
               key={tabId}
               sx={{
                 pos: 'relative',
-                height: '100%'
+                left: 300,
+                height: '100%',
+                width: 'calc(100% - 300px)',
               }}
             >
               <EditorTextArea
@@ -254,6 +496,7 @@ export function CytoEditor() {
                 }}
                 onMount={() => setEditorMounted(true)}
               />
+              {/* <div style={{ position: 'absolute', left: 300, top: 0, width: 'calc(100% - 300px)', height: '100%', background: 'green', opacity: 0.5 }}></div> */}
               <Box
                 w='100%'
                 pos='absolute'
@@ -280,7 +523,6 @@ export function CytoEditor() {
           editorTabsElement={<EditorTabs
             tabs={tabs.map((tab) => ({
               ...tab,
-              title: `${tab.id} ${deep.minilinks.byId[tab.id]?.inByType?.[deep.idLocal('@deep-foundation/core', 'Contain')]?.[0]?.value?.value || ''}`.trim(),
               active: tabId === tab.id,
             }))}
             setTabs={(tabs) => setTabs(tabs)}
