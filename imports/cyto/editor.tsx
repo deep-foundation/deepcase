@@ -316,8 +316,6 @@ export const CytoEditorNav = React.memo(function CytoEditorNav({
     containerRef: portalRef,
   }), []);
 
-  console.log('abc', links, JSON.stringify({ in: { type_id: deep.idLocal('@deep-foundation/core', 'Contain'), from_id: spaceId || 0 } }));
-
   return <>
     <div style={{ position: 'absolute', left: 0, top: 0, width: 300, height: '100%', overflowY: 'scroll' }}>
       {!!space && <Item link={space} portalRef={portalRef} closeTab={closeTab} activeTab={activeTab} addTab={addTab} isActive={+tab?.id === +spaceId}>
@@ -433,14 +431,6 @@ export const CytoEditor = React.memo(function CytoEditor() {
   });
 
   const { colorMode } = useColorMode();
-
-  useEffect(() => {
-    console.log('AAA MOUNT');
-    return () => console.log('AAA UNMOUNT');
-  }, []);
-  useEffect(() => {
-    console.log('AAA UPDATED');
-  });
 
   return <>
     <Modal isOpen={cytoEditor} onClose={onClose} size='full' onEsc={onClose}>
