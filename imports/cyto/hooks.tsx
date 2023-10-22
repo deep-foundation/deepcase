@@ -1,4 +1,4 @@
-import { Alert, AlertIcon, Box, Flex, HStack, IconButton, Popover, PopoverContent, PopoverTrigger, SlideFade, Spacer, Spinner, useDisclosure, useToast } from "@chakra-ui/react";
+import { Alert, AlertIcon, Box, Flex, HStack, IconButton, Popover, PopoverContent, PopoverTrigger, Portal, SlideFade, Spacer, Spinner, useDisclosure, useToast } from "@chakra-ui/react";
 import { useDeep, useDeepId, useDeepQuery, useDeepSubscription } from "@deep-foundation/deeplinks/imports/client";
 import { Link, useMinilinksFilter, useMinilinksHandle, useMinilinksQuery } from "@deep-foundation/deeplinks/imports/minilinks";
 import { useDebounceCallback } from "@react-hook/debounce";
@@ -49,6 +49,7 @@ export const FinderPopover = React.memo(function FinderPopover({
     onChange,
     children,
     PopoverProps = {},
+    PortalProps = {},
     ClientHandlerProps = {},
     query = undefined,
     search = undefined,
@@ -58,6 +59,7 @@ export const FinderPopover = React.memo(function FinderPopover({
     onChange?: (link) => void;
     children?: any;
     PopoverProps?: any;
+    PortalProps?: any;
     ClientHandlerProps?: any;
     query?: any;
     search?: string;
@@ -65,7 +67,7 @@ export const FinderPopover = React.memo(function FinderPopover({
   const deep = useDeep();
   const [selectedLink, setSelectedLink] = useState<Link<number>>();
   const { onOpen, onClose, isOpen } = useDisclosure();
-  console.log('FinderPopover')
+  const { data: Finder } = useDeepId('@deep-foundation/finder', 'Finder');
   return <Popover
     isLazy
     placement='right-start'
@@ -75,32 +77,34 @@ export const FinderPopover = React.memo(function FinderPopover({
     <PopoverTrigger>
       {children}
     </PopoverTrigger>
-    <PopoverContent h={72}>
-      <ClientHandler fillSize query={query} search={search}
-        link={link} context={[969]} ml={deep.minilinks}
-        onChange={l => {
-          onChange && onChange(l);
-          setSelectedLink(l);
-        }}
-        {...(ClientHandlerProps)}
-      />
-      <SlideFade in={!!selectedLink} offsetX='-0.5rem' style={{position: 'absolute', bottom: 0, right: '-2.8rem'}}>
-        <IconButton
-          isRound
-          variant='solid'
-          bg='primary'
-          // color='white'
-          aria-label='submit button'
-          icon={<BsCheck2 />}
-          onClick={async () => {
-            if (selectedLink) {
-              onClose && onClose();
-              onSubmit && onSubmit(selectedLink);
-            }
+    <Portal {...PortalProps}>
+      <PopoverContent h={72}>
+        <ClientHandler fillSize query={query} search={search}
+          link={link} context={[Finder]} ml={deep.minilinks}
+          onChange={l => {
+            onChange && onChange(l);
+            setSelectedLink(l);
           }}
+          {...(ClientHandlerProps)}
         />
-      </SlideFade>
-    </PopoverContent>
+        <SlideFade in={!!selectedLink} offsetX='-0.5rem' style={{position: 'absolute', bottom: 0, right: '-2.8rem'}}>
+          <IconButton
+            isRound
+            variant='solid'
+            bg='primary'
+            // color='white'
+            aria-label='submit button'
+            icon={<BsCheck2 />}
+            onClick={async () => {
+              if (selectedLink) {
+                onClose && onClose();
+                onSubmit && onSubmit(selectedLink);
+              }
+            }}
+          />
+        </SlideFade>
+      </PopoverContent>
+    </Portal>
   </Popover>;
 }, () => true);
 
