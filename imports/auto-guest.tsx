@@ -8,7 +8,7 @@ import { useLocalStore } from "@deep-foundation/store/local";
 
 const debug = Debug('deepcase:auto-guest');
 
-export function AutoGuest({
+export const AutoGuest = React.memo(function AutoGuest({
   children,
 }: {
   children: any;
@@ -46,4 +46,4 @@ export function AutoGuest({
   return <>
     {isAuth ? children : null}
   </>
-}
+});

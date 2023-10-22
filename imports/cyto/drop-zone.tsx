@@ -7,7 +7,7 @@ import axios from 'axios';
 
 let counter = 0;
 
-export function CytoDropZone({
+export const CytoDropZone = React.memo(function CytoDropZone({
   cy,
   children,
   gqlPath,
@@ -113,4 +113,4 @@ export function CytoDropZone({
     children,
     deep,
   });
-}
+});

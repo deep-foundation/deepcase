@@ -6,8 +6,9 @@ import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "
 import { useBreadcrumbs, useShowOpened } from "./hooks";
 import { CatchErrors } from "./react-errors";
 import { useDelayedInterval } from "./use-delayed-interval";
+import _ from 'lodash';
 
-export function DeepLoaderActive({
+export const DeepLoaderActive = React.memo(function DeepLoaderActive({
   name,
   query: queryLink,
   onChange,
@@ -16,7 +17,7 @@ export function DeepLoaderActive({
 }: {
   name: string;
   query: any;
-  onChange: (results: Link<number>[]) => any;
+  onChange: (results: Link<number>[], query: any) => any;
   debounce?: number;
   subscription?: boolean;
 }) {
@@ -56,17 +57,17 @@ export function DeepLoaderActive({
   }), [queryLink, queryLink?.value?.value]), debounce);
 
   useEffect(() => {
-    if (subQueryPrimary?.data?.q0 && !subQueryPrimary?.loading) onChange && onChange(subQueryPrimary?.data?.q0);
+    if (subQueryPrimary?.data?.q0 && !subQueryPrimary?.loading) onChange && onChange(subQueryPrimary?.data?.q0, queryLink);
   }, [subQueryPrimary]);
 
   useEffect(() => {
     return () => {
-      onChange && onChange([]);
+      onChange && onChange([], queryLink);
     }
   }, []);
 
   return <></>;
-}
+});
 
 export const DeepLoader = memo(function DeepLoader({
   spaceId,
@@ -157,21 +158,31 @@ export const DeepLoader = memo(function DeepLoader({
     },
   } } }), []);
 
-  let queries = useMinilinksFilter(
-    deep.minilinks,
-    useCallback((l, ...args) => {
-      // console.log('ABC', l, ...args);
-      // console.trace('ABC');
-      return [deep.idLocal('@deep-foundation/core', 'Query'), deep.idLocal('@deep-foundation/core', 'Active')].includes(l.type_id);
-    }, [spaceId]),
-    useCallback((l, ml) => {
-      return ml.byType[deep.idLocal('@deep-foundation/core', 'Query')]?.filter((l) => {
-        return l?.type_id === deep.idLocal('@deep-foundation/core', 'Query') && !!l?.inByType?.[deep.idLocal('@deep-foundation/core', 'Active')]?.find(a => a?.from_id === spaceId) && l?.value?.value;
-      });
-    }, [spaceId]),
-    1000,
-  );
-  queries = queries || [];
+  const queries = deep.useMinilinksSubscription({
+    type_id: deep.idLocal('@deep-foundation/core', 'Query'),
+    in: {
+      type_id: deep.idLocal('@deep-foundation/core', 'Active'),
+      from_id: spaceId,
+      value: {
+        value: { _is_null: false }
+      },
+    },
+  });
+  // let queries = useMinilinksFilter(
+  //   deep.minilinks,
+  //   useCallback((l, ...args) => {
+  //     // console.log('ABC', l, ...args);
+  //     // console.trace('ABC');
+  //     return [deep.idLocal('@deep-foundation/core', 'Query'), deep.idLocal('@deep-foundation/core', 'Active')].includes(l.type_id);
+  //   }, [spaceId]),
+  //   useCallback((l, ml) => {
+  //     return ml.byType[deep.idLocal('@deep-foundation/core', 'Query')]?.filter((l) => {
+  //       return l?.type_id === deep.idLocal('@deep-foundation/core', 'Query') && !!l?.inByType?.[deep.idLocal('@deep-foundation/core', 'Active')]?.find(a => a?.from_id === spaceId) && l?.value?.value;
+  //     });
+  //   }, [spaceId]),
+  //   1000,
+  // );
+  // queries = queries || [];
 
   const insertableTypesQuery = useMemo(() => ({ value: { value: {
     _or: [
@@ -336,80 +347,88 @@ export const DeepLoader = memo(function DeepLoader({
   //   notApplied: deep.minilinks.links.filter(l => !l?._applies?.includes('not-loaded-ends')),
   // });
 
+  const queryChanged = useCallback((r, q) => {
+    deep.minilinks?.apply(r, `query-${q.id}`);
+  }, []);
+
+  const breadcrumbsChanged = useCallback((r) => {
+    deep.minilinks?.apply(r, 'breadcrumbs');
+  }, []);
+  
+  const containsAndSymbolsChanged = useCallback((r) => {
+    deep.minilinks?.apply(r, 'contains_and_symbols');
+  }, []);
+
+  const valuesChanged = useCallback((r) => {
+    deep.minilinks?.apply(r, 'values');
+  }, []);
+
   return <>
     <><DeepLoaderActive
       key="DEEPCASE_SPACE"
       name="DEEPCASE_SPACE"
       query={spaceQuery}
-      onChange={(r) => {
+      onChange={useCallback((r) => {
         deep.minilinks?.apply(r, 'space');
-      }}
+      }, [])}
     /></>
     <><DeepLoaderActive
       key="DEEPCASE_TREES"
       name="DEEPCASE_TREES"
       query={treesQuery}
-      onChange={(r) => {
+      onChange={useCallback((r) => {
         deep.minilinks?.apply(r, 'trees');
-      }}
+      }, [])}
     /></>
     <><DeepLoaderActive
       key="DEEPCASE_NOT_LOADED_ENDS"
       name="DEEPCASE_NOT_LOADED_ENDS"
       query={notLoadedEndsQuery}
-      onChange={(r) => {
+      onChange={useCallback((r) => {
         // console.log('not-loaded-ends onChange', r, notLoadedEnds, notLoadedEndsQuery, 'ml', deep.minilinks.links.filter(l => (!!l.from_id && !l.from) || (!!l.to_id && !l.to)));
         deep.minilinks?.apply(r, 'not-loaded-ends');
-      }}
+      }, [])}
     /></>
     {!!breadcrumbs && <><DeepLoaderActive
       key="DEEPCASE_BREADCRUMBS"
       name="DEEPCASE_BREADCRUMBS"
       query={breadcrumbsQuery}
-      onChange={(r) => {
-        deep.minilinks?.apply(r, 'breadcrumbs');
-      }}
+      onChange={breadcrumbsChanged}
     /></>}
     <><DeepLoaderActive
       key="DEEPCASE_CLIENT_HANDLERS"
       name="DEEPCASE_CLIENT_HANDLERS"
       query={clientHandlersQuery}
-      onChange={(r) => {
+      onChange={useCallback((r) => {
         deep.minilinks?.apply(r, 'client-handlers');
-      }}
+      }, [])}
     /></>
     {queries?.map((f, i) => (<DeepLoaderActive
       key={`DEEPCASE_QUERY_${f.id}`}
       name={`DEEPCASE_QUERY_${f.id}`}
       query={f}
-      onChange={(r) => {
-        deep.minilinks?.apply(r, `query-${f.id}`);
-      }}
+      onChange={queryChanged}
     />))}
     <><DeepLoaderActive
       key={`DEEPCASE_TYPES`}
       name={`DEEPCASE_TYPES`}
       query={typesQuery}
-      onChange={(r) => {
+      onChange={useCallback((r) => {
         deep.minilinks?.apply(r, 'types');
-      }}
+      }, [])}
     /></>
     {!!typeIds && <><DeepLoaderActive
       key={`DEEPCASE_CONTAINS_AND_SYMBOLS`}
       name={`DEEPCASE_CONTAINS_AND_SYMBOLS`}
       query={containsAndSymbolsQuery}
       debounce={2000}
-      onChange={(r) => {
-        deep.minilinks?.apply(r, 'contains_and_symbols');
-      }}
+      onChange={containsAndSymbolsChanged}
     /></>}
     {!!typeIds && <><DeepLoaderActive
       key={`DEEPCASE_VALUES`}
       name={`DEEPCASE_VALUES`}
       query={valuesQuery}
-      onChange={(r) => {
-        deep.minilinks?.apply(r, 'values');
-      }}
+      onChange={valuesChanged}
     /></>}
   </>;
 });

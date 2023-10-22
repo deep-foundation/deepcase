@@ -133,17 +133,17 @@ export function useFindClientHandlerByCode({
   return hid;
 }
 
-export function List({ link }) {
+export const List = React.memo(function List({ link }: { link: any }) {
   const deep = useDeep();
   const {
     data: contained
   } = deep.useDeepSubscription({ in: { type_id: deep.idLocal('@deep-foundation/core', 'Contain'), from_id: link.id } });
   return <>
     {<Box sx={{ paddingLeft: 4 }}>
-      {contained.map(c => <Item link={c}/>)}
+      {contained.map(c => <Item key={c.id} link={c}/>)}
     </Box>}
   </>;
-}
+}, () => true);
 
 export const Item = React.memo(function Item({
   link,
@@ -291,14 +291,15 @@ export const Item = React.memo(function Item({
   </>;
 });
 
-export function CytoEditorNav({
+export const CytoEditorNav = React.memo(function CytoEditorNav({
   portalRef
 }: {
   portalRef?: any;
 }) {
   const deep = useDeep();
   const [spaceId] = useSpaceId();
-  const links = deep.useMinilinksSubscription({ in: { type_id: deep.idLocal('@deep-foundation/core', 'Contain'), from_id: spaceId } });
+  const [space] = deep.useMinilinksSubscription({ id: spaceId || 0 });
+  const links = deep.useMinilinksSubscription({ in: { type_id: deep.idLocal('@deep-foundation/core', 'Contain'), from_id: spaceId || 0 } });
   const {
     tab,
     tabs,
@@ -312,8 +313,8 @@ export function CytoEditorNav({
 
   return <>
     <div style={{ position: 'absolute', left: 0, top: 0, width: 300, height: '100%', overflowY: 'scroll' }}>
-      {!!deep.minilinks.byId[spaceId] && <Item link={deep.minilinks.byId[spaceId]} portalRef={portalRef} closeTab={closeTab} activeTab={activeTab} addTab={addTab} isActive={+tab?.id === +spaceId}>
-        <FinderPopover link={deep.minilinks.byId[spaceId]}
+      {!!space && <Item link={space} portalRef={portalRef} closeTab={closeTab} activeTab={activeTab} addTab={addTab} isActive={+tab?.id === +spaceId}>
+        <FinderPopover link={space}
           search={''}
           onSubmit={async (link) => {
             await deep.insert({
@@ -334,12 +335,12 @@ export function CytoEditorNav({
         </FinderPopover>
       </Item>}
       <Divider/>
-      {links.map(l => <Item openable deletable link={l} portalRef={portalRef} closeTab={closeTab} activeTab={activeTab} addTab={addTab}  isActive={+tab?.id === +l.id}/>)}
+      {links.map(l => <Item key={l.id} openable deletable link={l} portalRef={portalRef} closeTab={closeTab} activeTab={activeTab} addTab={addTab}  isActive={+tab?.id === +l.id}/>)}
     </div>
   </>;
-}
+}, () => true);
 
-export function CytoEditor() {
+export const CytoEditor = React.memo(function CytoEditor() {
   const [cytoEditor, setCytoEditor] = useCytoEditor();
   const onClose = useCallback(() => {
     setCytoEditor(false);
@@ -619,4 +620,4 @@ export function CytoEditor() {
       </ModalContent>
     </Modal>
   </>;
-}
+}, () => true);
