@@ -162,10 +162,7 @@ export const DeepLoader = memo(function DeepLoader({
     type_id: deep.idLocal('@deep-foundation/core', 'Query'),
     in: {
       type_id: deep.idLocal('@deep-foundation/core', 'Active'),
-      from_id: spaceId,
-      value: {
-        value: { _is_null: false }
-      },
+      from_id: spaceId || 0,
     },
   });
   // let queries = useMinilinksFilter(
@@ -403,12 +400,12 @@ export const DeepLoader = memo(function DeepLoader({
         deep.minilinks?.apply(r, 'client-handlers');
       }, [])}
     /></>
-    {queries?.map((f, i) => (<DeepLoaderActive
+    {queries?.map((f, i) => (f?.value?.value ? <DeepLoaderActive
       key={`DEEPCASE_QUERY_${f.id}`}
       name={`DEEPCASE_QUERY_${f.id}`}
       query={f}
       onChange={queryChanged}
-    />))}
+    /> : <React.Fragment key={`DEEPCASE_QUERY_${f.id}`}/>))}
     <><DeepLoaderActive
       key={`DEEPCASE_TYPES`}
       name={`DEEPCASE_TYPES`}
