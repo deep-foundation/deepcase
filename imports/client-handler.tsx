@@ -55,6 +55,7 @@ import * as recharts from 'recharts';
 import * as i18n from "i18next";
 import * as LanguageDetector from 'i18next-browser-languagedetector';
 import * as reacti18next from "react-i18next";
+import * as rdd from 'react-device-detect';
 const MonacoEditor = dynamic(() => import('@monaco-editor/react').then(m => m.default), { ssr: false });
 
 DeepClient.resolveDependency = async (path: string) : Promise<any> => {
@@ -108,6 +109,7 @@ r.list = {
   '@chakra-ui/react': chakra,
   'react': React,
   'axios': axios,
+  'react-device-detect': rdd,
   'axios-hooks': axiosHooks,
   'classnames': classnames,
   'slate-soft-break': SoftBreak,
