@@ -55,7 +55,6 @@ import * as recharts from 'recharts';
 import * as i18n from "i18next";
 import * as LanguageDetector from 'i18next-browser-languagedetector';
 import * as reacti18next from "react-i18next";
-import * as rdd from 'react-device-detect';
 const MonacoEditor = dynamic(() => import('@monaco-editor/react').then(m => m.default), { ssr: false });
 
 DeepClient.resolveDependency = async (path: string) : Promise<any> => {
@@ -63,6 +62,8 @@ DeepClient.resolveDependency = async (path: string) : Promise<any> => {
     return await import('peerjs');
   } else if (path == 'emoji-picker-react') {
     return await import('emoji-picker-react');
+  } else if (path == 'react-device-detect') {
+    return await import('react-device-detect');
   } else if (path == 'node-sound') {
     return await import('./aframe/components/node-sound');
   } else if (path == 'dragger') {
@@ -109,7 +110,6 @@ r.list = {
   '@chakra-ui/react': chakra,
   'react': React,
   'axios': axios,
-  'react-device-detect': rdd,
   'axios-hooks': axiosHooks,
   'classnames': classnames,
   'slate-soft-break': SoftBreak,
