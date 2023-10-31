@@ -64,6 +64,8 @@ DeepClient.resolveDependency = async (path: string) : Promise<any> => {
     return await import('emoji-picker-react');
   } else if (path == 'react-device-detect') {
     return await import('react-device-detect');
+  } else if (path == 'react-multi-date-picker') {
+    return await import('react-multi-date-picker');
   } else if (path == 'node-sound') {
     return await import('./aframe/components/node-sound');
   } else if (path == 'dragger') {
