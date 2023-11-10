@@ -97,7 +97,7 @@ export function CytoEditorPreview({
     });
   }, [link?.value?.value, generatedLink]);
 
-  const currentValue = valuesRef?.current?.[linkId] || '';
+  const currentValue = valuesRef?.current?.[linkId] || link?.value?.value || '';
 
   const refEditor = useRef();
 
