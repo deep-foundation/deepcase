@@ -195,6 +195,21 @@ export function CytoEditor() {
 
   const { colorMode } = useColorMode();
 
+  const [Component, setComponent] = useState({});
+
+  useEffect(() => {
+    const value = generatedLink?.value?.value || currentLink?.value?.value;
+    console.log('editor', 'evalClientHandler', 'useEffect', value);
+    if (!value) {
+      return;
+    }
+    evalClientHandler({ value, deep }).then(({ data, error }) => {
+      console.log('editor', 'evalClientHandler', 'error', error);
+      console.log('editor', 'evalClientHandler', 'data', data);
+      setComponent(() => data);
+    });
+  }, [currentLink?.value?.value, generatedLink]);
+
   return <>
     <Modal isOpen={cytoEditor} onClose={onClose} size='full' onEsc={onClose}>
       <ModalOverlay />
@@ -354,6 +369,14 @@ export function CytoEditor() {
                 setFillSize={setFillSize}
               >
                 {handlerId && [<ClientHandler key={handlerId} handlerId={handlerId} fillSize={fillSize} linkId={currentLink?.id} ml={deep.minilinks} />]}
+                {!handlerId && typeof(Component) === 'function' && [<CatchErrors 
+                  key={Component.toString()}
+                  errorRenderer={(error) => {
+                    console.log('EditorComponentView', 'errorRenderer', error);
+                    return <div>{JSON.stringify(error)}</div>;
+                  }}>
+                    <ClientHandlerRenderer Component={Component} fillSize={fillSize} link={deep?.minilinks?.byId[currentLink?.id]}/>
+                  </CatchErrors>]}
               </EditorComponentView>]}
             </Box> ||
             rightArea === 'results' && <EditorResults id={tab.id} />
