@@ -122,8 +122,12 @@ export function CytoEditor() {
     setTabs,
   } = useEditorTabs();
 
-  const [currentLinkId, setCurrentLinkId] = useState(tab?.id || 0);
-  const { data: [currentLink = deep?.minilinks?.byId[tab?.id]] = [] } = useDeepSubscription({
+  const [currentLinkId, setCurrentLinkId] = useState(tabId || 0);
+  if (!currentLinkId && tabId) {
+    setCurrentLinkId(tabId);
+  }
+
+  const { data: [currentLink = deep?.minilinks?.byId[currentLinkId]] = [] } = useDeepSubscription({
     id: currentLinkId || 0,
   });
 
@@ -198,6 +202,9 @@ export function CytoEditor() {
   const [Component, setComponent] = useState({});
 
   useEffect(() => {
+    if(handlerId) {
+      return;
+    }
     const value = generatedLink?.value?.value || currentLink?.value?.value;
     console.log('editor', 'evalClientHandler', 'useEffect', value);
     if (!value) {
