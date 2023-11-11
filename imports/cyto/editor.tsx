@@ -98,8 +98,9 @@ export function useFindClientHandlerByCode({
         { dist_id: { _eq: codeLinkId } },
         { src_id: { _eq: codeLinkId } },
       ],
-    }, { table: 'handlers', returning: 'handler_id dist_id src_id' },);
-    if (handlers?.[0]) setHid(handlers?.[0]);
+    }, { table: 'handlers', returning: 'handler_id dist_id src_id' });
+    // console.log('editor', 'handlers?.[0]', handlers?.[0])
+    setHid(handlers?.[0]);
     prevCodeLinkId.current = codeLinkId;
   })(); }, [codeLinkId, hid]);
   return hid;
@@ -199,10 +200,9 @@ export function CytoEditor() {
 
   const { colorMode } = useColorMode();
 
-  const [Component, setComponent] = useState({});
-
+  const [Component, setComponent] = useState(undefined);
   useEffect(() => {
-    if(handlerId) {
+    if (handlerId) {
       return;
     }
     const value = generatedLink?.value?.value || currentLink?.value?.value;
@@ -213,9 +213,13 @@ export function CytoEditor() {
     evalClientHandler({ value, deep }).then(({ data, error }) => {
       console.log('editor', 'evalClientHandler', 'error', error);
       console.log('editor', 'evalClientHandler', 'data', data);
-      setComponent(() => data);
+      if (!error && data) { 
+        setComponent(() => data);
+      } else if (Component !== undefined) {
+        setComponent(undefined);
+      }
     });
-  }, [currentLink?.value?.value, generatedLink]);
+  }, [handlerId, currentLink?.value?.value, generatedLink?.value?.value]);
 
   return <>
     <Modal isOpen={cytoEditor} onClose={onClose} size='full' onEsc={onClose}>

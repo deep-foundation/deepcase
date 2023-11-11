@@ -84,6 +84,7 @@ export function CytoEditorPreview({
     },
   )
 
+  const [Component, setComponent] = useState(undefined);
   useEffect(() => {
     const value = generatedLink?.value?.value || link?.value?.value;
     console.log('editor-preview', 'evalClientHandler', 'useEffect', value);
@@ -93,9 +94,13 @@ export function CytoEditorPreview({
     evalClientHandler({ value, deep }).then(({ data, error }) => {
       console.log('editor-preview', 'evalClientHandler', 'error', error);
       console.log('editor-preview', 'evalClientHandler', 'data', data);
-      setComponent(() => data);
+      if (!error && data) { 
+        setComponent(() => data);
+      } else if (Component !== undefined) {
+        setComponent(undefined);
+      }
     });
-  }, [link?.value?.value, generatedLink]);
+  }, [link?.value?.value, generatedLink?.value?.value]);
 
   const currentValue = valuesRef?.current?.[linkId] || link?.value?.value || '';
 
@@ -105,8 +110,6 @@ export function CytoEditorPreview({
   const [generated, setGenerated] = useState('src');
   const [fillSize, setFillSize] = useState(false);
   const [viewSize, setViewSize] = useState({width: 124, height: 123});
-
-  const [Component, setComponent] = useState({});
 
   const [switcher, setSwitch] = useState(true);
   const switchProps = switcher ? { left: 0 } : { right: 0 };

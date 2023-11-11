@@ -122,7 +122,7 @@ export const CytoHandler = React.memo(function CytoHandler({
     },
   });
 
-  const [Component, setComponent] = React.useState<any>(null);
+  const [Component, setComponent] = React.useState<any>(undefined);
   const lastEvalRef = useRef(0);
   useEffect(() => {
     const value = file?.value?.value;
@@ -134,8 +134,11 @@ export const CytoHandler = React.memo(function CytoHandler({
     evalClientHandler({ value, deep }).then(({ data, error }) => {
       if (evalId === lastEvalRef.current) {
         console.log('CytoHandler evalClientHandler setComponent', { file, data, error });
-        if (!error) setComponent(() => data);
-        else setComponent(undefined);
+        if (!error && data) { 
+          setComponent(() => data);
+        } else if (Component !== undefined) {
+          setComponent(undefined);
+        }
       } else {
         console.log('CytoHandler evalClientHandler outdated', { file, data, error, evalId, 'lastEvalRef.current': lastEvalRef.current });
       }
