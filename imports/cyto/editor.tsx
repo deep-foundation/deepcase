@@ -375,7 +375,7 @@ export function CytoEditor() {
                 fillSize={fillSize}
                 setFillSize={setFillSize}
               >
-                {handlerId && [<ClientHandler key={handlerId} handlerId={handlerId} fillSize={fillSize} linkId={currentLink?.id} ml={deep.minilinks} />]}
+                {handlerId && [<ClientHandler key={`${currentLink?.id || 0}-${tabId}-${handlerId}`} handlerId={handlerId} fillSize={fillSize} linkId={currentLink?.id} ml={deep.minilinks} />]}
                 {!handlerId && typeof(Component) === 'function' && [<CatchErrors 
                   key={Component.toString()}
                   errorRenderer={(error) => {
