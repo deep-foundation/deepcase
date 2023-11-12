@@ -97,6 +97,8 @@ export default function CytoGraph({
   gqlSsl,
   appVersion = '',
 }: CytoGraphProps){
+  console.log('https://github.com/deep-foundation/deepcase-app/issues/236', 'CytoGraph', 'links', links);
+
   // console.time('CytoGraph');
   const deep = useDeep();
   const [spaceId, setSpaceId] = useSpaceId();

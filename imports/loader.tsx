@@ -56,7 +56,11 @@ export function DeepLoaderActive({
   }), [queryLink, queryLink?.value?.value]), debounce);
 
   useEffect(() => {
-    if (subQueryPrimary?.data?.q0 && !subQueryPrimary?.loading) onChange && onChange(subQueryPrimary?.data?.q0);
+    if (subQueryPrimary?.data?.q0 && !subQueryPrimary?.loading) {
+      onChange && onChange(subQueryPrimary?.data?.q0);
+      console.log('https://github.com/deep-foundation/deepcase-app/issues/236', 'DeepLoader', 'DeepLoaderActive', 'name', name);
+      console.log('https://github.com/deep-foundation/deepcase-app/issues/236', 'DeepLoader', 'DeepLoaderActive', 'subQueryPrimary?.data?.q0', subQueryPrimary?.data?.q0);
+    }
   }, [subQueryPrimary]);
 
   useEffect(() => {
