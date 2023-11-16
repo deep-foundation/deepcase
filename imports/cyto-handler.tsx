@@ -74,7 +74,7 @@ export function useCytoHandlersApply(cyh, elements, stylesheets, iterator) {
   }
 }
 
-export function CytoHandlers({
+export const CytoHandlers = React.memo(function CytoHandlers({
   onChange,
   handled,
   elementsById,
@@ -99,7 +99,7 @@ export function CytoHandlers({
   return <>
     {HandleCyto ? arr : []}
   </>;
-}
+});
 
 export const CytoHandler = React.memo(function CytoHandler({
   linkId,
