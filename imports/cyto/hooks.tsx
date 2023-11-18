@@ -79,14 +79,14 @@ export const FinderPopover = React.memo(function FinderPopover({
     </PopoverTrigger>
     <Portal {...PortalProps}>
       <PopoverContent h={72}>
-        <ClientHandler fillSize query={query} search={search}
+        {!!Finder && <ClientHandler fillSize query={query} search={search}
           link={link} context={[Finder]} ml={deep.minilinks}
           onChange={l => {
             onChange && onChange(l);
             setSelectedLink(l);
           }}
           {...(ClientHandlerProps)}
-        />
+        />}
         <SlideFade in={!!selectedLink} offsetX='-0.5rem' style={{position: 'absolute', bottom: 0, right: '-2.8rem'}}>
           <IconButton
             isRound
