@@ -47,6 +47,8 @@ export const FinderPopover = React.memo(function FinderPopover({
     link,
     onSubmit,
     onChange,
+    onOpen,
+    onClose,
     children,
     PopoverProps = {},
     PortalProps = {},
@@ -57,6 +59,8 @@ export const FinderPopover = React.memo(function FinderPopover({
     link: Link<number>;
     onSubmit: (link) => void;
     onChange?: (link) => void;
+    onOpen?: () => void;
+    onClose?: () => void;
     children?: any;
     PopoverProps?: any;
     PortalProps?: any;
@@ -66,12 +70,12 @@ export const FinderPopover = React.memo(function FinderPopover({
   }) {
   const deep = useDeep();
   const [selectedLink, setSelectedLink] = useState<Link<number>>();
-  const { onOpen, onClose, isOpen } = useDisclosure();
+  const { onOpen: _onOpen, onClose: _onClose, isOpen: _isOpen } = useDisclosure();
   const { data: Finder } = useDeepId('@deep-foundation/finder', 'Finder');
   return <Popover
     isLazy
     placement='right-start'
-    onOpen={onOpen} onClose={onClose} isOpen={isOpen}
+    onOpen={(...args) => (_onOpen(...args),(onOpen && onOpen()))} onClose={(...args) => (_onClose(...args),(onClose && onClose()))} isOpen={_isOpen}
     {...PopoverProps}
   >
     <PopoverTrigger>
@@ -80,7 +84,7 @@ export const FinderPopover = React.memo(function FinderPopover({
     <Portal {...PortalProps}>
       <PopoverContent h={72}>
         {!!Finder && <ClientHandler fillSize query={query} search={search}
-          link={link} context={[Finder]} ml={deep.minilinks}
+          link={link} linkId={link?.id} context={[Finder]} ml={deep.minilinks}
           onChange={l => {
             onChange && onChange(l);
             setSelectedLink(l);
@@ -97,7 +101,7 @@ export const FinderPopover = React.memo(function FinderPopover({
             icon={<BsCheck2 />}
             onClick={async () => {
               if (selectedLink) {
-                onClose && onClose();
+                _onClose && _onClose();
                 onSubmit && onSubmit(selectedLink);
               }
             }}

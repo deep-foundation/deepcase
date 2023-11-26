@@ -1,6 +1,6 @@
 import { useSubscription } from '@apollo/client';
 import { ChevronDownIcon } from '@chakra-ui/icons';
-import { Accordion, AccordionItem, AccordionButton, AccordionIcon, AccordionPanel, Box, Flex, SimpleGrid, Text, Button, Spacer, useColorMode, InputGroup, Input, InputRightElement, Tag, TagCloseButton, TagLabel, HStack, VStack, Select, Menu, MenuButton, MenuItem, MenuList, IconButton } from '@chakra-ui/react';
+import { Accordion, AccordionItem, AccordionButton, AccordionIcon, AccordionPanel, Box, Flex, SimpleGrid, Text, Button, Spacer, useColorMode, InputGroup, Input, InputRightElement, Tag, TagCloseButton, TagLabel, HStack, VStack, Select, Menu, MenuButton, MenuItem, MenuList, IconButton, InputLeftElement } from '@chakra-ui/react';
 import { useDeep, useDeepQuery, useDeepSubscription } from '@deep-foundation/deeplinks/imports/client';
 import { generateQuery, generateQueryData } from '@deep-foundation/deeplinks/imports/gql';
 import { Link, useMinilinksApply, useMinilinksQuery, useMinilinksSubscription } from '@deep-foundation/deeplinks/imports/minilinks';
@@ -8,17 +8,20 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { CytoReactLinkAvatar } from '../cyto-react-avatar';
 import { EditorHandler } from '../editor/editor-handler';
 import { useChackraColor } from '../get-color';
-import { useContainer } from '../hooks';
+import { useContainer, useSpaceId } from '../hooks';
 import { VscCheck, VscDiffAdded } from 'react-icons/vsc';
+import { FinderPopover } from './hooks';
 
 export const CytoEditorHandlersSupportHandle = React.memo<any>(function CytoEditorHandlersSupport({
   support,
   handler,
   handle,
+  portalRef,
 }: {
   support: Link<number>;
   handler: Link<number>;
   handle: Link<number>;
+  portalRef?: any;
 }) {
   const deep = useDeep();
   const gray900 = useChackraColor('gray.900');
@@ -44,11 +47,12 @@ export const CytoEditorHandlersSupportHandle = React.memo<any>(function CytoEdit
   const [deleting, setDeleting] = useState(false);
   const [container] = useContainer();
 
-  const onInsert = useCallback(async () => {
+  const onInsert = useCallback(async (v) => {
+    const _value = v || value;
     setInserting(true);
     await deep.insert({
       type_id: handle.id,
-      from_id: +value,
+      from_id: +_value,
       to_id: handler.id,
       in: { data: {
         type_id: deep.idLocal('@deep-foundation/core', 'Contain'),
@@ -85,21 +89,27 @@ export const CytoEditorHandlersSupportHandle = React.memo<any>(function CytoEdit
     isLink
     ? (h) => {
       return <Tag size='sm' borderRadius='full' variant='solid'>
-        <TagLabel>{h.from_id}</TagLabel>
+        <TagLabel>{h.from_id} {deep.nameLocal(h.from_id)}</TagLabel>
         <TagCloseButton onClick={() => onDelete(h.id)}/>
       </Tag>;
     }
     : (h) => {
       return <Tag size='sm' borderRadius='full' variant='solid'>
-        <TagLabel>{h.from_id}</TagLabel>
+        <TagLabel>{h.from_id} {deep.nameLocal(h.from_id)}</TagLabel>
         <TagCloseButton onClick={() => onDelete(h.id)}/>
       </Tag>;
     }
   ), [deleting]);
 
+  const PortalProps = useMemo(() => ({
+    containerRef: portalRef,
+  }), []);
+  const [space] = useSpaceId();
+  const [spaceL] = deep.useMinilinksSubscription({ id: space });
+
   const Form = useCallback((
     isLink || isClient
-    ? ({ value, onInsert }: { value: string, onInsert: () => void }) => {
+    ? ({ value, onInsert }: { value: string, onInsert: (id?: number) => void }) => {
       return <InputGroup
         position='absolute' w='100%' 
         size='md' h='100%' left={0} top={0} borderWidth='1px' borderRadius='lg' bgColor='handlersInput'
@@ -121,22 +131,41 @@ export const CytoEditorHandlersSupportHandle = React.memo<any>(function CytoEdit
           value={value}
           onChange={(e) => {
             setValue(e.target.value);
-            console.log('value', value);
           }}
         />
         {value !== '' ? <InputRightElement h='100%'>
           <IconButton
-            size='sm' variant='ghost' onClick={onInsert}
+            size='sm' variant='ghost' onClick={() => onInsert()}
             isLoading={inserting}
             isRound
             aria-label='save and add id'
             icon={<VscCheck />}
           />
-        </InputRightElement> : null}
+        </InputRightElement> : <InputRightElement>
+          <FinderPopover
+            PortalProps={PortalProps}
+            onOpen={() => {
+              clearTimeout(mouseoutRef.current);
+            }}
+            link={spaceL}
+            onSubmit={async (link) => {
+              setValue(link.id);
+              onInsert(link.id);
+            }}
+          >
+            <IconButton
+              isRound
+              aria-label='finder'
+              size='sm'
+              variant='ghost'
+              icon={<>🪬</>}
+            />
+          </FinderPopover>
+        </InputRightElement>}
       </InputGroup>;
     }
     : isPort
-    ? ({ value, onInsert }: { value: string, onInsert: () => void }) => {
+    ? ({ value, onInsert }: { value: string, onInsert: (id?: number) => void }) => {
       return <InputGroup
         position='absolute' w='100%' h='100%' left={0} top={0} borderWidth='1px' borderRadius='lg' bgColor='handlersInput'
         onMouseMove={() => {
@@ -159,7 +188,7 @@ export const CytoEditorHandlersSupportHandle = React.memo<any>(function CytoEdit
         </Menu>
         {value !== '' ? <InputRightElement h='100%'>
           <IconButton
-            size='sm' variant='ghost' onClick={onInsert}
+            size='sm' variant='ghost' onClick={() => onInsert()}
             isLoading={inserting}
             isRound
             aria-label='save and add id'
@@ -168,7 +197,7 @@ export const CytoEditorHandlersSupportHandle = React.memo<any>(function CytoEdit
         </InputRightElement> : null}
       </InputGroup>;
     }
-    : ({ value, onInsert }: { value: string, onInsert: () => void }) => {
+    : ({ value, onInsert }: { value: string, onInsert: (id?: number) => void }) => {
       return <InputGroup
         position='absolute' w='100%' h='100%' left={0} top={0} borderWidth='1px' borderRadius='lg' bgColor='handlersInput'
         onMouseMove={() => {
@@ -189,18 +218,37 @@ export const CytoEditorHandlersSupportHandle = React.memo<any>(function CytoEdit
           value={value}
           onChange={(e) => {
             setValue(e.target.value);
-            console.log('value', value);
           }}
         />
         {value !== '' ? <InputRightElement h='100%'>
           <IconButton
-            size='sm' variant='ghost' onClick={onInsert}
+            size='sm' variant='ghost' onClick={() => onInsert()}
             isLoading={inserting}
             isRound
             aria-label='save and add id'
             icon={<VscCheck />}
           />
-        </InputRightElement> : null}
+        </InputRightElement> : <InputRightElement>
+          <FinderPopover
+            PortalProps={PortalProps}
+            onOpen={() => {
+              clearTimeout(mouseoutRef.current);
+            }}
+            link={spaceL}
+            onSubmit={async (link) => {
+              setValue(link.id);
+              onInsert(link.id);
+            }}
+          >
+            <IconButton
+              isRound
+              aria-label='finder'
+              size='sm'
+              variant='ghost'
+              icon={<>🪬</>}
+            />
+          </FinderPopover>
+        </InputRightElement>}
       </InputGroup>;
     }
   ), []);
@@ -243,10 +291,12 @@ export const CytoEditorHandlersSupport = React.memo<any>(function CytoEditorHand
   support,
   linkId,
   handleredableIds,
+  portalRef,
 }: {
   support: Link<number>;
   linkId: number;
   handleredableIds: number[];
+  portalRef?: any;
 }) {
   const deep = useDeep();
   const { data: handlers } = useDeepSubscription({
@@ -300,7 +350,7 @@ export const CytoEditorHandlersSupport = React.memo<any>(function CytoEditorHand
           <Box borderWidth='2px' borderRadius='lg' borderStyle='dashed' p={2}>
             <Box marginBottom='0.5rem'>
               <Text>Handler:</Text> <Tag size='sm' borderRadius='full' variant='solid'>
-                <TagLabel>{h.id}</TagLabel>
+                <TagLabel>{h.id} {deep.nameLocal(h.id)}</TagLabel>
                 <TagCloseButton onClick={() => onDeleteHandler(h.id)}/>
               </Tag> {h.inByType[deep.idLocal('@deep-foundation/core', 'Contain')]?.[0]?.value?.value || ''}
             </Box>
@@ -313,7 +363,7 @@ export const CytoEditorHandlersSupport = React.memo<any>(function CytoEditorHand
               }}
             >
               {support?.outByType[deep.idLocal('@deep-foundation/core', 'SupportsCompatable')]?.map(({ to: handle }) => (
-                <CytoEditorHandlersSupportHandle support={support} handler={h} handle={handle}/>
+                <CytoEditorHandlersSupportHandle support={support} handler={h} handle={handle} portalRef={portalRef}/>
               ))}
             </Box>
           </Box>
@@ -364,12 +414,15 @@ export const CytoEditorHandlers = React.memo<any>(function CytoEditorHandlers({
     type_id: deep.idLocal('@deep-foundation/core', 'Supports'),
   });
 
+  const portalRef = useRef();
+
   return <>
     <Box position="relative">
+      <div ref={portalRef}/>
       <Box h='100%' w='100%' overflowY="scroll" position="absolute">
         <Accordion allowMultiple>
           {supports?.map((support) => {
-            return <CytoEditorHandlersSupport support={support} linkId={linkId} handleredableIds={handleredableIds}/>;
+            return <CytoEditorHandlersSupport support={support} linkId={linkId} handleredableIds={handleredableIds} portalRef={portalRef}/>;
           })}
         </Accordion>
       </Box>
