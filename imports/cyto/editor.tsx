@@ -210,7 +210,7 @@ export const Item = React.memo(function Item({
           />
         </>}
         {!currentSymbol && <>
-          <Popover>
+          <Popover isLazy>
             <PopoverTrigger>
               <IconButton
                 variant={'solid'}
