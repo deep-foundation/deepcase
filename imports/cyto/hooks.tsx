@@ -867,6 +867,8 @@ export function useCyInitializer({
       }
     };
 
+    let r = -70;
+    let rStep = 33;
     const nodeMenu = ncy.cxtmenu({
       selector: '.link-node',
       menuRadius: function(ele){ return 108; },
@@ -882,7 +884,7 @@ export function useCyInitializer({
       commands: [
         {
           content: 'editor',
-          contentStyle: { fontSize: '0.9rem', transform: 'rotate(70deg)' },
+          contentStyle: { fontSize: '0.9rem', transform: 'rotate('+((r = r - rStep) - 180)+'deg)' },
           select: function(ele){
             const id = ele.data('link')?.id;
             if (id) {
@@ -897,8 +899,8 @@ export function useCyInitializer({
         },
         {
           content: 'unlock',
-          contentStyle: { fontSize: '0.9rem', transform: 'rotate(35deg)' },
-          select: async function(ele){ 
+          contentStyle: { fontSize: '0.9rem', transform: 'rotate('+((r = r - rStep) - 180)+'deg)' },
+          select: async function(ele){
             const id = ele.data('link')?.id;
             if (id) {
               await unfocus(ele);
@@ -908,6 +910,7 @@ export function useCyInitializer({
         },
         {
           content: 'delete',
+          contentStyle: { fontSize: '0.9rem', transform: 'rotate('+((r = r - rStep) - 180)+'deg)' },
           select: async function(ele){ 
             const id = ele.data('link')?.id;
             if (id) {
@@ -919,7 +922,7 @@ export function useCyInitializer({
         },
         {
           content: 'delete down',
-          contentStyle: { fontSize: '0.7rem', transform: 'rotate(-35deg)' },
+          contentStyle: { fontSize: '0.7rem', transform: 'rotate('+((r = r - rStep) - 180)+'deg)' },
           select: async function(ele){ 
             const id = ele.data('link')?.id;
             if (id) {
@@ -938,7 +941,7 @@ export function useCyInitializer({
           ncy,
           setCy,
           content: 'insert',
-          contentStyle: { fontSize: '0.9rem', transform: 'rotate(-70deg)' },
+          contentStyle: { fontSize: '0.9rem', transform: 'rotate('+((r = r - rStep) - 180)+'deg)' },
           select: async function(ele){ 
             const id = ele.data('link')?.id;
             if (id) {
@@ -948,7 +951,7 @@ export function useCyInitializer({
         },
         {
           content: 'update',
-          contentStyle: { fontSize: '0.9rem', transform: 'rotate(70deg)' },
+          contentStyle: { fontSize: '0.9rem', transform: 'rotate('+(r = r - rStep)+'deg)' },
           select: async function(ele) {
             const id = ele.data('link')?.id;
             if (id) {
@@ -958,7 +961,7 @@ export function useCyInitializer({
         },
         {
           content: 'login',
-          contentStyle: { fontSize: '0.9rem', transform: 'rotate(35deg)' },
+          contentStyle: { fontSize: '0.9rem', transform: 'rotate('+(r = r - rStep)+'deg)' },
           select: async function(ele){ 
             const id = ele.data('link')?.id;
             if (id) {
@@ -972,6 +975,7 @@ export function useCyInitializer({
         },
         {
           content: 'space',
+          contentStyle: { fontSize: '0.9rem', transform: 'rotate('+(r = r - rStep)+'deg)' },
           select: async function(ele){ 
             const id = ele.data('link')?.id;
             if (id) {
@@ -982,7 +986,7 @@ export function useCyInitializer({
         },
         {
           content: 'container',
-          contentStyle: { fontSize: '0.9rem', transform: 'rotate(-35deg)' },
+          contentStyle: { fontSize: '0.9rem', transform: 'rotate('+(r = r - rStep)+'deg)' },
           select: async function(ele){ 
             const id = ele.data('link')?.id;
             if (id) {
@@ -992,7 +996,7 @@ export function useCyInitializer({
         },
         {
           content: (ele) => `traveler (${traveler.findTravlers(undefined, ele.data('link')?.id)?.length || 0})`,
-          contentStyle: { fontSize: '0.6rem', transform: 'rotate(-70deg)', paddingLeft: '6px' },
+          contentStyle: { fontSize: '0.6rem', transform: 'rotate('+(r = r - rStep)+'deg)', paddingLeft: '6px' },
           select: async function(ele){
             const id = ele.data('link')?.id;
             if (id) {
@@ -1001,6 +1005,13 @@ export function useCyInitializer({
               await delay(60);
               ele.emit('ctxmenu-travelerMenu-open');
             }
+          }
+        },
+        {
+          content: (ele) => `readme`,
+          contentStyle: { fontSize: '0.6rem', transform: 'rotate('+(r = r - rStep)+'deg)', paddingLeft: '6px' },
+          select: async function(ele){
+            
           }
         },
       ]
