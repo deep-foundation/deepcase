@@ -210,9 +210,9 @@ export function useCytoElements(ml, _links, cy, spaceId, cyh) {
     if (link?.type?.inByType?.[deep.idLocal('@deep-foundation/core', 'Contain')]?.[0]?.value?.value) {
       _type = `type:${link?.type?.inByType?.[deep.idLocal('@deep-foundation/core', 'Contain')]?.[0]?.value?.value}`;
     }
-    if (link?.type?.inByType?.[deep.idLocal('@deep-foundation/core', 'Symbol')]?.[0]?.value?.value) {
-      _symbol = link?.type?.inByType?.[deep.idLocal('@deep-foundation/core', 'Symbol')]?.[0]?.value?.value;
-    }
+    // if (link?.type?.inByType?.[deep.idLocal('@deep-foundation/core', 'Symbol')]?.[0]?.value?.value) {
+      _symbol = link?.type?.inByType?.[deep.idLocal('@deep-foundation/core', 'Symbol')]?.[0]?.value?.value || _symbol;
+    // }
     if (!!cy && (!cyh.drawedCytoHandlers.current[link.id] || !cytoHandlers)) {
       if (((isFocusSpace && showFocus) || !isFocusSpace) && ((isOpenedSpace && showOpened) || !isOpenedSpace)) {
         if (link.from_id) {

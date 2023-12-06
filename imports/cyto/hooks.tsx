@@ -1,4 +1,4 @@
-import { Alert, AlertIcon, Box, Flex, HStack, IconButton, Popover, PopoverContent, PopoverTrigger, SlideFade, Spacer, Spinner, useDisclosure, useToast } from "@chakra-ui/react";
+import { Alert, AlertIcon, Box, Flex, HStack, IconButton, Popover, PopoverContent, PopoverTrigger, Portal, SlideFade, Spacer, Spinner, useDisclosure, useToast } from "@chakra-ui/react";
 import { useDeep, useDeepId, useDeepQuery, useDeepSubscription } from "@deep-foundation/deeplinks/imports/client";
 import { Link, useMinilinksFilter, useMinilinksHandle, useMinilinksQuery } from "@deep-foundation/deeplinks/imports/minilinks";
 import { useDebounceCallback } from "@react-hook/debounce";
@@ -42,6 +42,75 @@ export interface IInsertedLinkProps {
   returningRef?: any;
   insertLinkRef?: any;
 }
+
+export const FinderPopover = React.memo(function FinderPopover({
+    link,
+    onSubmit,
+    onChange,
+    onOpen,
+    onClose,
+    children,
+    PopoverProps = {},
+    PortalProps = {},
+    ClientHandlerProps = {},
+    query = undefined,
+    search = undefined,
+  }: {
+    link: Link<number>;
+    onSubmit: (link) => void;
+    onChange?: (link) => void;
+    onOpen?: () => void;
+    onClose?: () => void;
+    children?: any;
+    PopoverProps?: any;
+    PortalProps?: any;
+    ClientHandlerProps?: any;
+    query?: any;
+    search?: string;
+  }) {
+  const deep = useDeep();
+  const [selectedLink, setSelectedLink] = useState<Link<number>>();
+  const { onOpen: _onOpen, onClose: _onClose, isOpen: _isOpen } = useDisclosure();
+  const { data: Finder } = useDeepId('@deep-foundation/finder', 'Finder');
+  return <Popover
+    isLazy
+    placement='right-start'
+    onOpen={(...args) => (_onOpen(...args),(onOpen && onOpen()))} onClose={(...args) => (_onClose(...args),(onClose && onClose()))} isOpen={_isOpen}
+    {...PopoverProps}
+  >
+    <PopoverTrigger>
+      {children}
+    </PopoverTrigger>
+    <Portal {...PortalProps}>
+      <PopoverContent h={72}>
+        {!!Finder && <ClientHandler fillSize query={query} search={search}
+          link={link} linkId={link?.id} context={[Finder]} ml={deep.minilinks}
+          onChange={l => {
+            onChange && onChange(l);
+            setSelectedLink(l);
+          }}
+          {...(ClientHandlerProps)}
+        />}
+        <SlideFade in={!!selectedLink} offsetX='-0.5rem' style={{position: 'absolute', bottom: 0, right: '-2.8rem'}}>
+          <IconButton
+            isRound
+            variant='solid'
+            bg='primary'
+            // color='white'
+            aria-label='submit button'
+            icon={<BsCheck2 />}
+            onClick={async () => {
+              if (selectedLink) {
+                _onClose && _onClose();
+                onSubmit && onSubmit(selectedLink);
+              }
+            }}
+          />
+        </SlideFade>
+      </PopoverContent>
+    </Portal>
+  </Popover>;
+}, () => true);
 
 export function CytoReactLinksCardInsertNode({
   insertingLink, setInsertingLink,
@@ -415,6 +484,7 @@ export function useLinkInserting(elements = [], reactElements = [], focus, cyRef
     cyRef.current.on('ehcomplete', ehcomplete);
     cyRef.current.on('tap', tap);
     return () => {
+      if (!cyRef.current) return;
       cyRef.current.removeListener('ehstop', ehstop);
       cyRef.current.removeListener('ehcomplete', ehcomplete);
       cyRef.current.removeListener('tap', tap);
@@ -797,6 +867,8 @@ export function useCyInitializer({
       }
     };
 
+    let r = -70;
+    let rStep = 33;
     const nodeMenu = ncy.cxtmenu({
       selector: '.link-node',
       menuRadius: function(ele){ return 108; },
@@ -812,7 +884,7 @@ export function useCyInitializer({
       commands: [
         {
           content: 'editor',
-          contentStyle: { fontSize: '0.9rem', transform: 'rotate(70deg)' },
+          contentStyle: { fontSize: '0.9rem', transform: 'rotate('+((r = r - rStep) - 180)+'deg)' },
           select: function(ele){
             const id = ele.data('link')?.id;
             if (id) {
@@ -827,8 +899,8 @@ export function useCyInitializer({
         },
         {
           content: 'unlock',
-          contentStyle: { fontSize: '0.9rem', transform: 'rotate(35deg)' },
-          select: async function(ele){ 
+          contentStyle: { fontSize: '0.9rem', transform: 'rotate('+((r = r - rStep) - 180)+'deg)' },
+          select: async function(ele){
             const id = ele.data('link')?.id;
             if (id) {
               await unfocus(ele);
@@ -838,6 +910,7 @@ export function useCyInitializer({
         },
         {
           content: 'delete',
+          contentStyle: { fontSize: '0.9rem', transform: 'rotate('+((r = r - rStep) - 180)+'deg)' },
           select: async function(ele){ 
             const id = ele.data('link')?.id;
             if (id) {
@@ -849,7 +922,7 @@ export function useCyInitializer({
         },
         {
           content: 'delete down',
-          contentStyle: { fontSize: '0.7rem', transform: 'rotate(-35deg)' },
+          contentStyle: { fontSize: '0.7rem', transform: 'rotate('+((r = r - rStep) - 180)+'deg)' },
           select: async function(ele){ 
             const id = ele.data('link')?.id;
             if (id) {
@@ -868,7 +941,7 @@ export function useCyInitializer({
           ncy,
           setCy,
           content: 'insert',
-          contentStyle: { fontSize: '0.9rem', transform: 'rotate(-70deg)' },
+          contentStyle: { fontSize: '0.9rem', transform: 'rotate('+((r = r - rStep) - 180)+'deg)' },
           select: async function(ele){ 
             const id = ele.data('link')?.id;
             if (id) {
@@ -878,7 +951,7 @@ export function useCyInitializer({
         },
         {
           content: 'update',
-          contentStyle: { fontSize: '0.9rem', transform: 'rotate(70deg)' },
+          contentStyle: { fontSize: '0.9rem', transform: 'rotate('+(r = r - rStep)+'deg)' },
           select: async function(ele) {
             const id = ele.data('link')?.id;
             if (id) {
@@ -888,7 +961,7 @@ export function useCyInitializer({
         },
         {
           content: 'login',
-          contentStyle: { fontSize: '0.9rem', transform: 'rotate(35deg)' },
+          contentStyle: { fontSize: '0.9rem', transform: 'rotate('+(r = r - rStep)+'deg)' },
           select: async function(ele){ 
             const id = ele.data('link')?.id;
             if (id) {
@@ -902,6 +975,7 @@ export function useCyInitializer({
         },
         {
           content: 'space',
+          contentStyle: { fontSize: '0.9rem', transform: 'rotate('+(r = r - rStep)+'deg)' },
           select: async function(ele){ 
             const id = ele.data('link')?.id;
             if (id) {
@@ -912,7 +986,7 @@ export function useCyInitializer({
         },
         {
           content: 'container',
-          contentStyle: { fontSize: '0.9rem', transform: 'rotate(-35deg)' },
+          contentStyle: { fontSize: '0.9rem', transform: 'rotate('+(r = r - rStep)+'deg)' },
           select: async function(ele){ 
             const id = ele.data('link')?.id;
             if (id) {
@@ -922,7 +996,7 @@ export function useCyInitializer({
         },
         {
           content: (ele) => `traveler (${traveler.findTravlers(undefined, ele.data('link')?.id)?.length || 0})`,
-          contentStyle: { fontSize: '0.6rem', transform: 'rotate(-70deg)', paddingLeft: '6px' },
+          contentStyle: { fontSize: '0.6rem', transform: 'rotate('+(r = r - rStep)+'deg)', paddingLeft: '6px' },
           select: async function(ele){
             const id = ele.data('link')?.id;
             if (id) {
@@ -931,6 +1005,13 @@ export function useCyInitializer({
               await delay(60);
               ele.emit('ctxmenu-travelerMenu-open');
             }
+          }
+        },
+        {
+          content: (ele) => `readme`,
+          contentStyle: { fontSize: '0.6rem', transform: 'rotate('+(r = r - rStep)+'deg)', paddingLeft: '6px' },
+          select: async function(ele){
+            
           }
         },
       ]

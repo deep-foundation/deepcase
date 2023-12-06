@@ -1,6 +1,6 @@
 {
   "name": "@deep-foundation/deepcase",
-  "version": "0.0.96",
+  "version": "0.0.98",
   "license": "Unlicense",
   "type": "module",
   "keywords": [
@@ -15,6 +15,7 @@
     "package:watch": "tsc -w --project tsconfig.json"
   },
   "dependencies": {
+    "@amcharts/amcharts5": "^5.5.1",
     "@apollo/client": "^3.7.14",
     "@belivvr/aframe-react": "^0.4.2",
     "@capacitor/core": "^5.0.4",
@@ -22,7 +23,7 @@
     "@chakra-ui/react": "^2.6.1",
     "@chakra-ui/theme-tools": "^2.0.16",
     "@deep-foundation/core": "~0.0.2",
-    "@deep-foundation/deeplinks": "^0.0.302",
+    "@deep-foundation/deeplinks": "^0.0.322",
     "@deep-foundation/tsx": "~0.0.3",
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
@@ -83,6 +84,7 @@
     "react-i18next": "^13.2.2",
     "react-icons": "^4.8.0",
     "react-linkify": "^1.0.0-alpha",
+    "react-multi-date-picker": "^4.4.1",
     "react-resize-detector": "^9.1.0",
     "react-yandex-metrika": "^2.6.0",
     "recharts": "^2.8.0",
@@ -104,7 +106,7 @@
     "react": "*"
   },
   "devDependencies": {
-    "@deep-foundation/npm-automation": "^18.1.10",
+    "@deep-foundation/npm-automation": "^18.1.11",
     "depcheck": "^1.4.3",
     "ts-node": "^10.9.1"
   }

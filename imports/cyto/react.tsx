@@ -30,7 +30,7 @@ const aligns = [
   100 * (align[valignBox] - 0.5)
 ];
 
-export function CytoReactLayout({
+export const CytoReactLayout = React.memo(function CytoReactLayout({
   cy,
   elements = [],
   generateId = defaultGenerateId,
@@ -134,4 +134,4 @@ export function CytoReactLayout({
       </div>;
     })}
   </div>;
-}
+});

@@ -3,7 +3,7 @@ import * as icons from '@chakra-ui/icons';
 import dynamic from 'next/dynamic';
 import { DeepClient, useDeep, useDeepSubscription } from "@deep-foundation/deeplinks/imports/client";
 import { evalClientHandler as deepclientEvalClientHandler } from '@deep-foundation/deeplinks/imports/client-handler';
-import { useMinilinksFilter } from "@deep-foundation/deeplinks/imports/minilinks";
+import { useMinilinksFilter, useMinilinksSubscription } from "@deep-foundation/deeplinks/imports/minilinks";
 import axios from 'axios';
 import * as axiosHooks from 'axios-hooks';
 import * as classnames from 'classnames';
@@ -57,11 +57,106 @@ import * as LanguageDetector from 'i18next-browser-languagedetector';
 import * as reacti18next from "react-i18next";
 const MonacoEditor = dynamic(() => import('@monaco-editor/react').then(m => m.default), { ssr: false });
 
+export const ClientHandler = React.memo(function ClientHandler(_props: ClientHandlerProps) {
+  const {
+    linkId,
+    handlerId,
+    context = [],
+    ml,
+    onClose,
+    fillSize,
+    error: outerError,
+    ...props
+  } = _props;
+  const deep = useDeep();
+  const _ml = ml || deep?.minilinks;
+  const hid = useFindClientHandler(_props);
+  const { data: files } = useDeepSubscription({
+    id: hid?.dist_id || 0,
+  });
+  const file = files?.[0];
+
+  const [{ Component, errored } = {} as any, setState] = React.useState<any>({ Component: undefined, errored: undefined });
+
+  // console.log('ClientHandler root', { linkId, handlerId, context, file, hid, files, Component });
+  const lastEvalRef = useRef(0);
+  useEffect(() => {
+    if (!hid) return;
+    const value = file?.value?.value;
+    console.log('ClientHandler evalClientHandler', { linkId, handlerId, context, file, value, hid, files });
+    if (!value) {
+      return;
+    }
+    const evalId = ++lastEvalRef.current;
+    evalClientHandler({ value, deep }).then(({ data, error }) => {
+      if (evalId === lastEvalRef.current) {
+        console.log('ClientHandler evalClientHandler setState', { file, data, error });
+        if (!error) {
+          setState(() => ({ Component: data }));
+          erroredResetRef?.current && (erroredResetRef?.current(), erroredResetRef.current = undefined);
+        }
+        else {
+          setErrorRef.current && setErrorRef.current(error);
+          setState({ Component: undefined, errored: error });
+        }
+      } else {
+        console.log('ClientHandler evalClientHandler outdated', { file, data, error, evalId, 'lastEvalRef.current': lastEvalRef.current });
+      }
+    });
+  }, [file?.value?.value, hid]);
+
+  const erroredResetRef = useRef<any>();
+  const setErrorRef = useRef<any>();
+
+  return (<>
+    <CatchErrors
+      error={errored || outerError}
+      errorRenderer={(error, reset) => {
+        erroredResetRef.current = reset;
+        return <div
+          style={{
+            ...(fillSize ? { width: '100%', height: '100%' } : {
+              width: 500, maxHeight: 500
+            }),
+            overflow: 'scroll',
+          }}
+        ><chakra.Alert
+          style={{
+            width: 'max-content',
+          }}
+          status='error'
+          variant='subtle'
+          flexDirection='column'
+          alignItems='left'
+          justifyContent='left'
+          textAlign='left'
+        >
+          <chakra.Button disabled={!Component} width="100%" onClick={reset}>reset</chakra.Button>
+          <chakra.AlertIcon />
+          <chakra.AlertTitle>{error?.message || (error || '')?.toString()}</chakra.AlertTitle>
+          {!!error?.stack && <chakra.AlertDescription>
+            <pre>{error?.stack}</pre>
+          </chakra.AlertDescription>}
+        </chakra.Alert></div>
+      }}
+      onMounted={(setError) => setErrorRef.current = setError}
+      >
+      {(typeof (Component) === 'function') ? <>
+        {[<ClientHandlerRenderer key={Component.toString()} Component={Component} {...props} fillSize={fillSize} link={_ml.byId[linkId]} ml={_ml} onClose={onClose} />]}
+      </> : <></>}
+    </CatchErrors>
+  </>);
+});
+
 DeepClient.resolveDependency = async (path: string) : Promise<any> => {
   if (path == 'peerjs') {
     return await import('peerjs');
   } else if (path == 'emoji-picker-react') {
     return await import('emoji-picker-react');
+  } else if (path == 'react-device-detect') {
+    return await import('react-device-detect');
+  } else if (path == 'react-multi-date-picker') {
+    return await import('react-multi-date-picker');
   } else if (path == 'node-sound') {
     return await import('./aframe/components/node-sound');
   } else if (path == 'dragger') {
@@ -78,6 +173,10 @@ DeepClient.resolveDependency = async (path: string) : Promise<any> => {
     return await import('aframe-extras');
   } else if (path == 'aframe') {
     return await import('aframe');
+  } else if (path == '@amcharts/amcharts5') {
+    return await import('@amcharts/amcharts5');
+  } else if (path == '@amcharts/amcharts5/wc') {
+    return await import('@amcharts/amcharts5/wc');
   } else {
     return r(path);
   }
@@ -196,7 +295,7 @@ export interface ClientHandlerRendererProps {
   [key: string]: any;
 };
 
-export function ClientHandlerRenderer({
+export const ClientHandlerRenderer = React.memo(function ClientHandlerRenderer({
   Component,
   fillSize = false,
   onClose,
@@ -211,7 +310,7 @@ export function ClientHandlerRenderer({
       ...props?.style,
     }}
   />}</>;
-}
+});
 
 export interface ClientHandlerProps extends Partial<ClientHandlerRendererProps> {
   linkId: number;
@@ -257,95 +356,4 @@ export function useFindClientHandler({
     }
   })(); }, [context, handlerId, hid]);
   return hid;
-}
-
-export function ClientHandler(_props: ClientHandlerProps) {
-  const {
-    linkId,
-    handlerId,
-    context = [],
-    ml,
-    onClose,
-    fillSize,
-    error: outerError,
-    ...props
-  } = _props;
-  const deep = useDeep();
-  const _ml = ml || deep?.minilinks;
-  const hid = useFindClientHandler(_props);
-  const { data: files } = useDeepSubscription({
-    id: hid?.dist_id || 0,
-  });
-  const file = files?.[0];
-
-  const [{ Component, errored } = {} as any, setState] = React.useState<any>({ Component: undefined, errored: undefined });
-
-  // console.log('ClientHandler root', { linkId, handlerId, context, file, hid, files, Component });
-  const lastEvalRef = useRef(0);
-  useEffect(() => {
-    if (!hid) return;
-    const value = file?.value?.value;
-    console.log('ClientHandler evalClientHandler', { linkId, handlerId, context, file, value, hid, files });
-    if (!value) {
-      return;
-    }
-    const evalId = ++lastEvalRef.current;
-    evalClientHandler({ value, deep }).then(({ data, error }) => {
-      if (evalId === lastEvalRef.current) {
-        console.log('ClientHandler evalClientHandler setState', { file, data, error });
-        if (!error) {
-          setState(() => ({ Component: data }));
-          erroredResetRef?.current && (erroredResetRef?.current(), erroredResetRef.current = undefined);
-        }
-        else {
-          setErrorRef.current && setErrorRef.current(error);
-          setState({ Component: undefined, errored: error });
-        }
-      } else {
-        console.log('ClientHandler evalClientHandler outdated', { file, data, error, evalId, 'lastEvalRef.current': lastEvalRef.current });
-      }
-    });
-  }, [file?.value?.value, hid]);
-
-  const erroredResetRef = useRef<any>();
-  const setErrorRef = useRef<any>();
-
-  return (<>
-    <CatchErrors
-      error={errored || outerError}
-      errorRenderer={(error, reset) => {
-        erroredResetRef.current = reset;
-        return <div
-          style={{
-            ...(fillSize ? { width: '100%', height: '100%' } : {
-              width: 500, maxHeight: 500
-            }),
-            overflow: 'scroll',
-          }}
-        ><chakra.Alert
-          style={{
-            width: 'max-content',
-          }}
-          status='error'
-          variant='subtle'
-          flexDirection='column'
-          alignItems='left'
-          justifyContent='left'
-          textAlign='left'
-        >
-          <chakra.Button disabled={!Component} width="100%" onClick={reset}>reset</chakra.Button>
-          <chakra.AlertIcon />
-          <chakra.AlertTitle>{error?.message || (error || '')?.toString()}</chakra.AlertTitle>
-          {!!error?.stack && <chakra.AlertDescription>
-            <pre>{error?.stack}</pre>
-          </chakra.AlertDescription>}
-        </chakra.Alert></div>
-      }}
-      onMounted={(setError) => setErrorRef.current = setError}
-      >
-      {(typeof (Component) === 'function') ? <>
-        {[<ClientHandlerRenderer key={Component.toString()} Component={Component} {...props} fillSize={fillSize} link={_ml.byId[linkId]} ml={_ml} onClose={onClose} />]}
-      </> : <></>}
-    </CatchErrors>
-  </>);
 }
