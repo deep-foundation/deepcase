@@ -25,7 +25,8 @@ export const DeepLoaderActive = React.memo(function DeepLoaderActive({
   const deep = useDeep();
   const subQuery = useMemo(() => {
     const v = (queryLink?.value?.value);
-    const variables = deep.serializeQuery(v);
+    // @ts-ignore
+    const variables = deep.serializeQuery(v, 'links', deep?.unvertualizeId);
     const where = variables?.where;
     return generateQuery({
       operation: subscription ? 'subscription' : 'query',

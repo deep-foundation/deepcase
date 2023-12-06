@@ -89,7 +89,7 @@ export const CytoReactLayout = React.memo(function CytoReactLayout({
           stl.msTransform = val;
           stl.transform = val;
         }
-        cy.$(`#id`).style({ });
+        cy.$(`#${id}`).style({ });
       }
     }
 
