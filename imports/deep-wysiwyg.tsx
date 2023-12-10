@@ -71,6 +71,7 @@ interface BaseProps {
 };
 
 interface IEditor {
+  disabled?: boolean;
   fillSize?: boolean; 
   topmenu?: boolean;
   borderRadiusEditor?: number;
@@ -85,6 +86,8 @@ interface IEditor {
   width?: string;
   borderColorEditor?: any;
   backgroundColorEditor?: any;
+  EditableProps?: any;
+  SlateProps?: any;
 };
 
 type BulletedListElement = {
@@ -396,9 +399,10 @@ var check = (el) => (
 );
 
   // Only objects editor.
-export const DeepWysiwyg = React.memo<any>(({ 
+export const DeepWysiwyg = React.memo<any>(function DeepWysiwyg({ 
   fillSize,
-  topmenu,
+  disabled = false,
+  topmenu = true,
   borderRadiusEditor = 0.5,
   borderWidthEditor = 'thin',
   paddingEditor = 1,
@@ -416,7 +420,9 @@ export const DeepWysiwyg = React.memo<any>(({
   autoFocus = false,
   borderColorEditor,
   backgroundColorEditor,
-}:IEditor) => {
+  EditableProps = {},
+  SlateProps = {},
+}:IEditor) {
   const _value = useMemo(() => {
     if (typeof(value) === 'string' && !!value) {
       const sl = htmlToSlate(value);
@@ -437,7 +443,7 @@ export const DeepWysiwyg = React.memo<any>(({
   const boxControl = useAnimation();
 
   useEffect(() => {
-    if (topmenu) {
+    if (!topmenu) {
       control.start('hide');
       boxControl.start('hide');
     } else {
@@ -491,7 +497,6 @@ export const DeepWysiwyg = React.memo<any>(({
 
   const state = State.create(MarkdownParser);
   const document = state.deserializeToDocument('Hello **World**');
-  console.log('document', document);
 
   return (<Box 
       // as={motion.div} animate={boxControl} variants={boxVariants} initial='initial'
@@ -511,56 +516,59 @@ export const DeepWysiwyg = React.memo<any>(({
             slateValue: value,
           });
         }}
+        {...SlateProps}
       >
         <FocusCatcher
           onFocusChanged={onFocusChanged}
         />
-        <Box 
-          as={motion.div} animate={control} 
-          // @ts-ignore
-          variants={topmenuVariants} 
-          initial='initial'
-          display='flex'
-          overflowX='scroll'
-          gap='0.5rem'
-          sx={{  
-            backgroundColor: 'handlersInput',
-            borderLeftWidth: 'thin', 
-            borderTopWidth: 'thin', 
-            borderRightWidth: 'thin', 
-            borderLeftColor: 'borderColor', 
-            borderTopColor: 'borderColor', 
-            borderRightColor: 'borderColor', 
-            borderRadius: '0.5rem', 
-            padding: '0.5rem', 
-            '& > *:hover': {
-              transform: 'scale(1.15)'
-            }
-        }}> 
-          <MarkButton colorMode={colorMode} icon={<FiBold style={{padding: '0.2rem'}} />} format='bold' />
-          <MarkButton colorMode={colorMode} icon={<FiItalic style={{padding: '0.2rem'}} />} format="italic" />
-          <MarkButton colorMode={colorMode} icon={<FiUnderline style={{padding: '0.2rem'}} />} format="underline" />
-          <MarkButton colorMode={colorMode} icon={<FiCode style={{padding: '0.2rem'}} />} format="code" />
-          
-          <BlockButton colorMode={colorMode} format="heading-one" icon={<TbNumber1 style={{padding: '0.2rem'}} />} />
-          <BlockButton colorMode={colorMode} format="heading-two" icon={<TbNumber2 style={{padding: '0.2rem'}} />} />
-          <BlockButton 
-            colorMode={colorMode} 
-            format="block-quote" 
-            icon={<TbQuote style={{padding: '0.2rem'}} />} 
-            setColor={() => setColor(random)}
-          />
-          <BlockButton colorMode={colorMode} format="numbered-list" icon={<TbListNumbers style={{padding: '0.2rem'}} />} />
-          <BlockButton colorMode={colorMode} format="bulleted-list" icon={<TbList style={{padding: '0.2rem'}} />} />
-          <BlockButton colorMode={colorMode} format="left" icon={<CiTextAlignLeft style={{padding: '0.2rem'}} />} />
-          <BlockButton colorMode={colorMode} format="center" icon={<CiTextAlignCenter style={{padding: '0.2rem'}} />} />
-          <BlockButton colorMode={colorMode} format="right" icon={<CiTextAlignRight style={{padding: '0.2rem'}} />} />
-          <BlockButton colorMode={colorMode} format="justify" icon={<CiTextAlignJustify style={{padding: '0.2rem'}} />} />
-          <BlockButton colorMode={colorMode} format="client-handler" icon={<CiPenpot style={{padding: '0.2rem'}} />} />
-          <BlockButton colorMode={colorMode} format="code-editor" icon={<TbBrandVscode style={{padding: '0.2rem'}} />} />
-        </Box>
+        {!!topmenu && <>
+          <Box 
+            as={motion.div} animate={control} 
+            // @ts-ignore
+            variants={topmenuVariants} 
+            initial='initial'
+            display='flex'
+            overflowX='scroll'
+            gap='0.5rem'
+            sx={{  
+              backgroundColor: 'handlersInput',
+              borderLeftWidth: 'thin', 
+              borderTopWidth: 'thin', 
+              borderRightWidth: 'thin', 
+              borderLeftColor: 'borderColor', 
+              borderTopColor: 'borderColor', 
+              borderRightColor: 'borderColor', 
+              borderRadius: '0.5rem', 
+              padding: '0.5rem', 
+              '& > *:hover': {
+                transform: 'scale(1.15)'
+              }
+          }}> 
+            <MarkButton colorMode={colorMode} icon={<FiBold style={{padding: '0.2rem'}} />} format='bold' />
+            <MarkButton colorMode={colorMode} icon={<FiItalic style={{padding: '0.2rem'}} />} format="italic" />
+            <MarkButton colorMode={colorMode} icon={<FiUnderline style={{padding: '0.2rem'}} />} format="underline" />
+            <MarkButton colorMode={colorMode} icon={<FiCode style={{padding: '0.2rem'}} />} format="code" />
+            
+            <BlockButton colorMode={colorMode} format="heading-one" icon={<TbNumber1 style={{padding: '0.2rem'}} />} />
+            <BlockButton colorMode={colorMode} format="heading-two" icon={<TbNumber2 style={{padding: '0.2rem'}} />} />
+            <BlockButton 
+              colorMode={colorMode} 
+              format="block-quote" 
+              icon={<TbQuote style={{padding: '0.2rem'}} />} 
+              setColor={() => setColor(random)}
+            />
+            <BlockButton colorMode={colorMode} format="numbered-list" icon={<TbListNumbers style={{padding: '0.2rem'}} />} />
+            <BlockButton colorMode={colorMode} format="bulleted-list" icon={<TbList style={{padding: '0.2rem'}} />} />
+            <BlockButton colorMode={colorMode} format="left" icon={<CiTextAlignLeft style={{padding: '0.2rem'}} />} />
+            <BlockButton colorMode={colorMode} format="center" icon={<CiTextAlignCenter style={{padding: '0.2rem'}} />} />
+            <BlockButton colorMode={colorMode} format="right" icon={<CiTextAlignRight style={{padding: '0.2rem'}} />} />
+            <BlockButton colorMode={colorMode} format="justify" icon={<CiTextAlignJustify style={{padding: '0.2rem'}} />} />
+            <BlockButton colorMode={colorMode} format="client-handler" icon={<CiPenpot style={{padding: '0.2rem'}} />} />
+            <BlockButton colorMode={colorMode} format="code-editor" icon={<TbBrandVscode style={{padding: '0.2rem'}} />} />
+          </Box>
+        </>}
         {/* <Box > */}
-          <Editable 
+          <Editable
             style={{ 
               borderWidth: borderWidthEditor, 
               borderColor: borderColorEditor,
@@ -569,6 +577,7 @@ export const DeepWysiwyg = React.memo<any>(({
               backgroundColor: backgroundColorEditor,
             }}
             spellCheck
+            readOnly={!!disabled}
             autoFocus={autoFocus}
             renderElement={renderElement}
             renderLeaf={renderLeaf}
@@ -582,6 +591,7 @@ export const DeepWysiwyg = React.memo<any>(({
               }
               handleKeyPress
             }}
+            {...EditableProps}
           />
         {/* </Box> */}
       </Slate>
