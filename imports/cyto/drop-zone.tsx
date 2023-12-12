@@ -21,7 +21,7 @@ export const CytoDropZone = React.memo(function CytoDropZone({
     children,
   }) => (
     <Box>
-      <Box {...getRootProps({})} onClick={() => {}} position="fixed" left={0} top={0} w={'100%'} h={'100%'} bg={
+      <Box {...getRootProps({})} onClick={() => {}} position="absolute" left={0} top={0} w={'100%'} h={'100%'} bg={
         isDragActive ? 'blue' : isDragAccept ? 'green' : isDragReject ? 'red' : 'transparent'
       }>
         {input}
