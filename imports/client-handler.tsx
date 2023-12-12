@@ -55,6 +55,8 @@ import * as recharts from 'recharts';
 import * as i18n from "i18next";
 import * as LanguageDetector from 'i18next-browser-languagedetector';
 import * as reacti18next from "react-i18next";
+import CytoGraph from '@deep-foundation/deepcase/imports/cyto/graph';
+
 const MonacoEditor = dynamic(() => import('@monaco-editor/react').then(m => m.default), { ssr: false });
 
 export const ClientHandler = React.memo(function ClientHandler(_props: ClientHandlerProps) {
@@ -238,6 +240,7 @@ r.list = {
     useRefAutofill,
     useChackraColor,
     useChackraGlobal,
+    CytoGraph,
   },
   '@deep-foundation/deeplinks': {
     useMinilinksFilter

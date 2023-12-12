@@ -22,7 +22,7 @@ import { Text, useToast } from '@chakra-ui/react';
 import dynamic from 'next/dynamic';
 import pckg from '../../package.json';
 import { useContainer, useCytoViewport, useFocusMethods, useInsertingCytoStore, useLayout, useRefAutofill, useShowExtra, useShowTypes, useSpaceId, useLayoutAnimation } from '../hooks';
-import { Refstater } from '../refstater';
+import { Refstater, useRefstarter } from '../refstater';
 import { CytoDropZone } from './drop-zone';
 import { CytoEditor } from './editor';
 import { useCytoElements } from './elements';
@@ -91,16 +91,21 @@ export function useCytoFocusMethods(cy) {
 
 export default function CytoGraph({
   links = [],
-  cytoViewportRef,
+  cytoViewportRef: _cytoViewportRef,
   cyRef,
-  gqlPath,
-  gqlSsl,
+  gqlPath: _gqlPath,
+  gqlSsl: _gqlSsl,
   appVersion = '',
 }: CytoGraphProps){
   console.log('https://github.com/deep-foundation/deepcase-app/issues/236', 'CytoGraph', 'links', links);
+  const deep = useDeep();
+  const __cytoViewportRef = useRefstarter<{ pan: { x: number; y: number; }; zoom: number }>();
+  const cytoViewportRef = _cytoViewportRef || __cytoViewportRef;
+
+  const gqlPath = _gqlPath || deep?.client?.path;
+  const gqlSsl = _gqlSsl || deep?.client?.ssl;
 
   // console.time('CytoGraph');
-  const deep = useDeep();
   const [spaceId, setSpaceId] = useSpaceId();
   const [container, setContainer] = useContainer();
   const [extra, setExtra] = useShowExtra();
