@@ -95,6 +95,7 @@ export default function CytoGraph({
   gqlPath: _gqlPath,
   gqlSsl: _gqlSsl,
   children = null,
+  useCytoViewport: _useCytoViewport = useState,
 }: CytoGraphProps){
   console.log('https://github.com/deep-foundation/deepcase-app/issues/236', 'CytoGraph', 'links', links);
   const deep = useDeep();
@@ -140,7 +141,7 @@ export default function CytoGraph({
 
   const returning = (<>
     <CytoHandlers handled={cytoHandled} elementsById={elementsById} onChange={onChange}/>
-    <Refstater useHook={useCytoViewport as any} stateRef={cytoViewportRef}/>
+    <Refstater useHook={_useCytoViewport as any} stateRef={cytoViewportRef}/>
     <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} ref={rootRef}>
       <CytoDropZone
         cy={cy}

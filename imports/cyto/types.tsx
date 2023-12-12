@@ -7,4 +7,5 @@ export interface CytoGraphProps {
   gqlPath: string;
   gqlSsl: boolean;
   children?: any;
+  useCytoViewport?: any;
 };
