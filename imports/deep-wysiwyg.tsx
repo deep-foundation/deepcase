@@ -77,7 +77,7 @@ interface IEditor {
   borderRadiusEditor?: number;
   borderWidthEditor?: string;
   paddingEditor?: number;
-  handleKeyPress?: () => any;
+  handleKeyPress?: (event: any) => any;
   onChange?: (result: { value: string; slateValue: any; }) => any;
   value?: string;
   initialValue: any;
@@ -88,6 +88,7 @@ interface IEditor {
   backgroundColorEditor?: any;
   EditableProps?: any;
   SlateProps?: any;
+  [key: string]: any;
 };
 
 type BulletedListElement = {
@@ -422,6 +423,7 @@ export const DeepWysiwyg = React.memo<any>(function DeepWysiwyg({
   backgroundColorEditor,
   EditableProps = {},
   SlateProps = {},
+  ...props
 }:IEditor) {
   const _value = useMemo(() => {
     if (typeof(value) === 'string' && !!value) {
@@ -505,6 +507,7 @@ export const DeepWysiwyg = React.memo<any>(function DeepWysiwyg({
         '& > * > *:nth-of-type(2)': {
         }
       }}
+      {...props}
     >
       <Slate 
         editor={editor} 
@@ -589,7 +592,7 @@ export const DeepWysiwyg = React.memo<any>(function DeepWysiwyg({
                   toggleMark(editor, mark)
                 }
               }
-              handleKeyPress
+              handleKeyPress && handleKeyPress(event);
             }}
             {...EditableProps}
           />
