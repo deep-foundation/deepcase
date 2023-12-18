@@ -14,7 +14,7 @@ import { TbArrowRotaryFirstRight } from "react-icons/tb";
 import { ClientHandler } from "../client-handler";
 
 const ListLayout = React.memo<any>(({ 
-  currentLayout = 'cola',
+  currentLayout = 'deep-d3-force',
   setCurrentLayout,
 }:{
   currentLayout?: string;
