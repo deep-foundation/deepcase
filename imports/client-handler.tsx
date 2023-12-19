@@ -55,9 +55,12 @@ import * as recharts from 'recharts';
 import * as i18n from "i18next";
 import * as LanguageDetector from 'i18next-browser-languagedetector';
 import * as reacti18next from "react-i18next";
+import { packageLog } from '../package-log';
 const MonacoEditor = dynamic(() => import('@monaco-editor/react').then(m => m.default), { ssr: false });
 
 export const ClientHandler = React.memo(function ClientHandler(_props: ClientHandlerProps) {
+  const log = packageLog.extend(ClientHandler.name);
+  log({_props})
   const {
     linkId,
     handlerId,
@@ -71,10 +74,13 @@ export const ClientHandler = React.memo(function ClientHandler(_props: ClientHan
   const deep = useDeep();
   const _ml = ml || deep?.minilinks;
   const hid = useFindClientHandler(_props);
+  log({hid})
   const { data: files } = useDeepSubscription({
     id: hid?.dist_id || 0,
   });
+  log({files})
   const file = files?.[0];
+  log({file})
 
   const [{ Component, errored } = {} as any, setState] = React.useState<any>({ Component: undefined, errored: undefined });
 
