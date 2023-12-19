@@ -634,6 +634,7 @@ export const CytoEditor = React.memo(function CytoEditor() {
             rightArea === 'results' && <EditorResults id={tab.id} />
           }
           editorRightSwitch={<EditorSwitcher
+            portalRef={portalRef}
             fillSize={fillSize}
             setFillSize={(newFillSize) => {
               setFillSize(newFillSize);

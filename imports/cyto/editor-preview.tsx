@@ -113,8 +113,10 @@ export function CytoEditorPreview({
 
   const [switcher, setSwitch] = useState(true);
   const switchProps = switcher ? { left: 0 } : { right: 0 };
+  const portalRef = useRef();
 
   return <>
+    <div ref={portalRef}/>
     <EditorGrid
       heightEditorGrid='100%'
       columns={switcher ? '15% 85%' : '85% 15%'}
@@ -202,6 +204,7 @@ export function CytoEditorPreview({
         </Box>
       }
       editorRightSwitch={<EditorSwitcher
+        portalRef={portalRef}
         fillSize={fillSize}
         setFillSize={(newFillSize) => {
           setFillSize(newFillSize);

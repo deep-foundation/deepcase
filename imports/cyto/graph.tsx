@@ -20,9 +20,8 @@ import edgehandles from 'cytoscape-edgehandles';
 // import cytoscapeLasso from 'cytoscape-lasso';
 import { Text, useToast } from '@chakra-ui/react';
 import dynamic from 'next/dynamic';
-import pckg from '../../package.json';
 import { useContainer, useCytoViewport, useFocusMethods, useInsertingCytoStore, useLayout, useRefAutofill, useShowExtra, useShowTypes, useSpaceId, useLayoutAnimation } from '../hooks';
-import { Refstater } from '../refstater';
+import { Refstater, useRefstarter } from '../refstater';
 import { CytoDropZone } from './drop-zone';
 import { CytoEditor } from './editor';
 import { useCytoElements } from './elements';
@@ -91,16 +90,22 @@ export function useCytoFocusMethods(cy) {
 
 export default function CytoGraph({
   links = [],
-  cytoViewportRef,
+  cytoViewportRef: _cytoViewportRef,
   cyRef,
-  gqlPath,
-  gqlSsl,
-  appVersion = '',
+  gqlPath: _gqlPath,
+  gqlSsl: _gqlSsl,
+  children = null,
+  useCytoViewport: _useCytoViewport = useState,
 }: CytoGraphProps){
   console.log('https://github.com/deep-foundation/deepcase-app/issues/236', 'CytoGraph', 'links', links);
+  const deep = useDeep();
+  const __cytoViewportRef = useRefstarter<{ pan: { x: number; y: number; }; zoom: number }>();
+  const cytoViewportRef = _cytoViewportRef || __cytoViewportRef;
+
+  const gqlPath = _gqlPath || deep?.client?.path;
+  const gqlSsl = _gqlSsl || deep?.client?.ssl;
 
   // console.time('CytoGraph');
-  const deep = useDeep();
   const [spaceId, setSpaceId] = useSpaceId();
   const [container, setContainer] = useContainer();
   const [extra, setExtra] = useShowExtra();
@@ -112,6 +117,7 @@ export default function CytoGraph({
   const [cy, setCy] = useState<any>();
   cyRef.current = cy;
   const ehRef = useRef<any>();
+  const rootRef = useRef();
 
   const cyh = useCytoHandlers();
   const { cytoHandlersRef, iterator, onChange } = cyh;
@@ -126,17 +132,17 @@ export default function CytoGraph({
   const resultStylesheets = [ ...stylesheets, ...newStylesheets ];
 
   const { onLoaded } = useCyInitializer({
-    elementsRef, elements, reactElements, cyRef, setCy, ehRef, cytoViewportRef
+    elementsRef, elements, reactElements, cyRef, setCy, ehRef, cytoViewportRef,
+    rootRef,
   });
 
   const { layout, setLayout } = useLayout();
   const [ layoutAnimation ] = useLayoutAnimation();
-  const [cytoEditor, setCytoEditor] = useCytoEditor();
 
   const returning = (<>
     <CytoHandlers handled={cytoHandled} elementsById={elementsById} onChange={onChange}/>
-    <Refstater useHook={useCytoViewport as any} stateRef={cytoViewportRef}/>
-    <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
+    <Refstater useHook={_useCytoViewport as any} stateRef={cytoViewportRef}/>
+    <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} ref={rootRef}>
       <CytoDropZone
         cy={cy}
         gqlPath={gqlPath}
@@ -151,17 +157,14 @@ export default function CytoGraph({
           panningEnabled={true}
           pan={cytoViewportRef?.current?.value?.pan}
           zoom={cytoViewportRef?.current?.value?.zoom}
-          style={ { width: '100%', height: '100vh' } }
+          style={ { width: '100%', height: '100%' } }
         />}
         {!!cy && <CytoReactLayout
           cy={cy}
           elements={reactElements}
         />}
-        <CytoEditor/>
+        {children}
       </CytoDropZone>
-      <Text position="fixed" left={0} bottom={0} p={4}>
-        {appVersion} ({pckg.version})
-      </Text>
     </div>
   </>);
 

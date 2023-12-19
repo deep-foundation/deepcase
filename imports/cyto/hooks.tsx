@@ -714,6 +714,7 @@ export function useCyInitializer({
   setCy,
   ehRef,
   cytoViewportRef,
+  rootRef,
 }: {
   elementsRef: any;
   elements: any;
@@ -722,6 +723,7 @@ export function useCyInitializer({
   setCy: any;
   ehRef: any;
   cytoViewportRef: any;
+  rootRef?: any;
 }) {
   const deep = useDeep();
   const { layout, setLayout } = useLayout();
@@ -1037,7 +1039,7 @@ export function useCyInitializer({
         {
           content: 'center',
           select: function(el, ev){
-            ncy.pan({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+            ncy.pan({ x: rootRef?.current.clientWidth / 2, y: rootRef?.current.clientHeight / 2 });
             ncy.zoom(1);
           }
         },
