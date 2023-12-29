@@ -88,7 +88,7 @@ export function useShowExtra() {
 };
 export function useCytoViewport<S extends { pan: { x: number; y: number; }; zoom: number }>() {
   const x = typeof(window) === 'object' ? window.innerWidth / 2 : 0;
-  const y = typeof(window) === 'object' ? window.innerWidth / 2 : 0;
+  const y = typeof(window) === 'object' ? window.innerHeight / 2 : 0;
   return useLocalStore<S>('cyto-viewport', { pan: { x, y }, zoom: 1 } as S);
 };
 export function useShowFocus() {
