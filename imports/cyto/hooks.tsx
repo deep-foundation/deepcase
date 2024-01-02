@@ -494,7 +494,7 @@ export function useLinkInserting(elements = [], reactElements = [], focus, cyRef
   return returning;
 }
 
-export function useLinkReactElements(elements = [], reactElements = [], cy, ml) {
+export function useLinkReactElements(elements = [], reactElements = [], cy, ml, spaceId) {
   const deep = useDeep();
   const [linkReactElements, setLinkReactElements] = useState<{ [key: string]: boolean }>({});
   const linkReactElementsIds = useMemo(() => Object.keys(linkReactElements).filter(key => !!linkReactElements[key]), [linkReactElements]).map(key => parseInt(key), [linkReactElements]);
@@ -503,7 +503,6 @@ export function useLinkReactElements(elements = [], reactElements = [], cy, ml) 
 
   const cyRef = useRefAutofill(cy);
   const { open, close, isOpened } = useOpenedMethods();
-  const [spaceId] = useSpaceId();
   const { data: Opened } = useDeepId('@deep-foundation/deepcase-opened', 'Opened');
 
   reactElements.push(...((deep.minilinks?.byId?.[spaceId]?.outByType?.[Opened] || [])?.map(l => elements.find(e => e.id === l.to_id))).filter(i => !!i));
@@ -578,7 +577,7 @@ export function useLinkReactElements(elements = [], reactElements = [], cy, ml) 
       const [search, setSearch] = useState('');
       const [spaceId] = useSpaceId();
 
-      const { data: handleClients } = deep.useDeepQuery({
+      const { data: handleClients } = deep.useDeepSubscription({
         type_id: deep.idLocal('@deep-foundation/core', 'HandleClient'),
         from: {
           down: {
@@ -588,7 +587,21 @@ export function useLinkReactElements(elements = [], reactElements = [], cy, ml) 
         }
       });
 
+      const { data: Opened } = useDeepId('@deep-foundation/deepcase-opened', 'Opened');
+      const { data: OpenedHandler } = useDeepId('@deep-foundation/deepcase-opened', 'OpenedHandler');
+
+      const openedHandlers = deep.useMinilinksSubscription({
+        type_id: OpenedHandler || 0,
+        from: {
+          type_id: Opened || 0,
+          from_id: spaceId,
+          to_id: id,
+        },
+      });
+      const [openedHandler] = openedHandlers;
+
       useEffect(() => {
+        if (openedHandler?.to_id && openedHandler?.to_id !== handlerId) setHandlerId(openedHandler?.to_id);
         if (!handlerId) {
           const inheritance = [];
           for (let pointer = deep.minilinks.byId[id]; !!pointer && inheritance[inheritance.length - 1] !== pointer; pointer = pointer?.type) {
@@ -600,7 +613,7 @@ export function useLinkReactElements(elements = [], reactElements = [], cy, ml) 
             }
           }
         }
-      }, [handleClients]);
+      }, [handleClients, openedHandlers]);
 
       const handleClient = handleClients.find(h => h.to_id === handlerId);
       const elements = handleClients?.map(t => ({
@@ -647,7 +660,6 @@ export function useLinkReactElements(elements = [], reactElements = [], cy, ml) 
                   search={search}
                   onSearch={e => setSearch(e.target.value)}
                   onSubmit={async (hid) => {
-                    close(id);
                     open(id, hid);
                     onClose();
                   }}
@@ -715,6 +727,7 @@ export function useCyInitializer({
   ehRef,
   cytoViewportRef,
   rootRef,
+  useSpaceId: _useSpaceId = useSpaceId,
 }: {
   elementsRef: any;
   elements: any;
@@ -724,11 +737,12 @@ export function useCyInitializer({
   ehRef: any;
   cytoViewportRef: any;
   rootRef?: any;
+  useSpaceId?: any;
 }) {
   const deep = useDeep();
   const { layout, setLayout } = useLayout();
   const [extra, setExtra] = useShowExtra();
-  const [spaceId, setSpaceId] = useSpaceId();
+  const [spaceId, setSpaceId] = _useSpaceId();
   const [container, setContainer] = useContainer();
   const [showTypes, setShowTypes] = useShowTypes();
   const [cytoEditor, setCytoEditor] = useCytoEditor();
@@ -746,7 +760,7 @@ export function useCyInitializer({
 
   const refDragStartedEvent = useRef<any>();
 
-  const { toggleLinkReactElement } = useLinkReactElements(elements, reactElements, cyRef.current, ml);
+  const { toggleLinkReactElement } = useLinkReactElements(elements, reactElements, cyRef.current, ml, spaceId);
 
 
   // const relayout = useCallback(() => {

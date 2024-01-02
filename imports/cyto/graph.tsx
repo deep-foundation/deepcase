@@ -96,6 +96,7 @@ export default function CytoGraph({
   gqlSsl: _gqlSsl,
   children = null,
   useCytoViewport: _useCytoViewport = useState,
+  useSpaceId: _useSpaceId = useSpaceId,
 }: CytoGraphProps){
   console.log('https://github.com/deep-foundation/deepcase-app/issues/236', 'CytoGraph', 'links', links);
   const deep = useDeep();
@@ -106,7 +107,7 @@ export default function CytoGraph({
   const gqlSsl = _gqlSsl || deep?.client?.ssl;
 
   // console.time('CytoGraph');
-  const [spaceId, setSpaceId] = useSpaceId();
+  const [spaceId, setSpaceId] = _useSpaceId();
   const [container, setContainer] = useContainer();
   const [extra, setExtra] = useShowExtra();
   const [showTypes, setShowTypes] = useShowTypes();
@@ -133,7 +134,7 @@ export default function CytoGraph({
 
   const { onLoaded } = useCyInitializer({
     elementsRef, elements, reactElements, cyRef, setCy, ehRef, cytoViewportRef,
-    rootRef,
+    rootRef, useSpaceId: _useSpaceId
   });
 
   const { layout, setLayout } = useLayout();
@@ -162,6 +163,7 @@ export default function CytoGraph({
         {!!cy && <CytoReactLayout
           cy={cy}
           elements={reactElements}
+          spaceId={spaceId}
         />}
         {children}
       </CytoDropZone>

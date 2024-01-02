@@ -5,9 +5,9 @@ function getId(element) {
   return typeof(element?.id) === 'function' ? element?.id() : element?.id;
 }
 
-export function defaultGenerateId(element) {
+export function defaultGenerateId(element, spaceId) {
   const id = getId(element) || 0;
-  return `${id}-layout-element`;
+  return `${id}-${spaceId}-layout-element`;
 }
 
 const align = {
@@ -34,10 +34,12 @@ export const CytoReactLayout = React.memo(function CytoReactLayout({
   cy,
   elements = [],
   generateId = defaultGenerateId,
+  spaceId,
 }: {
   cy: any;
   elements: any[];
-  generateId?: (id: string) => string;
+  generateId?: (id: string, spaceId: string) => string;
+  spaceId?: number;
 }) {
   const divRef = useRef<HTMLDivElement>();
 
@@ -66,8 +68,9 @@ export const CytoReactLayout = React.memo(function CytoReactLayout({
     }
 
     function renderPosition(cyElement: any, position: any) {
-      const id = cyElement.id();
-      const element = document.getElementById(generateId(cyElement));
+      const id = generateId(cyElement, `${spaceId}`);
+      const element = document.getElementById(id);
+      // console.log('renderPosition', id, element, cyElement, position);
 
       if (element) {
         const prevX = element.dataset.x;
@@ -119,7 +122,7 @@ export const CytoReactLayout = React.memo(function CytoReactLayout({
       return <div style={{
         position: 'absolute',
         left: 0, top: -5,
-      }} id={generateId(element)} key={id}>
+      }} id={generateId(element, `${spaceId}`)} key={id}>
         <ReactResizeDetector handleWidth handleHeight onResize={(width, height) => {
           // cy.$(`#${id}`).data('react-element-size', { width, height });
           // cy.$(`#${id}`).style({

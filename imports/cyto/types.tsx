@@ -8,4 +8,5 @@ export interface CytoGraphProps {
   gqlSsl: boolean;
   children?: any;
   useCytoViewport?: any;
+  useSpaceId?: any;
 };
