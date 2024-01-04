@@ -1,6 +1,6 @@
 {
   "name": "@deep-foundation/deepcase",
-  "version": "0.0.98",
+  "version": "0.0.99",
   "license": "Unlicense",
   "type": "module",
   "keywords": [
@@ -24,7 +24,7 @@
     "@chakra-ui/theme-tools": "^2.0.16",
     "@deep-foundation/core": "~0.0.2",
     "@deep-foundation/deeplinks": "^0.0.323",
-    "@deep-foundation/tsx": "~0.0.3",
+    "@deep-foundation/tsx": "~0.0.5",
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
     "@monaco-editor/react": "^4.5.1",
