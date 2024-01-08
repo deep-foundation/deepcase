@@ -57,6 +57,9 @@ import * as LanguageDetector from 'i18next-browser-languagedetector';
 import * as reacti18next from "react-i18next";
 import { packageLog } from '../package-log';
 import CytoGraph from './cyto/graph';
+import * as reactYandexMaps from '@pbe/react-yandex-maps'
+import ReactCalendarTimeline from 'react-calendar-timeline'
+import moment from 'moment'
 
 const MonacoEditor = dynamic(() => import('@monaco-editor/react').then(m => m.default), { ssr: false });
 
@@ -275,6 +278,9 @@ r.list = {
   "i18next": i18n,
   'i18next-browser-languagedetector': LanguageDetector,
   "react-i18next": reacti18next,
+  "@pbe/react-yandex-maps": reactYandexMaps,
+  "react-calendar-timeline": ReactCalendarTimeline,
+  "moment": moment
 };
 
 export async function evalClientHandler({
