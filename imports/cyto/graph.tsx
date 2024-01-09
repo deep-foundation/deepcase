@@ -31,6 +31,7 @@ import { CytoGraphProps } from './types';
 
 import { useCyInitializer, useCytoEditor } from './hooks';
 import { CytoHandlers, useCytoHandlers, useCytoHandlersApply } from '../cyto-handler';
+import CytoGrid from './grid';
 
 const CytoscapeComponent = dynamic<any>(
   () => import('react-cytoscapejs').then((m) => m.default),
@@ -165,6 +166,7 @@ export default function CytoGraph({
           elements={reactElements}
           spaceId={spaceId}
         />}
+        {false && !!cy && <CytoGrid/>}
         {children}
       </CytoDropZone>
     </div>

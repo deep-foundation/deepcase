@@ -60,6 +60,8 @@ import CytoGraph from './cyto/graph';
 import * as reactYandexMaps from '@pbe/react-yandex-maps'
 import ReactCalendarTimeline from 'react-calendar-timeline'
 import moment from 'moment'
+import { useEditorTabs } from './cyto/editor';
+import { useCytoEditor } from './cyto/hooks';
 
 const MonacoEditor = dynamic(() => import('@monaco-editor/react').then(m => m.default), { ssr: false });
 
@@ -250,6 +252,8 @@ r.list = {
     useChackraColor,
     useChackraGlobal,
     CytoGraph,
+    useEditorTabs,
+    useCytoEditor,
   },
   '@deep-foundation/deeplinks': {
     useMinilinksFilter
