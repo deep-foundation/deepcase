@@ -224,7 +224,7 @@ const ListPanel = React.memo<any>(({
 
 export const NoResults = React.memo<any>(() => {
   return (<Center height='100%' width='100%'>
-      <Text fontSize='xs'>Not founded</Text>
+      <Text fontSize='xs'>Not found</Text>
     </Center>
   )
 })
