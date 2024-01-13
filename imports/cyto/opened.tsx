@@ -1,11 +1,12 @@
 import { useDeep, useDeepId } from "@deep-foundation/deeplinks/imports/client";
 import { useRefAutofill, useSpaceId } from "../hooks";
 import { useMemo } from "react";
+import { Id } from "@deep-foundation/deeplinks/imports/minilinks";
 
 export function useOpenedMethods(): {
-  open: (id: number, handlerId: number) => void;
-  close: (id: number) => void;
-  isOpened: (id: number) => Promise<boolean>;
+  open: (id: Id, handlerId: Id) => void;
+  close: (id: Id) => void;
+  isOpened: (id: Id) => Promise<boolean>;
 } {
   const [spaceId] = useSpaceId();
   const spaceIdRef = useRefAutofill(spaceId);

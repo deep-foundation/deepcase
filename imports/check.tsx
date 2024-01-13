@@ -1,18 +1,19 @@
 import Debug from 'debug';
 import { gql } from '@apollo/client';
 import forEach from 'lodash/forEach';
+import { Id } from '@deep-foundation/deeplinks/imports/minilinks';
 
 interface Node {
-  from_id?: number; id?: number; to_id?: number; type_id?: number;
+  from_id?: Id; id?: Id; to_id?: Id; type_id?: Id;
   in: Node[]; out: Node[];
 }
 
 interface Marker {
-  id: number; item_id: number; path_item_depth: number; path_item_id: number; root_id: number; position_id: string;
+  id: Id; item_id: Id; path_item_depth: Id; path_item_id: Id; root_id: Id; position_id: string;
   by_position: Marker[];
 }
 
-export const check = async (hash: { [name:string]: number }, client) => {
+export const check = async (hash: { [name:string]: Id }, client) => {
   const fetch = async () => {
     const result = await client.query({ query: gql`query FETCH_FOR_CHECK {
       mp: mp { id item_id path_item_depth path_item_id root_id position_id by_position(order_by: { path_item_depth: asc }) { id item_id path_item_depth path_item_id root_id position_id } }
@@ -28,8 +29,8 @@ export const check = async (hash: { [name:string]: number }, client) => {
     valid = false;
     console.log(...args);
   };
-  const nodesChecked: { [id: number]: boolean; } = {};
-  const markersChecked: { [id: number]: boolean; } = {};
+  const nodesChecked: { [id: Id]: boolean; } = {};
+  const markersChecked: { [id: Id]: boolean; } = {};
   const checkNode = (node: Node) => {
     if (nodesChecked[node.id]) return;
     else nodesChecked[node.id] = true;

@@ -3,7 +3,7 @@ import { ChevronDownIcon } from '@chakra-ui/icons';
 import { Accordion, AccordionItem, AccordionButton, AccordionIcon, AccordionPanel, Box, Flex, SimpleGrid, Text, Button, Spacer, useColorMode, InputGroup, Input, InputRightElement, Tag, TagCloseButton, TagLabel, HStack, VStack, Select, Menu, MenuButton, MenuItem, MenuList, IconButton, InputLeftElement } from '@chakra-ui/react';
 import { useDeep, useDeepQuery, useDeepSubscription } from '@deep-foundation/deeplinks/imports/client';
 import { generateQuery, generateQueryData } from '@deep-foundation/deeplinks/imports/gql';
-import { Link, useMinilinksApply, useMinilinksQuery, useMinilinksSubscription } from '@deep-foundation/deeplinks/imports/minilinks';
+import { Id, Link, useMinilinksApply, useMinilinksQuery, useMinilinksSubscription } from '@deep-foundation/deeplinks/imports/minilinks';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { CytoReactLinkAvatar } from '../cyto-react-avatar';
 import { EditorHandler } from '../editor/editor-handler';
@@ -18,9 +18,9 @@ export const CytoEditorHandlersSupportHandle = React.memo<any>(function CytoEdit
   handle,
   portalRef,
 }: {
-  support: Link<number>;
-  handler: Link<number>;
-  handle: Link<number>;
+  support: Link<Id>;
+  handler: Link<Id>;
+  handle: Link<Id>;
   portalRef?: any;
 }) {
   const deep = useDeep();
@@ -109,7 +109,7 @@ export const CytoEditorHandlersSupportHandle = React.memo<any>(function CytoEdit
 
   const Form = useCallback((
     isLink || isClient
-    ? ({ value, onInsert }: { value: string, onInsert: (id?: number) => void }) => {
+    ? ({ value, onInsert }: { value: string, onInsert: (id?: Id) => void }) => {
       return <InputGroup
         position='absolute' w='100%' 
         size='md' h='100%' left={0} top={0} borderWidth='1px' borderRadius='lg' bgColor='handlersInput'
@@ -165,7 +165,7 @@ export const CytoEditorHandlersSupportHandle = React.memo<any>(function CytoEdit
       </InputGroup>;
     }
     : isPort
-    ? ({ value, onInsert }: { value: string, onInsert: (id?: number) => void }) => {
+    ? ({ value, onInsert }: { value: string, onInsert: (id?: Id) => void }) => {
       return <InputGroup
         position='absolute' w='100%' h='100%' left={0} top={0} borderWidth='1px' borderRadius='lg' bgColor='handlersInput'
         onMouseMove={() => {
@@ -197,7 +197,7 @@ export const CytoEditorHandlersSupportHandle = React.memo<any>(function CytoEdit
         </InputRightElement> : null}
       </InputGroup>;
     }
-    : ({ value, onInsert }: { value: string, onInsert: (id?: number) => void }) => {
+    : ({ value, onInsert }: { value: string, onInsert: (id?: Id) => void }) => {
       return <InputGroup
         position='absolute' w='100%' h='100%' left={0} top={0} borderWidth='1px' borderRadius='lg' bgColor='handlersInput'
         onMouseMove={() => {
@@ -293,9 +293,9 @@ export const CytoEditorHandlersSupport = React.memo<any>(function CytoEditorHand
   handleredableIds,
   portalRef,
 }: {
-  support: Link<number>;
-  linkId: number;
-  handleredableIds: number[];
+  support: Link<Id>;
+  linkId: Id;
+  handleredableIds: Id[];
   portalRef?: any;
 }) {
   const deep = useDeep();
@@ -377,8 +377,8 @@ export const CytoEditorHandlers = React.memo<any>(function CytoEditorHandlers({
   linkId,
   handleredableIds,
 }: {
-  linkId: number;
-  handleredableIds: number[];
+  linkId: Id;
+  handleredableIds: Id[];
 }) {
   const deep = useDeep();
 

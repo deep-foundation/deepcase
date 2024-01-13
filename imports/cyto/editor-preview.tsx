@@ -1,6 +1,6 @@
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Button, Box, HStack, Flex, IconButton } from '@chakra-ui/react';
 import { useDeep, useDeepQuery, useDeepSubscription } from '@deep-foundation/deeplinks/imports/client';
-import { Link, MinilinksInstance, MinilinksResult, useMinilinksApply, useMinilinksFilter } from '@deep-foundation/deeplinks/imports/minilinks';
+import { Id, Link, MinilinksInstance, MinilinksResult, useMinilinksApply, useMinilinksFilter } from '@deep-foundation/deeplinks/imports/minilinks';
 import { ClientHandlerRenderer, evalClientHandler } from '../client-handler';
 import { useLocalStore } from '@deep-foundation/store/local';
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
@@ -21,7 +21,7 @@ import { VscClearAll } from 'react-icons/vsc';
 
 // global._callClientHandler = callClientHandler;
 export interface EditorTab {
-  id: number;
+  id: Id;
   saved: boolean;
   active?: boolean;
   loading?: boolean;

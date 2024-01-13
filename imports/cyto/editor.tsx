@@ -25,7 +25,7 @@ import {
   Portal,
 } from '@chakra-ui/react';
 import { useDeep, useDeepSubscription } from '@deep-foundation/deeplinks/imports/client';
-import { Link, useMinilinksFilter } from '@deep-foundation/deeplinks/imports/minilinks';
+import { Id, Link, useMinilinksFilter } from '@deep-foundation/deeplinks/imports/minilinks';
 import { useLocalStore } from '@deep-foundation/store/local';
 import { useDebounceCallback } from '@react-hook/debounce';
 import json5 from 'json5';
@@ -52,7 +52,7 @@ const MonacoEditor = dynamic(() => import('@monaco-editor/react').then(m => m.de
 
 // global._callClientHandler = callClientHandler;
 export interface EditorTab {
-  id: number;
+  id: Id;
   saved: boolean;
   active?: boolean;
   loading?: boolean;
@@ -80,7 +80,7 @@ export function useEditorValueSaver(tab) {
 
 export function useEditorTabs() {
   const [tabs, setTabs] = useLocalStore<EditorTab[]>('editor-tabs', []);
-  const [tab, setTab] = useLocalStore<number>('editor-tab', 0);
+  const [tab, setTab] = useLocalStore<Id>('editor-tab', 0);
   const tabsRef = useRef<any>();
   tabsRef.current = tabs;
   return {
@@ -111,11 +111,11 @@ export function useEditorTabs() {
 export function useFindClientHandlerByCode({
   codeLinkId,
 }: {
-  codeLinkId: number;
+  codeLinkId: Id;
 }) {
   const deep = useDeep();
   const [hid, setHid] = useState<any>();
-  const prevCodeLinkId = useRef<number>();
+  const prevCodeLinkId = useRef<Id>();
   useEffect(() => { (async () => {
     if (!codeLinkId || codeLinkId === prevCodeLinkId.current) return;
     const { data: handlers } = await deep.select({
@@ -157,13 +157,13 @@ export const Item = React.memo(function Item({
   addTab,
   isActive = false,
 }: {
-  link: Link<number>;
+  link: Link<Id>;
   openable?: boolean;
   deletable?: boolean;
   children?: any;
   portalRef?: any;
-  closeTab?: (id: number) => void;
-  activeTab?: (id: number) => void;
+  closeTab?: (id: Id) => void;
+  activeTab?: (id: Id) => void;
   addTab?: (tab: any) => void;
   isActive?: boolean;
 }) {
@@ -239,7 +239,7 @@ export const Item = React.memo(function Item({
         </>}
         {/* <Box>{currentSymbol} | {typeSymbol}</Box> */}&nbsp;
         <Editable
-          selectAllOnFocus defaultValue={deep.nameLocal(link.id) == `${link.id}` ? '' : deep.nameLocal(link.id)}
+          selectAllOnFocus defaultValue={`${deep.nameLocal(link.id) == `${link.id}` ? '' : deep.nameLocal(link.id)}`}
           placeholder={link.type_id === deep.idLocal('@deep-foundation/core', 'Package') ? link?.value?.value : link.id} display="inline"
           onSubmit={async (value) => {
             if (deep.minilinks.byId[link.id].inByType[deep.idLocal('@deep-foundation/core', 'Contain')]?.[0]?.value) {

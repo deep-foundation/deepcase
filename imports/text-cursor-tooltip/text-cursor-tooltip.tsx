@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { TypeIcon } from '../cyto-react-links-card';
 import { useChackraColor } from '../get-color';
 import { ITypeData } from '../popover-text/popover-text';
+import { Id } from '@deep-foundation/deeplinks/imports/minilinks';
 
 
 const variants = {
@@ -44,7 +45,7 @@ export const TooltipEmoji = React.memo<any>(({
   data,
 }:{
   // children?: any;
-  selectedLinkId?: number;
+  selectedLinkId?: Id;
   data: ITypeData[];
 }) => {
   const whiteAlpha = useChackraColor('whiteAlpha.600');

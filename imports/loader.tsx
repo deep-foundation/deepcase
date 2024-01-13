@@ -1,7 +1,7 @@
 import { useQuery, useSubscription } from "@apollo/client";
 import { useDeep, useDeepId } from "@deep-foundation/deeplinks/imports/client";
 import { generateQuery, generateQueryData } from "@deep-foundation/deeplinks/imports/gql";
-import { Link, useMinilinksFilter } from "@deep-foundation/deeplinks/imports/minilinks";
+import { Id, Link, useMinilinksFilter } from "@deep-foundation/deeplinks/imports/minilinks";
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useBreadcrumbs, useShowOpened } from "./hooks";
 import { CatchErrors } from "./react-errors";
@@ -17,7 +17,7 @@ export const DeepLoaderActive = React.memo(function DeepLoaderActive({
 }: {
   name: string;
   query: any;
-  onChange: (results: Link<number>[], query: any) => any;
+  onChange: (results: Link<Id>[], query: any) => any;
   debounce?: number;
   subscription?: boolean;
 }) {
@@ -72,7 +72,7 @@ export const DeepLoaderActive = React.memo(function DeepLoaderActive({
 export const DeepLoader = memo(function DeepLoader({
   spaceId,
 }: {
-  spaceId?: number;
+  spaceId?: Id;
 }) {
   const deep = useDeep();
   const userId = deep.linkId;

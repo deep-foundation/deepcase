@@ -1,11 +1,12 @@
 import { Box, useColorModeValue } from "@chakra-ui/react";
 import { useChackraColor, useChackraGlobal } from "../get-color";
+import { Id } from "@deep-foundation/deeplinks/imports/minilinks";
 
 export function LinkClientHandlerDefault({
   id,
   ml,
 }: {
-  id: number;
+  id: Id;
   ml: any;
 }) {
   const globalStyle = useChackraGlobal();

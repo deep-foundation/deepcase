@@ -1,6 +1,7 @@
 import React from 'react';
 import { VscAdd } from 'react-icons/vsc';
 import { Flex, Box, Button, Divider, ButtonGroup, Spacer } from '@chakra-ui/react';
+import { Id } from '@deep-foundation/deeplinks/imports/minilinks';
 
 
 export const EditorHandlers = React.memo<any>(({
@@ -10,7 +11,7 @@ export const EditorHandlers = React.memo<any>(({
   setGenerated,
 }:{
   children?: any;
-  onAddHandler?: (id: number) => void;
+  onAddHandler?: (id: Id) => void;
   generated?: string;
   setGenerated?: (generated: string) => void;
 }) => {

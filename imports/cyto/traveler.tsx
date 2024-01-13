@@ -1,3 +1,4 @@
+import { Id } from '@deep-foundation/deeplinks/imports/minilinks';
 import _flatten from 'lodash/flatten';
 import _isEqual from 'lodash/isEqual';
 
@@ -11,7 +12,7 @@ export function initializeTraveler(ncy, deepRef, spaceIdRef) {
       console.log(e, deep.linkId, deep);
     }
   })();
-  const insertTraveler = async (query, linkId: number) => {
+  const insertTraveler = async (query, linkId: Id) => {
     const spaceId = spaceIdRef.current;
     const deep = deepRef.current;
     await deep.insert({
@@ -41,7 +42,7 @@ export function initializeTraveler(ncy, deepRef, spaceIdRef) {
       } },
     });
   };
-  const deleteTraveler = async (query, linkId: number) => {
+  const deleteTraveler = async (query, linkId: Id) => {
     const deep = deepRef.current;
     const travelers = findTravlers(query, linkId);
     if (!travelers?.length) return;
@@ -57,7 +58,7 @@ export function initializeTraveler(ncy, deepRef, spaceIdRef) {
     ]);
   };
 
-  const switchTraveler = async (query, linkId: number) => {
+  const switchTraveler = async (query, linkId: Id) => {
     const travelers = findTravlers(query, linkId);
     if (travelers?.length) {
       await deleteTraveler(query, linkId);
@@ -66,7 +67,7 @@ export function initializeTraveler(ncy, deepRef, spaceIdRef) {
     }
   }
 
-  const findTravlers = (query: any, linkId: number) => {
+  const findTravlers = (query: any, linkId: Id) => {
     const spaceId = spaceIdRef.current;
     const deep = deepRef.current;
     if (!Traveler) return [];

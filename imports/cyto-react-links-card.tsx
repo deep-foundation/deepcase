@@ -6,22 +6,23 @@ import { BsCheck2, BsDoorClosed, BsGrid3X2Gap, BsListUl, BsSearch } from 'react-
 import { TbPackages } from 'react-icons/tb';
 import { DotsLoader } from './dot-loader';
 import { IPackageProps, PackagesBlock } from './cyto-react-links-packages';
+import { Id } from '@deep-foundation/deeplinks/imports/minilinks';
 
 interface IGridPanel {
-  id?: number;
+  id?: Id;
   src?: string;
   alt?: string;
 }
 
 interface IListPanel {
-  id?: number;
+  id?: Id;
   src?: string;
   linkName?: string;
   containerName?: string;
 }
 
 export interface ITypeIcon {
-  src: string | number;
+  src: Id;
   borderColor?: any;
   borderWidth?: any;
   boxSize?: string;
@@ -108,8 +109,8 @@ export const GridPanel = React.memo<any>(({
   borderColor?: string;
   borderColorSelected?: string;
   data: IGridPanel[];
-  selectedLink: number;
-  onSelectLink?: (linkId: number) => any;
+  selectedLink: Id;
+  onSelectLink?: (linkId: Id) => any;
   gridTemplateColumns?: string;
   columnGap?: number;
   rowGap?: number;
@@ -153,13 +154,13 @@ const CytoListItem = React.memo<any>(({
   onSelectLink,
   scrollRef,
 }:{
-  id?: number;
+  id?: Id;
   src?: string;
   linkName?: string;
   containerName?: string;
   borderColor?: string;
-  selectedLink: number;
-  onSelectLink?: (linkId: number) => any;
+  selectedLink: Id;
+  onSelectLink?: (linkId: Id) => any;
   scrollRef?: any;
 }) => {
 
@@ -211,8 +212,8 @@ const ListPanel = React.memo<any>(({
 }: {
   borderColor?: string;
   data: IListPanel[];
-  onSelectLink?: (linkId: number) => any;
-  selectedLink: number;
+  onSelectLink?: (linkId: Id) => any;
+  selectedLink: Id;
 }) => {
   const scrollRef = useRef(null);
 
@@ -244,20 +245,20 @@ export const CytoReactLinksCard = React.memo<any>(({
   selectedLinkId = 0,
 }: {
   elements: {
-    id: number;
+    id: Id;
     src?: string;
     linkName: string;
     containerName: string;
   }[];
   packages?: IPackageProps[];
-  onSubmit?: (id: number) => any;
+  onSubmit?: (id: Id) => any;
   onClose?: () => any;
   loading?: boolean;
   noResults: any;
   search?: any;
   onSearch?: any;
   fillSize?: boolean;
-  selectedLinkId?: number;
+  selectedLinkId?: Id;
 }) => {
   const [switchLayout, setSwitchLayout] = useState('grid');
   // const [switchLayout, setSwitchLayout] = useState('packages');

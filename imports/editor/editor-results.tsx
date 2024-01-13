@@ -2,11 +2,12 @@ import React from 'react';
 import { VscAdd } from 'react-icons/vsc';
 import { Flex, Box, Button, Divider, ButtonGroup, Spacer } from '@chakra-ui/react';
 import { useDeep } from '@deep-foundation/deeplinks/imports/client';
+import { Id } from '@deep-foundation/deeplinks/imports/minilinks';
 
 export const EditorResultsResolvesRejects = React.memo<any>(({
   promiseId
 }: {
-  promiseId: number;
+  promiseId: Id;
 }) => {
   const deep = useDeep();
   const resolves = deep.useMinilinksSubscription({
@@ -30,7 +31,7 @@ export const EditorResultsResolvesRejects = React.memo<any>(({
 export const EditorResults = React.memo<any>(({
   id,
 }:{
-  id: number;
+  id: Id;
 }) => {
   const deep = useDeep();
   deep.useDeepSubscription({

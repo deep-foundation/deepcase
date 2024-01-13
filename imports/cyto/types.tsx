@@ -1,7 +1,7 @@
-import { Link, MinilinksResult } from '@deep-foundation/deeplinks/imports/minilinks';
+import { Id, Link, MinilinksResult } from '@deep-foundation/deeplinks/imports/minilinks';
 
 export interface CytoGraphProps {
-  links: Link<number>[];
+  links: Link<Id>[];
   cytoViewportRef?: any;
   cyRef?: any;
   gqlPath: string;
