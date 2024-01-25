@@ -23,7 +23,6 @@
     "@chakra-ui/react": "^2.6.1",
     "@chakra-ui/theme-tools": "^2.0.16",
     "@deep-foundation/core": "~0.0.2",
-    "@deep-foundation/deeplinks": "^0.0.326",
     "@deep-foundation/tsx": "~0.0.5",
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
@@ -107,7 +106,8 @@
     "node": "^18"
   },
   "peerDependencies": {
-    "react": "*"
+    "react": "*",
+    "@deep-foundation/deeplinks": "0.0.*"
   },
   "devDependencies": {
     "@deep-foundation/npm-automation": "^18.1.14",
