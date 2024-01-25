@@ -53,7 +53,7 @@ const MonacoEditor = dynamic(() => import('@monaco-editor/react').then(m => m.de
 // global._callClientHandler = callClientHandler;
 export interface EditorTab {
   id: number;
-  saved: boolean;
+  saved?: boolean;
   active?: boolean;
   loading?: boolean;
   initialValue?: string;

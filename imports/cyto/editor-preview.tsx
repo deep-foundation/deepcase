@@ -184,7 +184,7 @@ export function CytoEditorPreview({
         // ></EditorHandler>
         // </EditorHandlers>) ||
         rightArea === 'handlers' && (
-          <CytoEditorHandlers linkId={generated && generatedLink ? generatedLink?.id : linkId}/>
+          <CytoEditorHandlers linkId={generated && generatedLink ? generatedLink?.id : linkId} handleredableIds={generatedLink ? [generatedLink?.id, linkId] : [linkId]}/>
         ) ||
         rightArea === 'preview' && <Box pos='relative' height='100%'>
           {[<EditorComponentView
@@ -214,7 +214,6 @@ export function CytoEditorPreview({
         setCurrentLinkId={(newCurrentLinkId) => {
           setCurrentLinkId(newCurrentLinkId)
         }}
-        generated={generated} setGenerated={setGenerated}
         area={rightArea}
         setArea={(rightArea) => {
           setRightArea(rightArea);

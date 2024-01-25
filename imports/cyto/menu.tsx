@@ -254,7 +254,6 @@ export const CytoMenu = React.memo(function CytoMenu({
     <Appearance
       toggle={togglePackager}
       variantsAnimation={variants}
-      initial='initial'
       styleProps={{overflow: 'uset'}}
     >
       <>
@@ -389,11 +388,9 @@ export const CytoMenu = React.memo(function CytoMenu({
                     <option value='cola'>cola</option>
                     <option value='deep-d3-force'>d3-force</option>
                   </Select> */}
-                  <ListLayout 
-                    layout={layoutName}
+                  <ListLayout
                     currentLayout={layoutName}
                     setCurrentLayout={handlerChangeLayout}
-                    
                   />
                 </Box>
               </FormControl>

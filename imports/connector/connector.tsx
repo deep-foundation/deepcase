@@ -108,9 +108,7 @@ const TerminalConnect = React.memo(({
   defaultGqlSsl,
 }:{
   initializingState?: InitializingState; 
-  closeTerminal: () => any; 
-  setInitLocal: (state) => any; 
-  terminalClosed: boolean; 
+  setInitLocal: (state) => any;
   serverUrl: string;
   setGqlPath: (path: string) => any;
   setGqlSsl: (ssl: boolean) => any;
@@ -670,7 +668,7 @@ export const Connector = React.memo(({
                   gqlPath={gqlPath}
                   gqlSsl={gqlSsl}
                   // setValueRemote={}
-                  onDeleteValue={(e) => {
+                  onDeleteValue={() => {
                     if (gqlPath == rr.value) {
                       setGqlPath('');
                       setGqlSsl(false);

@@ -237,7 +237,7 @@ export const CytoReactLinksCard = React.memo(({
   onSubmit,
   onClose,
   loading = false,
-  noResults,
+  noResults = false,
   search, 
   onSearch,
   fillSize=false,
@@ -253,7 +253,7 @@ export const CytoReactLinksCard = React.memo(({
   onSubmit?: (id: number) => any;
   onClose?: () => any;
   loading?: boolean;
-  noResults: any;
+  noResults?: boolean;
   search?: any;
   onSearch?: any;
   fillSize?: boolean;

@@ -115,6 +115,7 @@ const PackageItemAccordion = React.memo(({
   typeElements = arrElem,
 }:IPackage) => {
   const [expanded, setExpanded] = useState<false | number>(false);
+  const [selectedLink, setSelectedLink] = useState(id);
   const isOpen = id === expanded;
 
   return (<>
@@ -162,7 +163,7 @@ const PackageItemAccordion = React.memo(({
           transition={{ duration: 0.8, ease: [0.04, 0.62, 0.23, 0.98] }}
           sx={{transformOrigin: 'top center',}}
         >
-          <GridPanel data={typeElements}  />
+          <GridPanel data={typeElements} selectedLink={selectedLink} onSelectLink={setSelectedLink} />
         </Box>
       )}
     </AnimatePresence>

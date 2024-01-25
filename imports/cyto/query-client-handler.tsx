@@ -102,7 +102,7 @@ export const QueryClientHandler = React.memo(({nested = false}:{nested?: boolean
   return (
     <Resize 
       size={viewSize} 
-      onChangeSize={(viewSize) => setViewSize(viewSize)} 
+      onChangeSize={(viewSize: any) => setViewSize(viewSize)} 
       style={{
         position: 'relative',
         overflow: nested ? 'hidden' : 'inherit',

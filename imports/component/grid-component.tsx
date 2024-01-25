@@ -184,7 +184,7 @@ export const GridComponent = React.memo(({
           </Box>
           <Resize 
             size={viewSize} 
-            onChangeSize={(viewSize) => setViewSize(viewSize)} 
+            onChangeSize={(viewSize: any) => setViewSize(viewSize)} 
             style={{
               borderTop: 'none', 
               borderBottom: 'none', 

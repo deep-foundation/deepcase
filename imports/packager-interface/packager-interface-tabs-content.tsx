@@ -115,6 +115,12 @@ export const ListVersions = React.memo(({
   currentVersion,
   bg,
   setCurrentVersion
+}: {
+  name: string; 
+  latestVersion: string;
+  currentVersion: string;
+  setCurrentVersion: (string) => any;
+  bg: string;
 }) => {
   const [open, cycleOpen] = useCycle(false, true);
 

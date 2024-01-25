@@ -8,7 +8,6 @@ import { useDeep } from '@deep-foundation/deeplinks/imports/client';
 
 interface ITab {
   id: number;
-  title: string;
   saved?: boolean;
   loading?: boolean;
   active?: boolean;
@@ -246,7 +245,7 @@ return (<Reorder.Group
   >
     <AnimatePresence initial={false}>
       {tabs.map(t =>
-        <EditorTab key={t} tab={t} onClick={onClick} onSaveTab={onSaveTab} onClose={onClose} />
+        <EditorTab key={t.id} tab={t} onClick={onClick} onSaveTab={onSaveTab} onClose={onClose} />
       )}
     </AnimatePresence>
   </Reorder.Group>)
