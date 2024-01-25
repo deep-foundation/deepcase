@@ -57,7 +57,7 @@ const variants = {
   }
 };
 
-export const TypeIcon = React.memo<any>(({
+export const TypeIcon = React.memo(({
   src,
   borderColor = 'borderColor',
   borderWidth = 'thin',
@@ -95,7 +95,7 @@ export const TypeIcon = React.memo<any>(({
     </Box>
 })
 
-export const GridPanel = React.memo<any>(({
+export const GridPanel = React.memo(({
   borderColor,
   borderColorSelected,
   data,
@@ -143,7 +143,7 @@ export const GridPanel = React.memo<any>(({
   )
 })
 
-const CytoListItem = React.memo<any>(({
+const CytoListItem = React.memo(({
   id,
   src,
   linkName, 
@@ -203,7 +203,7 @@ const CytoListItem = React.memo<any>(({
   )
 })
 
-const ListPanel = React.memo<any>(({
+const ListPanel = React.memo(({
   borderColor,
   data,
   onSelectLink,
@@ -222,7 +222,7 @@ const ListPanel = React.memo<any>(({
   )
 })
 
-export const NoResults = React.memo<any>(() => {
+export const NoResults = React.memo(() => {
   return (<Center height='100%' width='100%'>
       <Text fontSize='xs'>Not found</Text>
     </Center>
@@ -231,7 +231,7 @@ export const NoResults = React.memo<any>(() => {
 
 
 
-export const CytoReactLinksCard = React.memo<any>(({
+export const CytoReactLinksCard = React.memo(({
   elements = [],
   packages = [],
   onSubmit,

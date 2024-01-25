@@ -64,7 +64,7 @@ const stackVariants = {
   }
 };
 
-export const QueryClientHandler = React.memo<any>(({nested = false}:{nested?: boolean;}) => {
+export const QueryClientHandler = React.memo(({nested = false}:{nested?: boolean;}) => {
   const [viewSize, setViewSize] = useState({width: 200, height: 150});
   const [save, setSave] = useState(false);
   const [value, setValue] = useState(false);

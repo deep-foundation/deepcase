@@ -51,7 +51,7 @@ export function useEngine(serverUrl: string) {
 
 // const isMac = process.platform === 'darwin';
 
-// export const EngineWindow = React.memo<any>(function EngineWindow({
+// export const EngineWindow = React.memo(function EngineWindow({
 // }: {
 // }) {
 //   const [connected, setConnected] = useEngineConnected();
@@ -107,7 +107,7 @@ export function useEngine(serverUrl: string) {
 //   </>;
 // });
 
-// export const EnginePanel = React.memo<any>(function EnginePanel({
+// export const EnginePanel = React.memo(function EnginePanel({
 // }: {
 // }) {
 //   const [connected, setConnected] = useEngineConnected();

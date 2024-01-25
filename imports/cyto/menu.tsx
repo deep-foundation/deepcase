@@ -13,7 +13,7 @@ import { variants, buttonVariant, iconVariants, sideVariants, itemVariants } fro
 import { TbArrowRotaryFirstRight } from "react-icons/tb";
 import { ClientHandler } from "../client-handler";
 
-const ListLayout = React.memo<any>(({ 
+const ListLayout = React.memo(({ 
   currentLayout = 'deep-d3-force',
   setCurrentLayout,
 }:{

@@ -36,7 +36,7 @@ const RouterAnalytics = () => {
   return null;
 };
 
-export const Analitics = React.memo<any>(({
+export const Analitics = React.memo(({
   yandexMetrikaAccounts = [],
   googleAnalyticsAccounts = [],
   context = AnalyticsContext,

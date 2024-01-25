@@ -3,7 +3,7 @@ import { VscAdd } from 'react-icons/vsc';
 import { Flex, Box, Button, Divider, ButtonGroup, Spacer } from '@chakra-ui/react';
 import { useDeep } from '@deep-foundation/deeplinks/imports/client';
 
-export const EditorResultsResolvesRejects = React.memo<any>(({
+export const EditorResultsResolvesRejects = React.memo(({
   promiseId
 }: {
   promiseId: number;
@@ -27,7 +27,7 @@ export const EditorResultsResolvesRejects = React.memo<any>(({
   </Box>;
 });
 
-export const EditorResults = React.memo<any>(({
+export const EditorResults = React.memo(({
   id,
 }:{
   id: number;

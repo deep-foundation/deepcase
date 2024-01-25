@@ -5,7 +5,7 @@ import ReactResizeDetector from 'react-resize-detector';
 
 const RecursionContext = createContext(false);
 
-export const EditorComponentView = React.memo<any>(({
+export const EditorComponentView = React.memo(({
   onChangeSize,
   size,
   fillSize,

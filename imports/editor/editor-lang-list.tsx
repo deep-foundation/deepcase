@@ -51,7 +51,7 @@ const iconVariants = {
   }
 };
 
-export const ListLanguages = React.memo<any>(({ 
+export const ListLanguages = React.memo(({ 
   languages = [],
   currentLanguage,
   setLanguage,

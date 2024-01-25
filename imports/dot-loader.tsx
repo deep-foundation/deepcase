@@ -24,7 +24,7 @@ const anim = keyframes`
   }
 `;
 
-export const DotsLoader = React.memo<any>(() => {
+export const DotsLoader = React.memo(() => {
   const prefersReducedMotion = usePrefersReducedMotion();
   const anim1 = prefersReducedMotion
     ? undefined

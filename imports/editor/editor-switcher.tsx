@@ -5,7 +5,7 @@ import { useSpaceId } from '../hooks';
 import { useDeep } from '@deep-foundation/deeplinks/imports/client';
 
 
-export const EditorSwitcher = React.memo<any>(({
+export const EditorSwitcher = React.memo(({
   area,
   setArea,
   rightArea,

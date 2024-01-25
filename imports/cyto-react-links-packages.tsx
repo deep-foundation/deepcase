@@ -107,7 +107,7 @@ const arrElem = [
   },
 ]
 
-const PackageItemAccordion = React.memo<any>(({
+const PackageItemAccordion = React.memo(({
   id,
   containerName,
   version,
@@ -191,7 +191,7 @@ const PackageItemAccordion = React.memo<any>(({
 //     version: '0.0.0',
 //   }];
 
-export const PackagesBlock = React.memo<any>(({packages}:{packages :IPackageProps[]}) => {
+export const PackagesBlock = React.memo(({packages}:{packages :IPackageProps[]}) => {
   return (<Box 
       sx={{
         w: '100%',

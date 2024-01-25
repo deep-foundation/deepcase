@@ -211,7 +211,7 @@ const buttonVariant = {
 }
 
 
-export const PackagerInterface = React.memo<any>(({
+export const PackagerInterface = React.memo(({
   toggle,
   onClose,
 }:{

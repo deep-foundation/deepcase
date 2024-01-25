@@ -23,7 +23,7 @@ interface IEditor {
   onMount?: (editor: any, monaco: any) => any;
 }
 
-export const EditorTextArea = React.memo<any>(({
+export const EditorTextArea = React.memo(({
   refEditor = { current: undefined },
   value, 
   onChange,
