@@ -38,8 +38,8 @@ import * as rjsfCore from '@rjsf/core';
 import * as rjsfChakra from '@rjsf/chakra-ui';
 import * as rjsfValidator from '@rjsf/validator-ajv8';
 // @ts-ignore
-import * as aframeReact from '@belivvr/aframe-react';
-import { Entity, Scene } from 'aframe-react';
+// import * as aframeReact from '@belivvr/aframe-react';
+// import { Entity, Scene } from 'aframe-react';
 import { CatchErrors } from './react-errors';
 import _ from 'lodash';
 import md5 from "md5";
@@ -58,7 +58,7 @@ import * as reacti18next from "react-i18next";
 import { packageLog } from '../package-log';
 import CytoGraph from './cyto/graph';
 import * as reactYandexMaps from '@pbe/react-yandex-maps'
-import ReactCalendarTimeline from 'react-calendar-timeline'
+// import ReactCalendarTimeline from 'react-calendar-timeline'
 import moment from 'moment'
 import { useEditorTabs } from './cyto/editor';
 import { useCytoEditor } from './cyto/hooks';
@@ -267,8 +267,8 @@ r.list = {
   '@rjsf/core': rjsfCore,
   '@rjsf/chakra-ui': rjsfChakra,
   '@rjsf/validator-ajv8': rjsfValidator,
-  '@belivvr/aframe-react': aframeReact,
-  'aframe-react': { Entity, Scene },
+  // '@belivvr/aframe-react': aframeReact,
+  // 'aframe-react': { Entity, Scene },
   'md5': md5,
   'uuid': uuidv4,
   'd3-force-3d': d3d,
@@ -283,7 +283,7 @@ r.list = {
   'i18next-browser-languagedetector': LanguageDetector,
   "react-i18next": reacti18next,
   "@pbe/react-yandex-maps": reactYandexMaps,
-  "react-calendar-timeline": ReactCalendarTimeline,
+  // "react-calendar-timeline": ReactCalendarTimeline,
   "moment": moment
 };
 
