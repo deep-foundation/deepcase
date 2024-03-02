@@ -4,7 +4,7 @@ import { useDeep, useDeepId, useDeepSubscription } from "@deep-foundation/deepli
 import copy from "copy-to-clipboard";
 import { AnimatePresence, motion, useAnimation, useCycle } from 'framer-motion';
 import React, { useEffect, useState, ChangeEvent } from "react";
-import { HiMenuAlt2, HiCode, HiOutlineEyeOff } from 'react-icons/hi';
+import { HiMenuAlt2, HiCode, HiOutlineEyeOff, HiDatabase, HiDesktopComputer, HiGlobeAlt } from 'react-icons/hi';
 import { SlClose } from 'react-icons/sl';
 import { Appearance } from "../component-appearance";
 import { useAutoFocusOnInsert, useBreadcrumbs, useContainer, useLayout, useMediaQuery, useReserved, useShowExtra, useShowFocus, useShowTypes, useSpaceId, useTraveler, useLayoutAnimation, useAsyncState, useCytoHandlersSwitch, useShowOpened } from "../hooks";
@@ -223,201 +223,241 @@ export const CytoMenu = React.memo(function CytoMenu({
     from_id: spaceId,
   });
 
-  return (<Box
-    left={0}
-    pos='fixed'>
-    <Button
-      as={motion.button}
-      variants={buttonVariant}
-      animate={control}
-      colorScheme='blue'
-      onClick={() => setTogglePackager(true)}
-      pos='absolute'
-      left={4} top={4}><HiMenuAlt2 /></Button>
-    <Button
-      as={motion.button}
-      variants={buttonVariant}
-      animate={control}
-      colorScheme='blue'
-      onClick={() => setCytoEditor(true)}
-      pos='absolute'
-      left={20} top={4}><HiCode /></Button>
-    <Button
-      as={motion.button}
-      variants={buttonVariant}
-      animate={control}
-      disabled={!focuses?.length}
-      colorScheme={focuses?.length ? 'blue' : 'gray'}
-      onClick={clearFocuses}
-      pos='absolute'
-      left={36} top={4}><HiOutlineEyeOff /></Button>
-    <Appearance
-      toggle={togglePackager}
-      variantsAnimation={variants}
-      initial='initial'
-      styleProps={{overflow: 'uset'}}
-    >
-      <>
-        <Box
-          pt='0.2rem'
-          w='max-content'
-          bg='backgroundModal'
-          borderBottomLeftRadius='0.5rem'
-          borderBottomRightRadius='0.5rem'
-          sx={{
-            borderWidth: 'thin',
-            borderColor: 'borderColor',
-          }}
-        >
-          <VStack spacing='1rem' m='1rem' align={'flex-start'}>
-            <HStack>
-              <IconButton
-                aria-label='menu close'
-                variant='ghost'
-                colorScheme='current'
-                isRound
-                icon={<SlClose />}
-                onClick={() => setTogglePackager(false)}
-              />
-              <ButtonGroup size='sm' isAttached variant='outline' color='text'>
-                <Button disabled borderColor='gray.400' background='buttonBackgroundModal'>auth</Button>
-                <Button borderColor='gray.400' background='buttonBackgroundModal'>{deep.linkId}</Button>
-                <IconButton aria-label='close menu' icon={<CloseIcon />} onClick={async () => {
-                  const guest = await deep.guest();
-                  setSpaceId(guest.linkId);
-                  setContainer(guest.linkId);
-                }} borderColor='gray.400' background='buttonBackgroundModal'/>
-              </ButtonGroup>
-              <ButtonGroup size='sm' isAttached variant='outline' color='text'>
-                <Button disabled borderColor='gray.400' background='buttonBackgroundModal'>space</Button>
-                <Button borderColor='gray.400' background='buttonBackgroundModal'>{spaceId}</Button>
-                <IconButton aria-label='Quit to user space' icon={<CloseIcon />} onClick={() => {
-                  setSpaceId(deep.linkId);
-                  setContainer(deep.linkId);
-                }} borderColor='gray.400' background='buttonBackgroundModal' />
-              </ButtonGroup>
-              <ButtonGroup size='sm' isAttached variant='outline' color='text'>
-                <Button disabled borderColor='gray.400' background='buttonBackgroundModal'>container</Button>
-                <Button borderColor='gray.400' background='buttonBackgroundModal'>{container}</Button>
-                <IconButton aria-label='Quit to user space' icon={<CloseIcon />} onClick={() => {
-                  setContainer(deep.linkId);
-                }} borderColor='gray.400' background='buttonBackgroundModal'/>
-              </ButtonGroup>
-              <ButtonGroup size='sm' isAttached variant='outline' color='text'>
-                <Button onClick={() => {
-                  copy(deep.token);
-                }} borderColor='gray.400' background='buttonBackgroundModal'>copy token</Button>
-                <Button colorScheme={pasteError ? 'red' : valid ? 'blue' : undefined} onClick={async () => {
-                  if (valid) await deep.login({ token: valid });
-                  else {
-                    setPasteError(false);
-                    const token: string = await navigator?.clipboard?.readText();
-                    const { linkId, error } = await deep.jwt({ token });
-                    if (error && !linkId) setPasteError(true);
-                    else if (linkId) setValid(token);
-                  }
-                }} borderColor='gray.400' background='buttonBackgroundModal'>{valid ? 'login token' : 'paste token'}</Button>
-              </ButtonGroup>
-              <ButtonGroup size='sm' isAttached variant='outline' color='text'>
-                <Button borderColor='gray.400' background='buttonBackgroundModal' as='a' href={`http${gqlSsl ? 's' : ''}://${gqlPath}`} target="_blank">gql</Button>
-              </ButtonGroup>
-              <ButtonGroup size='sm' isAttached variant='outline' color='text'>
-                <Button borderColor='gray.400' background='buttonBackgroundModal' onClick={() => setCytoEditor(true)}>editor</Button>
-              </ButtonGroup>
-            </HStack>
-            <HStack spacing={5}>
-              <FormControl display='flex' alignItems='center'>
-                <FormLabel color='text' htmlFor='autofocus-on-insert' mb='0' fontSize='sm' mr='0.25rem'>
-                  autofocus
-                </FormLabel>
-                <DeepSwitch id='autofocus-on-insert' isChecked={autoFocus} onChange={() => setAutoFocus(!autoFocus)} />
-              </FormControl>
-              <FormControl display='flex' alignItems='center'>
-                <FormLabel color='text' htmlFor='show-focus' mb='0' fontSize='sm' mr='0.25rem'>
-                  focus
-                </FormLabel>
-                <DeepSwitch id='show-focus' isChecked={focus} onChange={() => setFocus(!focus)} />
-              </FormControl>
-              <FormControl display='flex' alignItems='center'>
-                <FormLabel color='text' htmlFor='show-opened' mb='0' fontSize='sm' mr='0.25rem'>
-                  opened
-                </FormLabel>
-                <DeepSwitch id='show-opened' isChecked={opened} onChange={() => setOpened(!opened)} />
-              </FormControl>
-              <FormControl display='flex' alignItems='center'>
-                <FormLabel color='text' htmlFor='show-extra-switch' mb='0' fontSize='sm' mr='0.25rem'>
-                  debug
-                </FormLabel>
-                <DeepSwitch id='show-extra-switch' isChecked={extra} onChange={() => setExtra(!extra)} />
-              </FormControl>
-              <FormControl display='flex' alignItems='center'>
-                <FormLabel color='text' htmlFor='show-types-switch' mb='0' fontSize='sm' mr='0.25rem'>
-                  types
-                </FormLabel>
-                <DeepSwitch id='show-types-switch' isChecked={showTypes} onChange={() => setShowTypes(!showTypes)} />
-              </FormControl>
-              <FormControl display='flex' alignItems='center'>
-                <FormLabel color='text' htmlFor='show-traveler-switch' mb='0' fontSize='sm' mr='0.25rem'>
-                  traveler
-                </FormLabel>
-                <DeepSwitch id='show-traveler-switch' isChecked={traveler} onChange={() => setTraveler(!traveler)} />
-              </FormControl>
-              <FormControl display='flex' alignItems='center'>
-                <FormLabel color='text' htmlFor='breadcrumbs-switch' mb='0' fontSize='sm' mr='0.25rem'>
-                  breadcrumbs
-                </FormLabel>
-                <DeepSwitch id='breadcrumbs-switch' isChecked={breadcrumbs} onChange={() => setBreadcrumbs(!breadcrumbs)} />
-              </FormControl>
-              <FormControl display='flex' alignItems='center'>
-                <FormLabel color='text' htmlFor='cytoHandlers-switch' mb='0' fontSize='sm' mr='0.25rem'>
-                  cytoHandlers
-                </FormLabel>
-                <DeepSwitch id='cytoHandlers-switch' isChecked={cytoHandlers} onChange={() => setCytoHandlers(!cytoHandlers)} />
-              </FormControl>
-              <FormControl display='flex' alignItems='center'>
-                <FormLabel htmlFor='animation-layout-switch' mb='0' fontSize='sm' mr='0.25rem'>
-                  animation
-                </FormLabel>
-                <DeepSwitch id='animation-layout-switch' isChecked={layoutAnimation} onChange={() => setLayoutAnimation(!layoutAnimation)}/>
-              </FormControl>
-              <FormControl display='flex' alignItems='center'>
-                <FormLabel mb='0' fontSize='sm' mr='0.55rem'>
-                  layout
-                </FormLabel>
-                <Box width="max-content" margin="0 auto">
-                  {/* <Select onChange={handlerChangeLayout} value={layoutName}>
-                    <option value='cola'>cola</option>
-                    <option value='deep-d3-force'>d3-force</option>
-                  </Select> */}
-                  <ListLayout 
-                    layout={layoutName}
-                    currentLayout={layoutName}
-                    setCurrentLayout={handlerChangeLayout}
-                    
-                  />
-                </Box>
-              </FormControl>
-              {/* <FormControl display='flex' alignItems='center'>
-                <FormLabel htmlFor='reserved switch' mb='0' fontSize='sm' mr='0.25rem'>
-                reserved
-                </FormLabel>
-                <Switch id='reserved switch' isChecked={reserved} onChange={() => setReserved(!reserved)}/>
-              </FormControl> */}
-            </HStack>
-            <HStack>
-              <MenuSearch cyRef={cyRef} bg='buttonBackgroundModal' />
-              <ButtonGroup size='sm' isAttached variant='outline' color='text'>
-                <Button onClick={clearFocuses} borderColor='gray.400' background='buttonBackgroundModal'>clear focuses</Button>
-              </ButtonGroup>
-              <Travelers/>
-              <CytoHandlersMenu/>
-            </HStack>
-          </VStack>
-          {/* <Button bgColor='primary' color='white' size='sm' w='4rem' mt={10} mr={4} justifySelf='flex-end' rightIcon={<IoExitOutline />} onClick={openPortal}>Exit</Button> */}
-        </Box>
-      </>
-    </Appearance>
-  </Box>);
+  return (<>
+    <HStack spacing='24px' pos='fixed' top={4} left={4}>
+      <Button
+        as={motion.button}
+        variants={buttonVariant}
+        animate={control}
+        colorScheme='blue'
+        onClick={() => setTogglePackager(true)}
+      ><HiMenuAlt2 /></Button>
+      <Button
+        as={motion.button}
+        variants={buttonVariant}
+        animate={control}
+        colorScheme='blue'
+        onClick={() => setCytoEditor(true)}
+      ><HiCode /></Button>
+      <Button
+        as={motion.button}
+        variants={buttonVariant}
+        animate={control}
+        disabled={!focuses?.length}
+        colorScheme={focuses?.length ? 'blue' : 'gray'}
+        onClick={clearFocuses}
+      ><HiOutlineEyeOff /></Button>
+      <Text colorScheme={'gray'}>tr</Text>
+      <ButtonGroup size='md' isAttached variant='outline'>
+        <Button
+          as={motion.button}
+          animate={control}
+          disabled={!focuses?.length}
+          colorScheme={focuses?.length ? 'blue' : 'gray'}
+          onClick={clearFocuses}
+        ><HiDatabase /></Button>
+        <Button
+          as={motion.button}
+          animate={control}
+          disabled={!focuses?.length}
+          colorScheme={focuses?.length ? 'blue' : 'gray'}
+          onClick={clearFocuses}
+        ><HiDesktopComputer /></Button>
+      </ButtonGroup>
+      <Text colorScheme={'gray'}>mode</Text>
+      <ButtonGroup size='md' isAttached variant='outline'>
+        <Button
+          as={motion.button}
+          animate={control}
+          disabled={!focuses?.length}
+          colorScheme={focuses?.length ? 'blue' : 'gray'}
+          onClick={clearFocuses}
+        ><HiDatabase /></Button>
+        <Button
+          as={motion.button}
+          animate={control}
+          disabled={!focuses?.length}
+          colorScheme={focuses?.length ? 'blue' : 'gray'}
+          onClick={clearFocuses}
+        ><HiDesktopComputer /></Button>
+        <Button
+          as={motion.button}
+          animate={control}
+          disabled={!focuses?.length}
+          colorScheme={focuses?.length ? 'blue' : 'gray'}
+          onClick={clearFocuses}
+        ><HiGlobeAlt /></Button>
+      </ButtonGroup>
+    </HStack>
+    <div style={{ position: 'fixed', left: 0, top: 0 }}>
+      <Appearance
+        toggle={togglePackager}
+        variantsAnimation={variants}
+        initial='initial'
+        styleProps={{overflow: 'uset'}}
+      >
+        <>
+          <Box
+            pt='0.2rem'
+            w='max-content'
+            bg='backgroundModal'
+            borderBottomLeftRadius='0.5rem'
+            borderBottomRightRadius='0.5rem'
+            sx={{
+              borderWidth: 'thin',
+              borderColor: 'borderColor',
+            }}
+          >
+            <VStack spacing='1rem' m='1rem' align={'flex-start'}>
+              <HStack>
+                <IconButton
+                  aria-label='menu close'
+                  variant='ghost'
+                  colorScheme='current'
+                  isRound
+                  icon={<SlClose />}
+                  onClick={() => setTogglePackager(false)}
+                />
+                <ButtonGroup size='sm' isAttached variant='outline' color='text'>
+                  <Button disabled borderColor='gray.400' background='buttonBackgroundModal'>auth</Button>
+                  <Button borderColor='gray.400' background='buttonBackgroundModal'>{deep.linkId}</Button>
+                  <IconButton aria-label='close menu' icon={<CloseIcon />} onClick={async () => {
+                    const guest = await deep.guest();
+                    setSpaceId(guest.linkId);
+                    setContainer(guest.linkId);
+                  }} borderColor='gray.400' background='buttonBackgroundModal'/>
+                </ButtonGroup>
+                <ButtonGroup size='sm' isAttached variant='outline' color='text'>
+                  <Button disabled borderColor='gray.400' background='buttonBackgroundModal'>space</Button>
+                  <Button borderColor='gray.400' background='buttonBackgroundModal'>{spaceId}</Button>
+                  <IconButton aria-label='Quit to user space' icon={<CloseIcon />} onClick={() => {
+                    setSpaceId(deep.linkId);
+                    setContainer(deep.linkId);
+                  }} borderColor='gray.400' background='buttonBackgroundModal' />
+                </ButtonGroup>
+                <ButtonGroup size='sm' isAttached variant='outline' color='text'>
+                  <Button disabled borderColor='gray.400' background='buttonBackgroundModal'>container</Button>
+                  <Button borderColor='gray.400' background='buttonBackgroundModal'>{container}</Button>
+                  <IconButton aria-label='Quit to user space' icon={<CloseIcon />} onClick={() => {
+                    setContainer(deep.linkId);
+                  }} borderColor='gray.400' background='buttonBackgroundModal'/>
+                </ButtonGroup>
+                <ButtonGroup size='sm' isAttached variant='outline' color='text'>
+                  <Button onClick={() => {
+                    copy(deep.token);
+                  }} borderColor='gray.400' background='buttonBackgroundModal'>copy token</Button>
+                  <Button colorScheme={pasteError ? 'red' : valid ? 'blue' : undefined} onClick={async () => {
+                    if (valid) await deep.login({ token: valid });
+                    else {
+                      setPasteError(false);
+                      const token: string = await navigator?.clipboard?.readText();
+                      const { linkId, error } = await deep.jwt({ token });
+                      if (error && !linkId) setPasteError(true);
+                      else if (linkId) setValid(token);
+                    }
+                  }} borderColor='gray.400' background='buttonBackgroundModal'>{valid ? 'login token' : 'paste token'}</Button>
+                </ButtonGroup>
+                <ButtonGroup size='sm' isAttached variant='outline' color='text'>
+                  <Button borderColor='gray.400' background='buttonBackgroundModal' as='a' href={`http${gqlSsl ? 's' : ''}://${gqlPath}`} target="_blank">gql</Button>
+                </ButtonGroup>
+                <ButtonGroup size='sm' isAttached variant='outline' color='text'>
+                  <Button borderColor='gray.400' background='buttonBackgroundModal' onClick={() => setCytoEditor(true)}>editor</Button>
+                </ButtonGroup>
+              </HStack>
+              <HStack spacing={5}>
+                <FormControl display='flex' alignItems='center'>
+                  <FormLabel color='text' htmlFor='autofocus-on-insert' mb='0' fontSize='sm' mr='0.25rem'>
+                    autofocus
+                  </FormLabel>
+                  <DeepSwitch id='autofocus-on-insert' isChecked={autoFocus} onChange={() => setAutoFocus(!autoFocus)} />
+                </FormControl>
+                <FormControl display='flex' alignItems='center'>
+                  <FormLabel color='text' htmlFor='show-focus' mb='0' fontSize='sm' mr='0.25rem'>
+                    focus
+                  </FormLabel>
+                  <DeepSwitch id='show-focus' isChecked={focus} onChange={() => setFocus(!focus)} />
+                </FormControl>
+                <FormControl display='flex' alignItems='center'>
+                  <FormLabel color='text' htmlFor='show-opened' mb='0' fontSize='sm' mr='0.25rem'>
+                    opened
+                  </FormLabel>
+                  <DeepSwitch id='show-opened' isChecked={opened} onChange={() => setOpened(!opened)} />
+                </FormControl>
+                <FormControl display='flex' alignItems='center'>
+                  <FormLabel color='text' htmlFor='show-extra-switch' mb='0' fontSize='sm' mr='0.25rem'>
+                    debug
+                  </FormLabel>
+                  <DeepSwitch id='show-extra-switch' isChecked={extra} onChange={() => setExtra(!extra)} />
+                </FormControl>
+                <FormControl display='flex' alignItems='center'>
+                  <FormLabel color='text' htmlFor='show-types-switch' mb='0' fontSize='sm' mr='0.25rem'>
+                    types
+                  </FormLabel>
+                  <DeepSwitch id='show-types-switch' isChecked={showTypes} onChange={() => setShowTypes(!showTypes)} />
+                </FormControl>
+                <FormControl display='flex' alignItems='center'>
+                  <FormLabel color='text' htmlFor='show-traveler-switch' mb='0' fontSize='sm' mr='0.25rem'>
+                    traveler
+                  </FormLabel>
+                  <DeepSwitch id='show-traveler-switch' isChecked={traveler} onChange={() => setTraveler(!traveler)} />
+                </FormControl>
+                <FormControl display='flex' alignItems='center'>
+                  <FormLabel color='text' htmlFor='breadcrumbs-switch' mb='0' fontSize='sm' mr='0.25rem'>
+                    breadcrumbs
+                  </FormLabel>
+                  <DeepSwitch id='breadcrumbs-switch' isChecked={breadcrumbs} onChange={() => setBreadcrumbs(!breadcrumbs)} />
+                </FormControl>
+                <FormControl display='flex' alignItems='center'>
+                  <FormLabel color='text' htmlFor='cytoHandlers-switch' mb='0' fontSize='sm' mr='0.25rem'>
+                    cytoHandlers
+                  </FormLabel>
+                  <DeepSwitch id='cytoHandlers-switch' isChecked={cytoHandlers} onChange={() => setCytoHandlers(!cytoHandlers)} />
+                </FormControl>
+                <FormControl display='flex' alignItems='center'>
+                  <FormLabel htmlFor='animation-layout-switch' mb='0' fontSize='sm' mr='0.25rem'>
+                    animation
+                  </FormLabel>
+                  <DeepSwitch id='animation-layout-switch' isChecked={layoutAnimation} onChange={() => setLayoutAnimation(!layoutAnimation)}/>
+                </FormControl>
+                <FormControl display='flex' alignItems='center'>
+                  <FormLabel mb='0' fontSize='sm' mr='0.55rem'>
+                    layout
+                  </FormLabel>
+                  <Box width="max-content" margin="0 auto">
+                    {/* <Select onChange={handlerChangeLayout} value={layoutName}>
+                      <option value='cola'>cola</option>
+                      <option value='deep-d3-force'>d3-force</option>
+                    </Select> */}
+                    <ListLayout 
+                      layout={layoutName}
+                      currentLayout={layoutName}
+                      setCurrentLayout={handlerChangeLayout}
+                      
+                    />
+                  </Box>
+                </FormControl>
+                {/* <FormControl display='flex' alignItems='center'>
+                  <FormLabel htmlFor='reserved switch' mb='0' fontSize='sm' mr='0.25rem'>
+                  reserved
+                  </FormLabel>
+                  <Switch id='reserved switch' isChecked={reserved} onChange={() => setReserved(!reserved)}/>
+                </FormControl> */}
+              </HStack>
+              <HStack>
+                <MenuSearch cyRef={cyRef} bg='buttonBackgroundModal' />
+                <ButtonGroup size='sm' isAttached variant='outline' color='text'>
+                  <Button onClick={clearFocuses} borderColor='gray.400' background='buttonBackgroundModal'>clear focuses</Button>
+                </ButtonGroup>
+                <Travelers/>
+                <CytoHandlersMenu/>
+              </HStack>
+            </VStack>
+            {/* <Button bgColor='primary' color='white' size='sm' w='4rem' mt={10} mr={4} justifySelf='flex-end' rightIcon={<IoExitOutline />} onClick={openPortal}>Exit</Button> */}
+          </Box>
+        </>
+      </Appearance>
+    </div>
+  </>);
 }, () => true);
 
 const Travelers = () => {
