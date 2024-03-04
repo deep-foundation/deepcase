@@ -1,15 +1,11 @@
-import { useSubscription } from '@apollo/client';
 import { ChevronDownIcon } from '@chakra-ui/icons';
-import { Accordion, AccordionItem, AccordionButton, AccordionIcon, AccordionPanel, Box, Flex, SimpleGrid, Text, Button, Spacer, useColorMode, InputGroup, Input, InputRightElement, Tag, TagCloseButton, TagLabel, HStack, VStack, Select, Menu, MenuButton, MenuItem, MenuList, IconButton, InputLeftElement } from '@chakra-ui/react';
-import { useDeep, useDeepQuery, useDeepSubscription } from '@deep-foundation/deeplinks/imports/client';
-import { generateQuery, generateQueryData } from '@deep-foundation/deeplinks/imports/gql';
-import { Id, Link, useMinilinksApply, useMinilinksQuery, useMinilinksSubscription } from '@deep-foundation/deeplinks/imports/minilinks';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { CytoReactLinkAvatar } from '../cyto-react-avatar';
-import { EditorHandler } from '../editor/editor-handler';
+import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Button, Flex, IconButton, Input, InputGroup, InputRightElement, Menu, MenuButton, MenuItem, MenuList, Spacer, Tag, TagCloseButton, TagLabel, Text, useColorMode } from '@chakra-ui/react';
+import { useDeep, useDeepSubscription } from '@deep-foundation/deeplinks/imports/client';
+import { Id, Link } from '@deep-foundation/deeplinks/imports/minilinks';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
+import { VscCheck, VscDiffAdded } from 'react-icons/vsc';
 import { useChackraColor } from '../get-color';
 import { useContainer, useSpaceId } from '../hooks';
-import { VscCheck, VscDiffAdded } from 'react-icons/vsc';
 import { FinderPopover } from './hooks';
 
 export const CytoEditorHandlersSupportHandle = React.memo<any>(function CytoEditorHandlersSupport({
