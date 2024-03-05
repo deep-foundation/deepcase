@@ -1,5 +1,5 @@
 import { useQuery, useSubscription } from "@apollo/client";
-import { useDeep, useDeepId } from "@deep-foundation/deeplinks/imports/client";
+import { useDeep, useDeepId, useDeepNamespaces } from "@deep-foundation/deeplinks/imports/client";
 import { generateQuery, generateQueryData } from "@deep-foundation/deeplinks/imports/gql";
 import { Id, Link, useMinilinksFilter } from "@deep-foundation/deeplinks/imports/minilinks";
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -10,55 +10,59 @@ import _ from 'lodash';
 
 export const DeepLoaderActive = React.memo(function DeepLoaderActive({
   name,
+  mini,
   query: queryLink,
   onChange,
   debounce = 1000,
   subscription = true,
+  deep,
 }: {
   name: string;
+  mini: string;
   query: any;
-  onChange: (results: Link<Id>[], query: any) => any;
+  onChange?: (results: Link<Id>[], query: any) => any;
   debounce?: number;
   subscription?: boolean;
+  deep?: any;
 }) {
-  const useApolloLoader = subscription ? useSubscription : useQuery;
-  const deep = useDeep();
-  const subQuery = useMemo(() => {
-    const v = (queryLink?.value?.value);
-    const variables = deep.serializeQuery(v);
-    const where = variables?.where;
-    return generateQuery({
-      operation: subscription ? 'subscription' : 'query',
-      queries: [generateQueryData({
-        tableName: 'links',
-        returning: `
-          id type_id from_id to_id value string { id value } number { id value } object { id value }
-        `,
-        variables: v
-        ? { ...variables, where }
-        : { where: {}, limit: 0 },
-      })],
-      name: name,
-    });
-  }, [queryLink, queryLink?.value?.value]);
-  const subQueryResults = useApolloLoader(subQuery.query, { variables: subQuery.variables });
-  const [sintSubQueryResults, setSintSubQueryResults] = useState<any>(subQueryResults);
-  const subQueryPrimary = subscription ? subQueryResults : sintSubQueryResults || subQueryResults;
+  const useLoader = deep ? subscription ? deep?.useDeepSubscription : deep?.useDeepQuery : (...args) => ({ data: [] });
+  // const subQuery = useMemo(() => {
+  //   const v = (queryLink?.value?.value);
+  //   const variables = deep.serializeQuery(v);
+  //   const where = variables?.where;
+  //   return generateQuery({
+  //     operation: subscription ? 'subscription' : 'query',
+  //     queries: [generateQueryData({
+  //       tableName: 'links',
+  //       returning: `
+  //         id type_id from_id to_id value string { id value } number { id value } object { id value }
+  //       `,
+  //       variables: v
+  //       ? { ...variables, where }
+  //       : { where: {}, limit: 0 },
+  //     })],
+  //     name: name,
+  //   });
+  // }, [queryLink, queryLink?.value?.value]);
+  const subQueryResults = useLoader(queryLink?.value?.value, { name, mini });
+  // const [sintSubQueryResults, setSintSubQueryResults] = useState<any>(subQueryResults);
+  // const subQueryPrimary = subscription ? subQueryResults : sintSubQueryResults || subQueryResults;
 
-  const delayedSubQueryRef = useRef<any>();
-  delayedSubQueryRef.current = subQuery;
-  useDelayedInterval(useCallback(() => new Promise((res, rej) => {
-    if (subscription) rej();
-    // @ts-ignore
-    else subQueryResults?.refetch(delayedSubQueryRef.current.variables).then((r) => {
-      setSintSubQueryResults(r);
-      res(undefined);
-    });
-  }), [queryLink, queryLink?.value?.value]), debounce);
+  // const delayedSubQueryRef = useRef<any>();
+  // delayedSubQueryRef.current = subQuery;
+  // useDelayedInterval(useCallback(() => new Promise((res, rej) => {
+  //   if (subscription) rej();
+  //   // @ts-ignore
+  //   else subQueryResults?.refetch(delayedSubQueryRef.current.variables).then((r) => {
+  //     setSintSubQueryResults(r);
+  //     res(undefined);
+  //   });
+  // }), [queryLink, queryLink?.value?.value]), debounce);
 
   useEffect(() => {
-    if (subQueryPrimary?.data?.q0 && !subQueryPrimary?.loading) onChange && onChange(subQueryPrimary?.data?.q0, queryLink);
-  }, [subQueryPrimary]);
+    // if (subQueryPrimary?.data?.q0 && !subQueryPrimary?.loading) onChange && onChange(subQueryPrimary?.data?.q0, queryLink);
+    onChange && onChange(subQueryResults?.data, queryLink);
+  }, [subQueryResults]);
 
   useEffect(() => {
     return () => {
@@ -76,6 +80,7 @@ export const DeepLoader = memo(function DeepLoader({
 }) {
   const deep = useDeep();
   const userId = deep.linkId;
+  const namespaces = useDeepNamespaces();
   const [breadcrumbs] = useBreadcrumbs();
   const [showOpened, setShowOpened] = useShowOpened();
   const { data: HandleCyto } = useDeepId('@deep-foundation/handle-cyto', 'HandleCyto');
@@ -344,88 +349,74 @@ export const DeepLoader = memo(function DeepLoader({
   //   notApplied: deep.minilinks.links.filter(l => !l?._applies?.includes('not-loaded-ends')),
   // });
 
-  const queryChanged = useCallback((r, q) => {
-    deep.minilinks?.apply(r, `query-${q.id}`);
-  }, []);
-
-  const breadcrumbsChanged = useCallback((r) => {
-    deep.minilinks?.apply(r, 'breadcrumbs');
-  }, []);
-  
-  const containsAndSymbolsChanged = useCallback((r) => {
-    deep.minilinks?.apply(r, 'contains_and_symbols');
-  }, []);
-
-  const valuesChanged = useCallback((r) => {
-    deep.minilinks?.apply(r, 'values');
-  }, []);
-
   return <>
     <><DeepLoaderActive
       key="DEEPCASE_SPACE"
       name="DEEPCASE_SPACE"
+      deep={deep}
       query={spaceQuery}
-      onChange={useCallback((r) => {
-        deep.minilinks?.apply(r, 'space');
-      }, [])}
+      mini={'space'}
     /></>
     <><DeepLoaderActive
       key="DEEPCASE_TREES"
       name="DEEPCASE_TREES"
+      deep={deep}
       query={treesQuery}
-      onChange={useCallback((r) => {
-        deep.minilinks?.apply(r, 'trees');
-      }, [])}
+      mini={'trees'}
     /></>
     <><DeepLoaderActive
       key="DEEPCASE_NOT_LOADED_ENDS"
       name="DEEPCASE_NOT_LOADED_ENDS"
+      deep={deep}
       query={notLoadedEndsQuery}
-      onChange={useCallback((r) => {
-        // console.log('not-loaded-ends onChange', r, notLoadedEnds, notLoadedEndsQuery, 'ml', deep.minilinks.links.filter(l => (!!l.from_id && !l.from) || (!!l.to_id && !l.to)));
-        deep.minilinks?.apply(r, 'not-loaded-ends');
-      }, [])}
+      mini={'not-loaded-ends'}
     /></>
     {!!breadcrumbs && <><DeepLoaderActive
       key="DEEPCASE_BREADCRUMBS"
       name="DEEPCASE_BREADCRUMBS"
+      deep={deep}
       query={breadcrumbsQuery}
-      onChange={breadcrumbsChanged}
+      mini={'breadcrumbs'}
     /></>}
     <><DeepLoaderActive
       key="DEEPCASE_CLIENT_HANDLERS"
       name="DEEPCASE_CLIENT_HANDLERS"
+      deep={deep}
       query={clientHandlersQuery}
-      onChange={useCallback((r) => {
-        deep.minilinks?.apply(r, 'client-handlers');
-      }, [])}
+      mini={'client-handlers'}
     /></>
-    {queries?.map((f, i) => (f?.value?.value ? <DeepLoaderActive
-      key={`DEEPCASE_QUERY_${f.id}`}
-      name={`DEEPCASE_QUERY_${f.id}`}
-      query={f}
-      onChange={queryChanged}
-    /> : <React.Fragment key={`DEEPCASE_QUERY_${f.id}`}/>))}
+    {useMemo(() => {
+      return queries?.map((f, i) => (f?.value?.value ? <React.Fragment key={`DEEPCASE_QUERY_${f.id}`}>
+        {Object.values(namespaces).map(deep => <DeepLoaderActive
+          name={`DEEPCASE_QUERY_${deep?.namespace}_${f.id}`}
+          key={`DEEPCASE_QUERY_${deep?.namespace}_${f.id}`}
+          deep={deep}
+          query={f}
+          mini={`query-${f.id}`}
+        />)}
+      </React.Fragment> : <React.Fragment key={`DEEPCASE_QUERY_${f.id}`}/>));
+    }, [namespaces, queries])}
     <><DeepLoaderActive
       key={`DEEPCASE_TYPES`}
       name={`DEEPCASE_TYPES`}
+      deep={deep}
       query={typesQuery}
-      onChange={useCallback((r) => {
-        deep.minilinks?.apply(r, 'types');
-      }, [])}
+      mini={'types'}
     /></>
     {!!typeIds && <><DeepLoaderActive
       key={`DEEPCASE_CONTAINS_AND_SYMBOLS`}
       name={`DEEPCASE_CONTAINS_AND_SYMBOLS`}
+      deep={deep}
       query={containsAndSymbolsQuery}
       debounce={2000}
-      onChange={containsAndSymbolsChanged}
+      mini={'contains_and_symbols'}
     /></>}
     {!!typeIds && <><DeepLoaderActive
       key={`DEEPCASE_VALUES`}
       name={`DEEPCASE_VALUES`}
+      deep={deep}
       query={valuesQuery}
-      onChange={valuesChanged}
+      mini={'values'}
     /></>}
   </>;
 });

@@ -64,10 +64,12 @@ export function useCytoElements(ml, _links, cy, spaceId, cyh) {
       (link?.type_id === deep.idLocal('@deep-foundation/core', 'Contain') && link?.to?.type_id === OpenedHandler && link?.to?.from?.from_id === spaceId && link?.to?.from?.type_id === Opened && link._applies.includes('space'))
     );
 
+    let _id = `${link.id}`;
     let _value = '';
     let _name = '';
     let _type = '';
     let _symbol = '';
+    if (_id.length > 20) _id = _id.slice(0, 11)+'...'+_id.slice(-9, _id.length);
     if (/*labelsConfig?.values && */typeof link?.value?.value !== 'undefined') {
       let json;
       try { json = json5.stringify(link?.value.value); } catch(error) {}
@@ -103,7 +105,7 @@ export function useCytoElements(ml, _links, cy, spaceId, cyh) {
       data: {
         id: `${link.id}`,
         label: (
-          `${link.id}`
+          `${_id}`
           +(_type ? '\n'+`${_type}` : '')
           +(_name ? '\n'+`${_name}` : '')
           +(isValidValue(_value) ? '\n'+`${_value}` : '')

@@ -264,7 +264,7 @@ export const CytoMenu = React.memo(function CytoMenu({
           onClick={clearFocuses}
         ><HiDesktopComputer /></Button>
       </ButtonGroup>
-      <Text colorScheme={'gray'}>mode</Text>
+      {/* <Text colorScheme={'gray'}>mode</Text>
       <ButtonGroup size='md' isAttached variant='outline'>
         <Button
           as={motion.button}
@@ -287,7 +287,7 @@ export const CytoMenu = React.memo(function CytoMenu({
           colorScheme={focuses?.length ? 'blue' : 'gray'}
           onClick={clearFocuses}
         ><HiGlobeAlt /></Button>
-      </ButtonGroup>
+      </ButtonGroup> */}
     </HStack>
     <div style={{ position: 'fixed', left: 0, top: 0 }}>
       <Appearance
