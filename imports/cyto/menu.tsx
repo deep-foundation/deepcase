@@ -12,6 +12,7 @@ import { useCytoEditor, useCytoHandlersRules } from "./hooks";
 import { variants, buttonVariant, iconVariants, sideVariants, itemVariants } from "./menu-animation-variants";
 import { TbArrowRotaryFirstRight } from "react-icons/tb";
 import { ClientHandler } from "../client-handler";
+import { Id } from "@deep-foundation/deeplinks/imports/minilinks";
 
 const ListLayout = React.memo<any>(({ 
   currentLayout = 'deep-d3-force',
@@ -582,7 +583,7 @@ export const MenuSearch = React.memo(({ cyRef, bg }: { cyRef?: any; bg?: any; })
   });
   const all = [...byId, ...byValue, ...byContain];
   const [index, setIndex] = useState(-1);
-  const [selected, setSelected] = useState(0);
+  const [selected, setSelected] = useState<Id>(0);
   // useHotkeys('up,right,down,left', e => {
   //   const cy = cyRef?.current;
   //   e.preventDefault();
