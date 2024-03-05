@@ -87,7 +87,9 @@ export function useShowExtra() {
   return useQueryStore<any>('show-extra', false);
 };
 export function useCytoViewport<S extends { pan: { x: number; y: number; }; zoom: number }>() {
-  return useLocalStore<S>('cyto-viewport', { pan: { x: 0, y: 0 }, zoom: 1 } as S);
+  const x = typeof(window) === 'object' ? window.innerWidth / 2 : 0;
+  const y = typeof(window) === 'object' ? window.innerHeight / 2 : 0;
+  return useLocalStore<S>('cyto-viewport', { pan: { x, y }, zoom: 1 } as S);
 };
 export function useShowFocus() {
   return useQueryStore<any>('show-focus', false);
@@ -206,7 +208,7 @@ export function useActiveMethods() {
 };
 
 export function useLayout() {
-  const [layoutName, setLayoutName] = useLocalStore('layout', 'cola');
+  const [layoutName, setLayoutName] = useLocalStore('layout', 'deep-d3-force');
   return {
     setLayout(name: 'cola' | 'deep-d3-force') {
       setLayoutName(name);

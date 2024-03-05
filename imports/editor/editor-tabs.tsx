@@ -8,13 +8,12 @@ import { useDeep } from '@deep-foundation/deeplinks/imports/client';
 
 interface ITab {
   id: number;
-  title: string;
   saved?: boolean;
   loading?: boolean;
   active?: boolean;
 };
 
-export const EditorTabs_ = React.memo<any>(({
+export const EditorTabs_ = React.memo(({
   tabs=[],
   onClick,
   onClose,
@@ -52,7 +51,7 @@ return (<Flex
   )
 })
 
-export const NonSavedIcon = React.memo<any>(({
+export const NonSavedIcon = React.memo(({
   bg='primary',
   borderColor='red.200',
 }:{
@@ -63,7 +62,7 @@ export const NonSavedIcon = React.memo<any>(({
   return (<Box w='0.5rem' h='0.5rem' bg={bg} borderStyle='solid' borderWidth={1} borderColor={borderColor} borderRadius='full' />)
 })
 
-export const CloseButton = React.memo<any>(({
+export const CloseButton = React.memo(({
   onClick,
 }: {
   onClick?: (event) => void;
@@ -82,7 +81,7 @@ export interface ITabProps {
   onSaveTab?: (tab: ITab) => void;
 }
 
-export const EditorTab = React.memo<any>(({
+export const EditorTab = React.memo(({
   tab,
   onClick,
   onSaveTab,
@@ -187,7 +186,7 @@ export const EditorTab = React.memo<any>(({
   )
 })
 
-export const EditorTabs = React.memo<any>(({
+export const EditorTabs = React.memo(({
   tabs=[],
   setTabs,
   onClick,
@@ -246,7 +245,7 @@ return (<Reorder.Group
   >
     <AnimatePresence initial={false}>
       {tabs.map(t =>
-        <EditorTab key={t} tab={t} onClick={onClick} onSaveTab={onSaveTab} onClose={onClose} />
+        <EditorTab key={t.id} tab={t} onClick={onClick} onSaveTab={onSaveTab} onClose={onClose} />
       )}
     </AnimatePresence>
   </Reorder.Group>)

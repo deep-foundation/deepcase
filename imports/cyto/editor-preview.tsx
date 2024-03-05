@@ -113,8 +113,10 @@ export function CytoEditorPreview({
 
   const [switcher, setSwitch] = useState(true);
   const switchProps = switcher ? { left: 0 } : { right: 0 };
+  const portalRef = useRef();
 
   return <>
+    <div ref={portalRef}/>
     <EditorGrid
       heightEditorGrid='100%'
       columns={switcher ? '15% 85%' : '85% 15%'}
@@ -182,7 +184,7 @@ export function CytoEditorPreview({
         // ></EditorHandler>
         // </EditorHandlers>) ||
         rightArea === 'handlers' && (
-          <CytoEditorHandlers linkId={generated && generatedLink ? generatedLink?.id : linkId}/>
+          <CytoEditorHandlers linkId={generated && generatedLink ? generatedLink?.id : linkId} handleredableIds={generatedLink ? [generatedLink?.id, linkId] : [linkId]}/>
         ) ||
         rightArea === 'preview' && <Box pos='relative' height='100%'>
           {[<EditorComponentView
@@ -202,6 +204,7 @@ export function CytoEditorPreview({
         </Box>
       }
       editorRightSwitch={<EditorSwitcher
+        portalRef={portalRef}
         fillSize={fillSize}
         setFillSize={(newFillSize) => {
           setFillSize(newFillSize);
@@ -211,7 +214,6 @@ export function CytoEditorPreview({
         setCurrentLinkId={(newCurrentLinkId) => {
           setCurrentLinkId(newCurrentLinkId)
         }}
-        generated={generated} setGenerated={setGenerated}
         area={rightArea}
         setArea={(rightArea) => {
           setRightArea(rightArea);

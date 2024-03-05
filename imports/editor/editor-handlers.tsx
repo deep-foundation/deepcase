@@ -3,7 +3,7 @@ import { VscAdd } from 'react-icons/vsc';
 import { Flex, Box, Button, Divider, ButtonGroup, Spacer } from '@chakra-ui/react';
 
 
-export const EditorHandlers = React.memo<any>(({
+export const EditorHandlers = React.memo(({
   children,
   onAddHandler,
   generated,

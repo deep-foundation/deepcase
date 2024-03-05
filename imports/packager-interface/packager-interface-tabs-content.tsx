@@ -109,12 +109,18 @@ const iconVariants = {
   }
 };
 
-export const ListVersions = React.memo<any>(({ 
+export const ListVersions = React.memo(({ 
   name,
   latestVersion,
   currentVersion,
   bg,
   setCurrentVersion
+}: {
+  name: string; 
+  latestVersion: string;
+  currentVersion: string;
+  setCurrentVersion: (string) => any;
+  bg: string;
 }) => {
   const [open, cycleOpen] = useCycle(false, true);
 
@@ -224,7 +230,7 @@ export const ListVersions = React.memo<any>(({
   )
 })
 
-export const PackageItem = React.memo<any>(function PackageItem({
+export const PackageItem = React.memo(function PackageItem({
   id,
   expanded, 
   onOpen, 
@@ -389,7 +395,7 @@ const variantsUninstalled = {
   initial: { opacity: 0, x: '-100%' },
 }
 
-export const TabComponent = React.memo<any>(({ 
+export const TabComponent = React.memo(({ 
   variant = 0,
   installedPackages = [], 
   notInstalledPackages,

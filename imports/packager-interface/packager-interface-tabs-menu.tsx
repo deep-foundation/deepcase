@@ -111,7 +111,7 @@ const textInstall = {
   }
 };
 
-const QuantityPackages = React.memo<any>(({ quantity, borderColor }: { quantity: number; borderColor?: string; }) => {
+const QuantityPackages = React.memo(({ quantity, borderColor }: { quantity: number; borderColor?: string; }) => {
   return (<Circle size='1.2rem' 
       sx={{
         w: 'max-content', minW: '1.2rem', p: '0 0.25rem',
@@ -121,7 +121,7 @@ const QuantityPackages = React.memo<any>(({ quantity, borderColor }: { quantity:
   )
 })
 
-export const TabsPackages = React.memo<any>(({
+export const TabsPackages = React.memo(({
   selectedTab = 0,
   onSelectMode,
   quantityInstall = 0,

@@ -38,8 +38,8 @@ import * as rjsfCore from '@rjsf/core';
 import * as rjsfChakra from '@rjsf/chakra-ui';
 import * as rjsfValidator from '@rjsf/validator-ajv8';
 // @ts-ignore
-import * as aframeReact from '@belivvr/aframe-react';
-import { Entity, Scene } from 'aframe-react';
+// import * as aframeReact from '@belivvr/aframe-react';
+// import { Entity, Scene } from 'aframe-react';
 import { CatchErrors } from './react-errors';
 import _ from 'lodash';
 import md5 from "md5";
@@ -55,9 +55,19 @@ import * as recharts from 'recharts';
 import * as i18n from "i18next";
 import * as LanguageDetector from 'i18next-browser-languagedetector';
 import * as reacti18next from "react-i18next";
+import { packageLog } from '../package-log';
+import CytoGraph from './cyto/graph';
+import * as reactYandexMaps from '@pbe/react-yandex-maps'
+// import ReactCalendarTimeline from 'react-calendar-timeline'
+import moment from 'moment'
+import { useEditorTabs } from './cyto/editor';
+import { useCytoEditor } from './cyto/hooks';
+
 const MonacoEditor = dynamic(() => import('@monaco-editor/react').then(m => m.default), { ssr: false });
 
 export const ClientHandler = React.memo(function ClientHandler(_props: ClientHandlerProps) {
+  const log = packageLog.extend(ClientHandler.name);
+  log({_props})
   const {
     linkId,
     handlerId,
@@ -71,10 +81,13 @@ export const ClientHandler = React.memo(function ClientHandler(_props: ClientHan
   const deep = useDeep();
   const _ml = ml || deep?.minilinks;
   const hid = useFindClientHandler(_props);
+  log({hid})
   const { data: files } = useDeepSubscription({
     id: hid?.dist_id || 0,
   });
+  log({files})
   const file = files?.[0];
+  log({file})
 
   const [{ Component, errored } = {} as any, setState] = React.useState<any>({ Component: undefined, errored: undefined });
 
@@ -238,6 +251,9 @@ r.list = {
     useRefAutofill,
     useChackraColor,
     useChackraGlobal,
+    CytoGraph,
+    useEditorTabs,
+    useCytoEditor,
   },
   '@deep-foundation/deeplinks': {
     useMinilinksFilter
@@ -251,8 +267,8 @@ r.list = {
   '@rjsf/core': rjsfCore,
   '@rjsf/chakra-ui': rjsfChakra,
   '@rjsf/validator-ajv8': rjsfValidator,
-  '@belivvr/aframe-react': aframeReact,
-  'aframe-react': { Entity, Scene },
+  // '@belivvr/aframe-react': aframeReact,
+  // 'aframe-react': { Entity, Scene },
   'md5': md5,
   'uuid': uuidv4,
   'd3-force-3d': d3d,
@@ -266,6 +282,9 @@ r.list = {
   "i18next": i18n,
   'i18next-browser-languagedetector': LanguageDetector,
   "react-i18next": reacti18next,
+  "@pbe/react-yandex-maps": reactYandexMaps,
+  // "react-calendar-timeline": ReactCalendarTimeline,
+  "moment": moment
 };
 
 export async function evalClientHandler({

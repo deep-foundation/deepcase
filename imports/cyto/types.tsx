@@ -6,5 +6,7 @@ export interface CytoGraphProps {
   cyRef?: any;
   gqlPath: string;
   gqlSsl: boolean;
-  appVersion: string;
+  children?: any;
+  useCytoViewport?: any;
+  useSpaceId?: any;
 };

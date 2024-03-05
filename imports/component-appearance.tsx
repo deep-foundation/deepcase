@@ -32,7 +32,7 @@ const variants = {
   }
 }
 
-export const Appearance = React.memo<any>(({
+export const Appearance = React.memo(({
   children, 
   toggle,
   variantsAnimation = variants,

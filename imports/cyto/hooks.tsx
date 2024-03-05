@@ -494,7 +494,7 @@ export function useLinkInserting(elements = [], reactElements = [], focus, cyRef
   return returning;
 }
 
-export function useLinkReactElements(elements = [], reactElements = [], cy, ml) {
+export function useLinkReactElements(elements = [], reactElements = [], cy, ml, spaceId) {
   const deep = useDeep();
   const [linkReactElements, setLinkReactElements] = useState<{ [key: string]: boolean }>({});
   const linkReactElementsIds = useMemo(() => Object.keys(linkReactElements).filter(key => !!linkReactElements[key]), [linkReactElements]).map(key => parseInt(key), [linkReactElements]);
@@ -503,7 +503,6 @@ export function useLinkReactElements(elements = [], reactElements = [], cy, ml) 
 
   const cyRef = useRefAutofill(cy);
   const { open, close, isOpened } = useOpenedMethods();
-  const [spaceId] = useSpaceId();
   const { data: Opened } = useDeepId('@deep-foundation/deepcase-opened', 'Opened');
 
   reactElements.push(...((deep.minilinks?.byId?.[spaceId]?.outByType?.[Opened] || [])?.map(l => elements.find(e => e.id === l.to_id))).filter(i => !!i));
@@ -572,26 +571,43 @@ export function useLinkReactElements(elements = [], reactElements = [], cy, ml) 
 
   const AnyLinkComponent = useMemo(() => {
     return function AnyLinkComponent({ id }: { id: number }) {
+      const [linkId, setLinkId] = useState(id);
       const deep = useDeep();
       const [handlerId, setHandlerId] = useState();
       const { onOpen, onClose, isOpen } = useDisclosure();
       const [search, setSearch] = useState('');
       const [spaceId] = useSpaceId();
 
-      const { data: handleClients } = deep.useDeepQuery({
+      const { data: handleClients } = deep.useDeepSubscription({
         type_id: deep.idLocal('@deep-foundation/core', 'HandleClient'),
         from: {
           down: {
             tree_id: { _eq: deep.idLocal('@deep-foundation/core', 'typesTree') },
-            link_id: { _eq: id },
+            link_id: { _eq: linkId },
           },
         }
       });
 
+      const { data: Opened } = useDeepId('@deep-foundation/deepcase-opened', 'Opened');
+      const { data: OpenedHandler } = useDeepId('@deep-foundation/deepcase-opened', 'OpenedHandler');
+
+      const openedHandlers = deep.useMinilinksSubscription({
+        type_id: OpenedHandler || 0,
+        from: {
+          type_id: Opened || 0,
+          from_id: spaceId,
+          to_id: linkId,
+        },
+      });
+      const [openedHandler] = openedHandlers;
       useEffect(() => {
+        setHandlerId(undefined);
+      }, [linkId]);
+      useEffect(() => {
+        if (openedHandler?.to_id && openedHandler?.to_id !== handlerId) setHandlerId(openedHandler?.to_id);
         if (!handlerId) {
           const inheritance = [];
-          for (let pointer = deep.minilinks.byId[id]; !!pointer && inheritance[inheritance.length - 1] !== pointer; pointer = pointer?.type) {
+          for (let pointer = deep.minilinks.byId[linkId]; !!pointer && inheritance[inheritance.length - 1] !== pointer; pointer = pointer?.type) {
             inheritance.push(pointer);
             const handleClient: any = handleClients.find(h => h.from_id === pointer.id);
             if (handleClient) {
@@ -600,7 +616,7 @@ export function useLinkReactElements(elements = [], reactElements = [], cy, ml) 
             }
           }
         }
-      }, [handleClients]);
+      }, [handleClients, openedHandlers]);
 
       const handleClient = handleClients.find(h => h.to_id === handlerId);
       const elements = handleClients?.map(t => ({
@@ -610,7 +626,7 @@ export function useLinkReactElements(elements = [], reactElements = [], cy, ml) 
         containerName: deep.minilinks.byId?.[t?.to_id]?.inByType[deep.idLocal('@deep-foundation/core', 'Contain')]?.[0]?.from?.value?.value || '',
       })) || [];
 
-      const onCloseCard = useCallback(() => toggleLinkReactElement(id), [id]);
+      const onCloseCard = useCallback(() => toggleLinkReactElement(linkId), [linkId]);
       return <div>
         <CatchErrors errorRenderer={(error, reset) => {
           return <div>{String(error)}</div>;
@@ -647,8 +663,7 @@ export function useLinkReactElements(elements = [], reactElements = [], cy, ml) 
                   search={search}
                   onSearch={e => setSearch(e.target.value)}
                   onSubmit={async (hid) => {
-                    close(id);
-                    open(id, hid);
+                    open(linkId, hid);
                     onClose();
                   }}
                   fillSize
@@ -664,7 +679,7 @@ export function useLinkReactElements(elements = [], reactElements = [], cy, ml) 
               borderColor='borderColor'
               borderWidth='thin'
               target='_blank'
-              href={`/client-handler?props=%7B"linkId"%3A${id}%2C"handlerId"%3A${handlerId}%7D`}
+              href={`/client-handler?props=%7B"linkId"%3A${linkId}%2C"handlerId"%3A${handlerId}%7D`}
               sx={{
                 _hover: {
                   transform: 'scale(1.2)',
@@ -690,7 +705,7 @@ export function useLinkReactElements(elements = [], reactElements = [], cy, ml) 
             />
           </Flex>
           {!handleClient?.to_id && <Alert status='error'><AlertIcon />Compatible HandleClient not found.</Alert>}
-          {!!handleClient?.to_id && [<ClientHandler key={`${id}${handleClient?.to_id}`} handlerId={handleClient?.to_id} linkId={id} ml={ml} onClose={onCloseCard}/>]}
+          {!!handleClient?.to_id && [<ClientHandler key={`${linkId}${handleClient?.to_id}`} handlerId={handleClient?.to_id} linkId={linkId} ml={ml} onClose={onCloseCard} setLinkId={setLinkId} setHandlerId={setHandlerId}/>]}
         </CatchErrors>
       </div>;
     };
@@ -714,6 +729,8 @@ export function useCyInitializer({
   setCy,
   ehRef,
   cytoViewportRef,
+  rootRef,
+  useSpaceId: _useSpaceId = useSpaceId,
 }: {
   elementsRef: any;
   elements: any;
@@ -722,11 +739,13 @@ export function useCyInitializer({
   setCy: any;
   ehRef: any;
   cytoViewportRef: any;
+  rootRef?: any;
+  useSpaceId?: any;
 }) {
   const deep = useDeep();
   const { layout, setLayout } = useLayout();
   const [extra, setExtra] = useShowExtra();
-  const [spaceId, setSpaceId] = useSpaceId();
+  const [spaceId, setSpaceId] = _useSpaceId();
   const [container, setContainer] = useContainer();
   const [showTypes, setShowTypes] = useShowTypes();
   const [cytoEditor, setCytoEditor] = useCytoEditor();
@@ -744,7 +763,7 @@ export function useCyInitializer({
 
   const refDragStartedEvent = useRef<any>();
 
-  const { toggleLinkReactElement } = useLinkReactElements(elements, reactElements, cyRef.current, ml);
+  const { toggleLinkReactElement } = useLinkReactElements(elements, reactElements, cyRef.current, ml, spaceId);
 
 
   // const relayout = useCallback(() => {
@@ -1037,7 +1056,7 @@ export function useCyInitializer({
         {
           content: 'center',
           select: function(el, ev){
-            ncy.pan({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+            ncy.pan({ x: rootRef?.current.clientWidth / 2, y: rootRef?.current.clientHeight / 2 });
             ncy.zoom(1);
           }
         },

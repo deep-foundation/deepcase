@@ -16,7 +16,7 @@ interface IGrid {
 }
 
 
-export const EditorGrid = React.memo<any>(({
+export const EditorGrid = React.memo(({
   columns = 'repeat(2, 50%)',
   editorTabsElement,
   editorTextAreaElement,

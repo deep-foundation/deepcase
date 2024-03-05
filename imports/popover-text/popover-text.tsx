@@ -7,7 +7,7 @@ export interface ITypeData {
   src?: string;
 }
 
-const ButtonWord = React.memo<any>(({text = 'Trigger'}:{text?: any;}) => {
+const ButtonWord = React.memo(({text = 'Trigger'}:{text?: any;}) => {
   return <Button 
       variant='text' 
       p={0} 
@@ -22,7 +22,7 @@ const ButtonWord = React.memo<any>(({text = 'Trigger'}:{text?: any;}) => {
 
 const Trigger = chakra(ButtonWord);
   
-const WordPopover = React.memo<any>(({
+const WordPopover = React.memo(({
   text = '', 
   popoverContent,
 }:{
@@ -59,11 +59,11 @@ const WordPopover = React.memo<any>(({
   </Popover>)
 })
 
-const PopContent = React.memo<any>(() => {
+const PopContent = React.memo(() => {
   return (<Square size='5rem' bg='goldenrod'>I'm square, but I can be anything</Square>)
 })
 
-export const Example = React.memo<any>(() => {
+export const Example = React.memo(() => {
   
   return (<Box as='main' pos='relative'>
       <Text as='div' fontSize='sm'>Lorem ipsum dolor sit amet, consectetur <WordPopover popoverContent={<PopContent />} text='catch' /> elit. Sed ac justo ultrices lacus luctus mattis. Quisque hendrerit molestie feugiat. Fusce aliquet tellus sed ex congue, vel commodo mauris dictum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac <WordPopover popoverContent={<PopContent />} text='me' /> egestas. Nulla eleifend ante nulla, sit amet iaculis lacus vulputate in. Proin ipsum lorem, vulputate ac mauris eu, facilisis aliquet magna. Vestibulum dignissim lacinia varius. Sed gravida quam vitae posuere <WordPopover popoverContent={<PopContent />} text='if' />. Phasellus lacus mauris, <WordPopover popoverContent={<PopContent />} text='you' /> eu rhoncus a, pulvinar a ante. Aliquam eu nibh euismod enim porta semper at auctor nisl. Aliquam <WordPopover popoverContent={<PopContent />} text='can' /> varius sapien vitae fermentum. Aliquam rhoncus erat et dui luctus sagittis. Phasellus quis tellus vulputate, pretium ligula ut, iaculis quam. Sed accumsan egestas bibendum. Sed sed finibus eros.</Text>
