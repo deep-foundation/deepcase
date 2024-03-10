@@ -1,0 +1,13 @@
+{
+  "directory": "./imports",
+  "delete": true,
+  "exclude": [
+    "./aframe/aframe-graph",
+    "./cyto/editor",
+    "./cyto/editor-preview",
+    "./editor/editor-tabs",
+    "./cyto-react-links-packages",
+    "./editor/index",
+    "./cyto/index"
+  ]
+}
