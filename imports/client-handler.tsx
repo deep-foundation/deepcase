@@ -28,7 +28,6 @@ import SoftBreak from 'slate-soft-break';
 import { slateToHtml, htmlToSlate } from 'slate-serializers';
 import isHotkey from 'is-hotkey';
 import * as Resizable from 're-resizable';
-import * as DeepCase from './index';
 import { useContainer, useSpaceId, useRefAutofill, useFocusMethods, useShowExtra, useBreadcrumbs, useTraveler } from './hooks';
 import { CytoEditorPreview } from './cyto/editor-preview';
 import { CustomizableIcon } from './icons-provider';
@@ -176,8 +175,6 @@ DeepClient.resolveDependency = async (path: string) : Promise<any> => {
     return await import('react-multi-date-picker');
   } else if (path == 'node-sound') {
     return await import('./aframe/components/node-sound');
-  } else if (path == './cyto/hooks') {
-    return await import('./cyto/hooks');
   } else if (path == 'dragger') {
     return await import('./aframe/components/dragger');
   } else if (path == 'rotator') {
@@ -239,7 +236,31 @@ r.list = {
   're-resizable': Resizable,
   '@monaco-editor/react': MonacoEditor,
   '@chakra-ui/icons': icons,
-  '@deep-foundation/deepcase': DeepCase,
+  '@deep-foundation/deepcase': {
+    useContainer,
+    useSpaceId,
+    useFocusMethods,
+    useBreadcrumbs,
+    useShowExtra,
+    useTraveler,
+    CytoEditorPreview,
+    CustomizableIcon,
+    Resize,
+    EditorTextArea,
+    ClientHandler,
+    BubbleArrowLeft,
+    CytoReactLinkAvatar,
+    DeepWysiwyg,
+    useStringSaver,
+    BlockButton,
+    MarkButton,
+    useRefAutofill,
+    useChackraColor,
+    useChackraGlobal,
+    CytoGraph,
+    useEditorTabs,
+    useCytoEditor,
+  },
   '@deep-foundation/deeplinks': {
     useMinilinksFilter
   },
