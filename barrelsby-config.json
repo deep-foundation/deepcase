@@ -8,6 +8,8 @@
     "./editor/editor-tabs",
     "./cyto-react-links-packages",
     "./editor/index",
-    "./cyto/index"
+    "./cyto/index",
+    "./aframe",
+    "./packager-interface"
   ]
 }
