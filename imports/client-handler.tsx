@@ -1,6 +1,7 @@
 import * as chakra from '@chakra-ui/react';
 import * as icons from '@chakra-ui/icons';
 import * as MUI from '@mui/material';
+import * as MUIUtils from '@mui/utils';
 import * as IconsMaterial from '@mui/icons-material';
 import dynamic from 'next/dynamic';
 import { DeepClient, useDeep, useDeepSubscription } from "@deep-foundation/deeplinks/imports/client";
@@ -217,6 +218,7 @@ r.list = {
   'lodash': _,
   '@chakra-ui/react': chakra,
   '@mui/material': MUI,
+  '@mui/utils': MUIUtils,
   '@mui/icons-material': IconsMaterial,
   'react': React,
   'axios': axios,
