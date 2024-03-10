@@ -28,6 +28,7 @@ import SoftBreak from 'slate-soft-break';
 import { slateToHtml, htmlToSlate } from 'slate-serializers';
 import isHotkey from 'is-hotkey';
 import * as Resizable from 're-resizable';
+import * as DeepCase from './index';
 import { useContainer, useSpaceId, useRefAutofill, useFocusMethods, useShowExtra, useBreadcrumbs, useTraveler } from './hooks';
 import { CytoEditorPreview } from './cyto/editor-preview';
 import { CustomizableIcon } from './icons-provider';
@@ -236,31 +237,7 @@ r.list = {
   're-resizable': Resizable,
   '@monaco-editor/react': MonacoEditor,
   '@chakra-ui/icons': icons,
-  '@deep-foundation/deepcase': {
-    useContainer,
-    useSpaceId,
-    useFocusMethods,
-    useBreadcrumbs,
-    useShowExtra,
-    useTraveler,
-    CytoEditorPreview,
-    CustomizableIcon,
-    Resize,
-    EditorTextArea,
-    ClientHandler,
-    BubbleArrowLeft,
-    CytoReactLinkAvatar,
-    DeepWysiwyg,
-    useStringSaver,
-    BlockButton,
-    MarkButton,
-    useRefAutofill,
-    useChackraColor,
-    useChackraGlobal,
-    CytoGraph,
-    useEditorTabs,
-    useCytoEditor,
-  },
+  '@deep-foundation/deepcase': DeepCase,
   '@deep-foundation/deeplinks': {
     useMinilinksFilter
   },
