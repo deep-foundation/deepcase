@@ -289,7 +289,8 @@ export const DeepLoader = memo(function DeepLoader({
     return { value: { value: {
       down: {
         tree_id: { _eq: deep.idLocal('@deep-foundation/core', 'typesTree') },
-        link_id: { _in: ids }
+        link_id: { _in: ids },
+        parent_id: { _nin: ids },
       },
     } } };
   }, [ids]);
@@ -402,11 +403,11 @@ export const DeepLoader = memo(function DeepLoader({
       }, [])}
     /></>
     {queries?.map((f, i) => (f?.value?.value ? <DeepLoaderActive
-      key={`DEEPCASE_QUERY_${f.id}`}
-      name={`DEEPCASE_QUERY_${f.id}`}
+      key={`DEEPCASE_QUERY_${`${f.id}`.replace('-', 'virtual')}`}
+      name={`DEEPCASE_QUERY_${`${f.id}`.replace('-', 'virtual')}`}
       query={f}
       onChange={queryChanged}
-    /> : <React.Fragment key={`DEEPCASE_QUERY_${f.id}`}/>))}
+    /> : <React.Fragment key={`DEEPCASE_QUERY_${`${f.id}`.replace('-', 'virtual')}`}/>))}
     <><DeepLoaderActive
       key={`DEEPCASE_TYPES`}
       name={`DEEPCASE_TYPES`}
