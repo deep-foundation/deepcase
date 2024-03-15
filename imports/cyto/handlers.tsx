@@ -8,7 +8,7 @@ import { useChackraColor } from '../get-color';
 import { useContainer, useSpaceId } from '../hooks';
 import { FinderPopover } from './hooks';
 
-export const CytoEditorHandlersSupportHandle = React.memo<any>(function CytoEditorHandlersSupport({
+export const CytoEditorHandlersSupportHandle = React.memo(function CytoEditorHandlersSupport({
   support,
   handler,
   handle,
@@ -283,7 +283,7 @@ export const CytoEditorHandlersSupportHandle = React.memo<any>(function CytoEdit
   </Box>;
 });
 
-export const CytoEditorHandlersSupport = React.memo<any>(function CytoEditorHandlersSupport({
+export const CytoEditorHandlersSupport = React.memo(function CytoEditorHandlersSupport({
   support,
   linkId,
   handleredableIds,
@@ -369,7 +369,7 @@ export const CytoEditorHandlersSupport = React.memo<any>(function CytoEditorHand
   </AccordionItem>;
 });
 
-export const CytoEditorHandlers = React.memo<any>(function CytoEditorHandlers({
+export const CytoEditorHandlers = React.memo(function CytoEditorHandlers({
   linkId,
   handleredableIds,
 }: {

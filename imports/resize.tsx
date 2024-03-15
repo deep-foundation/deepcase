@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Resizable } from 're-resizable';
 import { motion } from 'framer-motion';
 
-export const Resize = React.memo<any>(({ 
+export const Resize = React.memo(({ 
   onChangeSize,
   size,
   fillSize = true,

@@ -211,7 +211,7 @@ const buttonVariant = {
 }
 
 
-export const PackagerInterface = React.memo<any>(({
+export const PackagerInterface = React.memo(({
   toggle,
   onClose,
 }:{
@@ -268,8 +268,7 @@ export const PackagerInterface = React.memo<any>(({
       >packager</Button>
       <Appearance 
         toggle={togglePackager} 
-        variantsAnimation={variants} 
-        initial='initial'
+        variantsAnimation={variants}
       >
         <Box borderWidth='thin' borderColor='borderColor' borderRadius='1.2rem' w='35.5rem' bg='backgroundModal' sx={{ height: 'calc(100vh - 3rem)' }} overflow='hidden'>
           <Flex 
@@ -305,7 +304,7 @@ export const PackagerInterface = React.memo<any>(({
           </Flex>
           <TabsPackages 
             selectedTab={variant}
-            onSelectMode={(e) => setSelectedVariant(variant => variant === 0 ? 1 : 0)}
+            onSelectMode={() => setSelectedVariant(variant => variant === 0 ? 1 : 0)}
             quantityInstall={installedPackages.length}
             quantityUninstalled={notInstalledPackages.length}
           />

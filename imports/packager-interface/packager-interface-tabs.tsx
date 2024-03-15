@@ -103,7 +103,7 @@ const textInstall = {
 };
 
 
-export const TabsPackages = React.memo<any>(({
+export const TabsPackages = React.memo(({
   // selectedTab = 0,
   onClickTab,
 }:{

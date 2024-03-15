@@ -16,7 +16,7 @@ const variants = {
   }
 };
 
-export const TextInput = React.memo<any>(() => {
+export const TextInput = React.memo(() => {
   const [value, setValue] = useState('');
   const inputRef = useRef<HTMLTextAreaElement>();
   // const { ref: inputRef, updateCaret } = useCaretPosition();
@@ -39,7 +39,7 @@ export const TextInput = React.memo<any>(() => {
   />)
 })
 
-export const TooltipEmoji = React.memo<any>(({
+export const TooltipEmoji = React.memo(({
   selectedLinkId = 0,
   // children,
   data,

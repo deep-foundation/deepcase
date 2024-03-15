@@ -6,7 +6,7 @@ import { useChackraColor } from '../get-color';
 import { Resize } from '../resize';
 
 
-const SemicircularButton = React.memo<any>(({
+const SemicircularButton = React.memo(({
   Icon = TiPlusOutline,
   borderRadius = '4rem 0 0 4rem',
   onClick = () => {},
@@ -42,7 +42,7 @@ const SemicircularButton = React.memo<any>(({
   )
 })
 
-const AddedChild = React.memo<any>(() => {
+const AddedChild = React.memo(() => {
   return (<>
       <FcMindMap />
       <FcMindMap />
@@ -55,7 +55,7 @@ const AddedChild = React.memo<any>(() => {
     </>
   )
 })
-const ExecComponent = React.memo<any>(() => {
+const ExecComponent = React.memo(() => {
   return (<>
       <FcEnteringHeavenAlive />
       <Stat>
@@ -103,7 +103,7 @@ const ExecComponent = React.memo<any>(() => {
   )
 })
 
-export const GridComponent = React.memo<any>(({
+export const GridComponent = React.memo(({
   mountChildren = <AddedChild />,
   unmountChildren = <AddedChild />,
   executableComponent = <ExecComponent />,
@@ -184,7 +184,7 @@ export const GridComponent = React.memo<any>(({
           </Box>
           <Resize 
             size={viewSize} 
-            onChangeSize={(viewSize) => setViewSize(viewSize)} 
+            onChangeSize={(viewSize: any) => setViewSize(viewSize)} 
             style={{
               borderTop: 'none', 
               borderBottom: 'none', 

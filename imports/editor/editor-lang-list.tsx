@@ -51,10 +51,16 @@ const iconVariants = {
   }
 };
 
-export const ListLanguages = React.memo<any>(({ 
+
+
+export const ListLanguages = React.memo(({ 
   languages = [],
   currentLanguage,
   setLanguage,
+}: { 
+  languages: any;
+  currentLanguage: string;
+  setLanguage: (i: any) => void;
 }) => {
   const [open, cycleOpen] = useCycle(false, true);
 

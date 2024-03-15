@@ -571,9 +571,9 @@ export function useLinkReactElements(elements = [], reactElements = [], cy, ml, 
 
   const AnyLinkComponent = useMemo(() => {
     return function AnyLinkComponent({ id }: { id: Id }) {
-      const [linkId, setLinkId] = useState(id);
+      const [linkId, setLinkId] = useState<Id>(id);
       const deep = useDeep();
-      const [handlerId, setHandlerId] = useState();
+      const [handlerId, setHandlerId] = useState<Id>();
       const { onOpen, onClose, isOpen } = useDisclosure();
       const [search, setSearch] = useState('');
       const [spaceId] = useSpaceId();

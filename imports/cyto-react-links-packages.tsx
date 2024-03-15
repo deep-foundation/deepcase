@@ -108,7 +108,7 @@ const arrElem = [
   },
 ]
 
-const PackageItemAccordion = React.memo<any>(({
+const PackageItemAccordion = React.memo(({
   id,
   containerName,
   version,
@@ -116,6 +116,7 @@ const PackageItemAccordion = React.memo<any>(({
   typeElements = arrElem,
 }:IPackage) => {
   const [expanded, setExpanded] = useState<false | Id>(false);
+  const [selectedLink, setSelectedLink] = useState(id);
   const isOpen = id === expanded;
 
   return (<>
@@ -163,7 +164,7 @@ const PackageItemAccordion = React.memo<any>(({
           transition={{ duration: 0.8, ease: [0.04, 0.62, 0.23, 0.98] }}
           sx={{transformOrigin: 'top center',}}
         >
-          <GridPanel data={typeElements}  />
+          <GridPanel data={typeElements} selectedLink={selectedLink} onSelectLink={setSelectedLink} />
         </Box>
       )}
     </AnimatePresence>
@@ -192,7 +193,7 @@ const PackageItemAccordion = React.memo<any>(({
 //     version: '0.0.0',
 //   }];
 
-export const PackagesBlock = React.memo<any>(({packages}:{packages :IPackageProps[]}) => {
+export const PackagesBlock = React.memo(({packages}:{packages :IPackageProps[]}) => {
   return (<Box 
       sx={{
         w: '100%',

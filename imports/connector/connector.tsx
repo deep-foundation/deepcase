@@ -25,7 +25,7 @@ export const parseUrl = (text) : [string, boolean] => {
   }
 };
 
-const ConnectorGrid = React.memo<any>(({
+const ConnectorGrid = React.memo(({
   children, 
   ...props
 }:{
@@ -97,7 +97,7 @@ const callEngine = async ({ serverUrl, operation, terminal }: { serverUrl: strin
   return r;
 };
 
-const TerminalConnect = React.memo<any>(({
+const TerminalConnect = React.memo(({
   initializingState = undefined, 
   setInitLocal, 
   serverUrl,
@@ -108,9 +108,7 @@ const TerminalConnect = React.memo<any>(({
   defaultGqlSsl,
 }:{
   initializingState?: InitializingState; 
-  closeTerminal: () => any; 
-  setInitLocal: (state) => any; 
-  terminalClosed: boolean; 
+  setInitLocal: (state) => any;
   serverUrl: string;
   setGqlPath: (path: string) => any;
   setGqlSsl: (ssl: boolean) => any;
@@ -300,7 +298,7 @@ const inputAnimation = {
   }
 };
 
-const InputAnimation = React.memo<any>(({
+const InputAnimation = React.memo(({
   bgContainer = '#141214',
   addRemoteRout = false,
   valueRemoteRoute = '',
@@ -458,7 +456,7 @@ export const checkSystemStatus = async (serverUrl): Promise<{ result?: any; erro
   }
 };
 
-export const Connector = React.memo<any>(({
+export const Connector = React.memo(({
   portalOpen = true,
   setPortal,
   gqlPath,
@@ -670,7 +668,7 @@ export const Connector = React.memo<any>(({
                   gqlPath={gqlPath}
                   gqlSsl={gqlSsl}
                   // setValueRemote={}
-                  onDeleteValue={(e) => {
+                  onDeleteValue={() => {
                     if (gqlPath == rr.value) {
                       setGqlPath('');
                       setGqlSsl(false);

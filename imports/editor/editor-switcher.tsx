@@ -6,7 +6,7 @@ import { useDeep } from '@deep-foundation/deeplinks/imports/client';
 import { Id } from '@deep-foundation/deeplinks/imports/minilinks';
 
 
-export const EditorSwitcher = React.memo<any>(({
+export const EditorSwitcher = React.memo(({
   area,
   setArea,
   rightArea,

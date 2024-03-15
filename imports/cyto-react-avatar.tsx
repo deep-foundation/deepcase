@@ -2,7 +2,7 @@ import React from 'react';
 import { Avatar } from '@chakra-ui/react';
 
 
-export const CytoReactLinkAvatar = React.memo<any>(({
+export const CytoReactLinkAvatar = React.memo(({
   emoji,
   name,
   src,

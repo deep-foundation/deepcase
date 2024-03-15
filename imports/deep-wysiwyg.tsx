@@ -400,7 +400,7 @@ var check = (el) => (
 );
 
   // Only objects editor.
-export const DeepWysiwyg = React.memo<any>(function DeepWysiwyg({ 
+export const DeepWysiwyg = React.memo(function DeepWysiwyg({ 
   fillSize,
   disabled = false,
   topmenu = true,
@@ -669,7 +669,7 @@ const isBlockActive = (editor, format, blockType = 'type') => {
   return !!match
 }
 
-export const BlockButton = React.memo<any>(({ format, icon, colorMode, setColor }:{ format: any; icon: any; colorMode?: any; setColor?: () => any; }) => {
+export const BlockButton = React.memo(({ format, icon, colorMode, setColor }:{ format: any; icon: any; colorMode?: any; setColor?: () => any; }) => {
   const editor = useSlate();
   
   return (

@@ -4,7 +4,7 @@ import { Flex, Box, Button, Divider, ButtonGroup, Spacer } from '@chakra-ui/reac
 import { Id } from '@deep-foundation/deeplinks/imports/minilinks';
 
 
-export const EditorHandlers = React.memo<any>(({
+export const EditorHandlers = React.memo(({
   children,
   onAddHandler,
   generated,

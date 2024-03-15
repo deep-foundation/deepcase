@@ -90,7 +90,7 @@ const BubbleArrowLeft = ({
   </svg>
 }
 
-const Done = React.memo<any>(() => {
+const Done = React.memo(() => {
   return(<IconContext.Provider value={{ color: "blue" }}>
       <div>
         <BsCheck2 />
@@ -98,7 +98,7 @@ const Done = React.memo<any>(() => {
     </IconContext.Provider>
   )
 })
-const DoneAllOpacity = React.memo<any>(() => {
+const DoneAllOpacity = React.memo(() => {
   return(<IconContext.Provider value={{ color: "blue" }}>
       <div>
         <BsCheck2All />
@@ -106,7 +106,7 @@ const DoneAllOpacity = React.memo<any>(() => {
     </IconContext.Provider>
   )
 })
-const DoneAll = React.memo<any>(() => {
+const DoneAll = React.memo(() => {
   return(<IconContext.Provider value={{ color: "primary" }}>
       <div>
         <BsCheck2All />
@@ -131,7 +131,7 @@ interface IMessage {
   answerButton?: any;
 }
 
-export const CytoReactMessage = React.memo<any>(({
+export const CytoReactMessage = React.memo(({
   text='Однообразные мелькают Все с той же болью дни мои, Как будто розы опадают И умирают соловьи. Но и она печальна тоже, Мне приказавшая любовь, И под ее атласной кожей Бежит отравленная кровь.',
   align = 'left',
   arrow = align,

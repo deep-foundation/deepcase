@@ -14,7 +14,7 @@ import { TbArrowRotaryFirstRight } from "react-icons/tb";
 import { ClientHandler } from "../client-handler";
 import { Id } from "@deep-foundation/deeplinks/imports/minilinks";
 
-const ListLayout = React.memo<any>(({ 
+const ListLayout = React.memo(({ 
   currentLayout = 'deep-d3-force',
   setCurrentLayout,
 }:{
@@ -294,7 +294,6 @@ export const CytoMenu = React.memo(function CytoMenu({
       <Appearance
         toggle={togglePackager}
         variantsAnimation={variants}
-        initial='initial'
         styleProps={{overflow: 'uset'}}
       >
         <>
@@ -430,10 +429,8 @@ export const CytoMenu = React.memo(function CytoMenu({
                       <option value='deep-d3-force'>d3-force</option>
                     </Select> */}
                     <ListLayout 
-                      layout={layoutName}
                       currentLayout={layoutName}
                       setCurrentLayout={handlerChangeLayout}
-                      
                     />
                   </Box>
                 </FormControl>

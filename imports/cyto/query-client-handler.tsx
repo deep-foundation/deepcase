@@ -64,7 +64,7 @@ const stackVariants = {
   }
 };
 
-export const QueryClientHandler = React.memo<any>(({nested = false}:{nested?: boolean;}) => {
+export const QueryClientHandler = React.memo(({nested = false}:{nested?: boolean;}) => {
   const [viewSize, setViewSize] = useState({width: 200, height: 150});
   const [save, setSave] = useState(false);
   const [value, setValue] = useState(false);
@@ -102,7 +102,7 @@ export const QueryClientHandler = React.memo<any>(({nested = false}:{nested?: bo
   return (
     <Resize 
       size={viewSize} 
-      onChangeSize={(viewSize) => setViewSize(viewSize)} 
+      onChangeSize={(viewSize: any) => setViewSize(viewSize)} 
       style={{
         position: 'relative',
         overflow: nested ? 'hidden' : 'inherit',

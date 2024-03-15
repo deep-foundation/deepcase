@@ -12,7 +12,7 @@ const monacoEditorOptions = {
 
 interface IEditor {
   refEditor?: any;
-  value?: '';
+  value?: any;
   onChange?: (value: string) => void;
   onSave?: (value: string) => void;
   onClose?: () => void;
@@ -23,9 +23,9 @@ interface IEditor {
   onMount?: (editor: any, monaco: any) => any;
 }
 
-export const EditorTextArea = React.memo<any>(({
+export const EditorTextArea = React.memo(({
   refEditor = { current: undefined },
-  value, 
+  value = '',
   onChange,
   onSave,
   onClose,

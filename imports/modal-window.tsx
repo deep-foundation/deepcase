@@ -40,7 +40,7 @@ const backdrop = {
   }
 }
 
-export const ModalWindow = React.memo<any>(({
+export const ModalWindow = React.memo(({
   portalOpen = false, 
   onClosePortal,
   children,

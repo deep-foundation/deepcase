@@ -2,7 +2,7 @@ import { Tag, TagLabel, TagLeftIcon } from '@chakra-ui/react';
 import React from 'react';
 import { TbAtom } from 'react-icons/tb';
 
-export const TagLink = React.memo<any>(({
+export const TagLink = React.memo(({
   size='sm',
   borderRadius='full',
   version, 

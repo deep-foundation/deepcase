@@ -4,7 +4,7 @@ import { Flex, Box, Button, Divider, ButtonGroup, Spacer } from '@chakra-ui/reac
 import { useDeep } from '@deep-foundation/deeplinks/imports/client';
 import { Id } from '@deep-foundation/deeplinks/imports/minilinks';
 
-export const EditorResultsResolvesRejects = React.memo<any>(({
+export const EditorResultsResolvesRejects = React.memo(({
   promiseId
 }: {
   promiseId: Id;
@@ -28,7 +28,7 @@ export const EditorResultsResolvesRejects = React.memo<any>(({
   </Box>;
 });
 
-export const EditorResults = React.memo<any>(({
+export const EditorResults = React.memo(({
   id,
 }:{
   id: Id;
@@ -49,11 +49,11 @@ export const EditorResults = React.memo<any>(({
       from_id: id,
     },
   });
-  const sortedPromises = promises.sort((a,b) => b.id - a.id);
+  // const sortedPromises = promises.sort((a,b) => b.id - a.id);
   return (<Flex direction='column' position="relative">
       <Box position="absolute" width="100%" height="100%" overflowY="scroll">
       <Box>
-        {sortedPromises.map(promise => <Box>
+        {promises.map(promise => <Box>
           {promise.id} Promise
           <Box paddingLeft={4}>
             <EditorResultsResolvesRejects promiseId={promise.id} />

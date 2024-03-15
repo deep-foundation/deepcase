@@ -1,6 +1,6 @@
 {
   "name": "@deep-foundation/deepcase",
-  "version": "0.0.101",
+  "version": "0.0.109",
   "license": "Unlicense",
   "type": "module",
   "keywords": [
@@ -23,11 +23,12 @@
     "@chakra-ui/react": "^2.6.1",
     "@chakra-ui/theme-tools": "^2.0.16",
     "@deep-foundation/core": "~0.0.2",
-    "@deep-foundation/deeplinks": "^0.0.324",
     "@deep-foundation/tsx": "~0.0.5",
-    "@emotion/react": "^11.11.0",
+    "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",
     "@monaco-editor/react": "^4.5.1",
+    "@mui/icons-material": "^5.15.12",
+    "@mui/material": "^5.15.12",
     "@pbe/react-yandex-maps": "^1.2.5",
     "@react-hook/debounce": "^4.0.0",
     "@rjsf/chakra-ui": "^5.8.1",
@@ -43,9 +44,8 @@
     "aframe-environment-component": "^1.3.3",
     "aframe-extras": "^7.0.0",
     "aframe-forcegraph-component": "^3.0.8",
-    "aframe-react": "^4.4.0",
     "axios": "^1.4.0",
-    "axios-hooks": "^4.0.0",
+    "axios-hooks": "^5.0.2",
     "classnames": "^2.3.2",
     "copy-to-clipboard": "^3.3.3",
     "css-select": "^5.1.0",
@@ -72,11 +72,10 @@
     "md5": "^2.3.0",
     "meshoptimizer": "^0.18.1",
     "moment": "^2.30.1",
-    "next": "13.3",
+    "next": "14.1",
     "peerjs": "^1.4.7",
     "re-resizable": "^6.9.9",
     "react": "*",
-    "react-calendar-timeline": "^0.28.0",
     "react-cytoscapejs": "^2.0.0",
     "react-d3-cloud": "^1.0.6",
     "react-device-detect": "^2.2.3",
@@ -107,10 +106,11 @@
     "node": "^18"
   },
   "peerDependencies": {
+    "@deep-foundation/deeplinks": "0.0.*",
     "react": "*"
   },
   "devDependencies": {
-    "@deep-foundation/npm-automation": "^18.1.12",
+    "@deep-foundation/npm-automation": "^18.1.14",
     "depcheck": "^1.4.3",
     "ts-node": "^10.9.1"
   }
