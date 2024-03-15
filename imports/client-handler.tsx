@@ -62,7 +62,7 @@ import * as reactYandexMaps from '@pbe/react-yandex-maps'
 import moment from 'moment'
 import { useEditorTabs } from './cyto/editor';
 import { useCytoEditor } from './cyto/hooks';
-import reactHookForm from 'react-hook-form'
+import * as reactHookForm from 'react-hook-form'
 
 const MonacoEditor = dynamic(() => import('@monaco-editor/react').then(m => m.default), { ssr: false });
 
