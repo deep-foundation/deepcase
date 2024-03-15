@@ -219,9 +219,6 @@ export const r: any = (path) => {
 r.list = {
   'lodash': _,
   '@chakra-ui/react': chakra,
-  '@mui/material': MUI,
-  '@mui/utils': MUIUtils,
-  '@mui/icons-material': IconsMaterial,
   'react': React,
   'axios': axios,
   'axios-hooks': axiosHooks,
