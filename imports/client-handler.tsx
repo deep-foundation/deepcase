@@ -62,6 +62,7 @@ import * as reactYandexMaps from '@pbe/react-yandex-maps'
 import moment from 'moment'
 import { useEditorTabs } from './cyto/editor';
 import { useCytoEditor } from './cyto/hooks';
+import reactHookForm from 'react-hook-form'
 
 const MonacoEditor = dynamic(() => import('@monaco-editor/react').then(m => m.default), { ssr: false });
 
@@ -286,7 +287,8 @@ r.list = {
   "react-i18next": reacti18next,
   "@pbe/react-yandex-maps": reactYandexMaps,
   // "react-calendar-timeline": ReactCalendarTimeline,
-  "moment": moment
+  "moment": moment,
+  "react-hook-form": reactHookForm
 };
 
 export async function evalClientHandler({
