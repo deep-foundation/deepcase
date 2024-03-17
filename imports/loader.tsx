@@ -61,7 +61,7 @@ export const DeepLoaderActive = React.memo(function DeepLoaderActive({
 
   useEffect(() => {
     // if (subQueryPrimary?.data?.q0 && !subQueryPrimary?.loading) onChange && onChange(subQueryPrimary?.data?.q0, queryLink);
-    onChange && onChange(subQueryResults?.data, queryLink);
+    if (!subQueryResults.loading) onChange && onChange(subQueryResults?.data, queryLink);
   }, [subQueryResults]);
 
   useEffect(() => {
@@ -209,6 +209,7 @@ export const DeepLoader = memo(function DeepLoader({
     deep.minilinks,
     useCallback((l) => !l?._applies?.includes('not-loaded-ends'), []),
     useCallback((l, ml) => (ml.links.filter(l => (
+      l?._namespaces?.includes('remote') &&
       (
         !l._applies.includes('contains_and_symbols')
         &&
@@ -232,6 +233,29 @@ export const DeepLoader = memo(function DeepLoader({
       ] },
     } } };
   }, [notLoadedEnds]);
+
+  const notLoadedEndsCyber = useMinilinksFilter(
+    deep.minilinks,
+    useCallback((l) => (!l?._applies?.includes('not-loaded-ends-cyber') && l?._namespaces?.includes('cyber')), []),
+    useCallback((l, ml) => (ml.links.filter(l => (
+        l?._namespaces?.includes('cyber')
+        &&
+        (
+          (!!l.from_id && (!l.from || !!l.from._applies.includes('not-loaded-ends-cyber')))
+          ||
+          (!!l.to_id && (!l.to || !l.to._applies.includes('not-loaded-ends-cyber')))
+        )
+    ))), []),
+    1000,
+  ) || [];
+  const notLoadedEndsCyberQuery = useMemo(() => {
+    return { value: { value: {
+      id: { _in: [
+        ...notLoadedEndsCyber.map(l => l.from_id).filter(id => !!id),
+        ...notLoadedEndsCyber.map(l => l.to_id).filter(id => !!id),
+      ] },
+    } } };
+  }, [notLoadedEndsCyber]);
 
   const treesQuery = useMemo(() => {
     return { value: { value: {
@@ -293,7 +317,8 @@ export const DeepLoader = memo(function DeepLoader({
     return { value: { value: {
       down: {
         tree_id: { _eq: deep.idLocal('@deep-foundation/core', 'typesTree') },
-        link_id: { _in: ids }
+        link_id: { _in: ids },
+        parent_id: { _nin: ids },
       },
     } } };
   }, [ids]);
@@ -340,15 +365,6 @@ export const DeepLoader = memo(function DeepLoader({
     } } };
   }, [queryAndSpaceLoadedIds, ids]);
 
-  // console.log('not-loaded-ends render', {
-  //   notLoadedEnds,
-  //   notLoadedEndsQuery,
-  //   actual: deep.minilinks.links.filter(l => (!!l.from_id && !l.from) || (!!l.to_id && !l.to)),
-  //   time: new Date().valueOf(),
-  //   applied: deep.minilinks.links.filter(l => !!l?._applies?.includes('not-loaded-ends')),
-  //   notApplied: deep.minilinks.links.filter(l => !l?._applies?.includes('not-loaded-ends')),
-  // });
-
   return <>
     <><DeepLoaderActive
       key="DEEPCASE_SPACE"
@@ -371,6 +387,13 @@ export const DeepLoader = memo(function DeepLoader({
       query={notLoadedEndsQuery}
       mini={'not-loaded-ends'}
     /></>
+    {!!namespaces?.cyber && <><DeepLoaderActive
+      key="DEEPCASE_NOT_LOADED_ENDS_CYBER"
+      name="DEEPCASE_NOT_LOADED_ENDS_CYBER"
+      deep={namespaces?.cyber}
+      query={notLoadedEndsCyberQuery}
+      mini={'not-loaded-ends-cyber'}
+    /></>}
     {!!breadcrumbs && <><DeepLoaderActive
       key="DEEPCASE_BREADCRUMBS"
       name="DEEPCASE_BREADCRUMBS"
@@ -388,13 +411,13 @@ export const DeepLoader = memo(function DeepLoader({
     {useMemo(() => {
       return queries?.map((f, i) => (f?.value?.value ? <React.Fragment key={`DEEPCASE_QUERY_${f.id}`}>
         {Object.values(namespaces).map(deep => <DeepLoaderActive
-          name={`DEEPCASE_QUERY_${deep?.namespace}_${f.id}`}
-          key={`DEEPCASE_QUERY_${deep?.namespace}_${f.id}`}
+          name={`DEEPCASE_QUERY_${deep?.namespace}_${`${f.id}`.replace('-', 'virtual')}`}
+          key={`DEEPCASE_QUERY_${deep?.namespace}_${`${f.id}`.replace('-', 'virtual')}`}
           deep={deep}
           query={f}
-          mini={`query-${f.id}`}
+          mini={`query-${`${f.id}`.replace('-', 'virtual')}`}
         />)}
-      </React.Fragment> : <React.Fragment key={`DEEPCASE_QUERY_${f.id}`}/>));
+      </React.Fragment> : <React.Fragment key={`DEEPCASE_QUERY_${`${f.id}`.replace('-', 'virtual')}`}/>));
     }, [namespaces, queries])}
     <><DeepLoaderActive
       key={`DEEPCASE_TYPES`}

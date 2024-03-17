@@ -99,7 +99,7 @@ export default function CytoGraph({
   useCytoViewport: _useCytoViewport = useState,
   useSpaceId: _useSpaceId = useSpaceId,
 }: CytoGraphProps){
-  console.log('https://github.com/deep-foundation/deepcase-app/issues/236', 'CytoGraph', 'links', links);
+  // console.log('https://github.com/deep-foundation/deepcase-app/issues/236', 'CytoGraph', 'links', links);
   const deep = useDeep();
   const __cytoViewportRef = useRefstarter<{ pan: { x: number; y: number; }; zoom: number }>();
   const cytoViewportRef = _cytoViewportRef || __cytoViewportRef;

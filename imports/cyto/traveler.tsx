@@ -102,7 +102,8 @@ export function initializeTraveler(ncy, deepRef, spaceIdRef) {
           const id = ele.data('link')?.id;
           if (id) {
             // await switchTraveler(query(id), id);
-            generateMenuByTypes(ele, query(id));
+            if (typeof(id) === 'number') generateMenuByTypes(ele, query(id));
+            else if (typeof(id) === 'string') await switchTraveler(query(id), id);
           }
         }
       }))((id) => ({
@@ -114,7 +115,8 @@ export function initializeTraveler(ncy, deepRef, spaceIdRef) {
           const id = ele.data('link')?.id;
           if (id) {
             // await switchTraveler(query(id), id);
-            generateMenuByTypes(ele, query(id));
+            if (typeof(id) === 'number') generateMenuByTypes(ele, query(id));
+            else if (typeof(id) === 'string') await switchTraveler(query(id), id);
           }
         }
       }))((id) => ({
