@@ -1,9 +1,10 @@
 import { Box, Button, chakra, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverTrigger, Square, Text, useColorModeValue } from '@chakra-ui/react';
 import React, { ReactElement } from 'react';
 import { useChackraColor } from '../get-color';
+import { Id } from '@deep-foundation/deeplinks/imports/minilinks';
 
 export interface ITypeData {
-  id?: number;
+  id?: Id;
   src?: string;
 }
 

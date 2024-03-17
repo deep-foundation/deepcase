@@ -2,11 +2,12 @@ import React from 'react';
 import { VscAdd } from 'react-icons/vsc';
 import { Flex, Box, Button, Divider, ButtonGroup, Spacer } from '@chakra-ui/react';
 import { useDeep } from '@deep-foundation/deeplinks/imports/client';
+import { Id } from '@deep-foundation/deeplinks/imports/minilinks';
 
 export const EditorResultsResolvesRejects = React.memo(({
   promiseId
 }: {
-  promiseId: number;
+  promiseId: Id;
 }) => {
   const deep = useDeep();
   const resolves = deep.useMinilinksSubscription({
@@ -30,7 +31,7 @@ export const EditorResultsResolvesRejects = React.memo(({
 export const EditorResults = React.memo(({
   id,
 }:{
-  id: number;
+  id: Id;
 }) => {
   const deep = useDeep();
   deep.useDeepSubscription({
@@ -48,11 +49,11 @@ export const EditorResults = React.memo(({
       from_id: id,
     },
   });
-  const sortedPromises = promises.sort((a,b) => b.id - a.id);
+  // const sortedPromises = promises.sort((a,b) => b.id - a.id);
   return (<Flex direction='column' position="relative">
       <Box position="absolute" width="100%" height="100%" overflowY="scroll">
       <Box>
-        {sortedPromises.map(promise => <Box>
+        {promises.map(promise => <Box>
           {promise.id} Promise
           <Box paddingLeft={4}>
             <EditorResultsResolvesRejects promiseId={promise.id} />

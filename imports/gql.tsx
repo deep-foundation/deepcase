@@ -2,6 +2,7 @@ import gql from 'graphql-tag';
 import { useMutation } from '@apollo/client';
 import { useCallback } from 'react';
 import { generateMutation, generateSerial, ISerialOptions } from '@deep-foundation/deeplinks/imports/gql';
+import { Id } from '@deep-foundation/deeplinks/imports/minilinks';
 
 export const JWT = gql`query JWT($linkId: Int) {
   jwt(input: {linkId: $linkId}) {
@@ -43,7 +44,7 @@ export const DELETE_LINKS = gql`mutation DELETE_LINKS($where: links_bool_exp!) {
 export const INSERT_STRING = gql`mutation INSERT_STRING($objects: [string_insert_input!]!) { insert_string: insert_string(objects: $objects) { returning { id } } }`;
 export const UPDATE_STRING = gql`mutation UPDATE_STRING($set: string_set_input, $where: string_bool_exp!) { update_string: update_string(_set: $set, where: $where) { returning { id } } }`;
 
-export const insertLinks = (links: { from_id?: number; to_id?: number; type_id: number; }[]) => {
+export const insertLinks = (links: { from_id?: Id; to_id?: Id; type_id: Id; }[]) => {
   return generateSerial({
     actions: [
       generateMutation({
@@ -55,7 +56,7 @@ export const insertLinks = (links: { from_id?: number; to_id?: number; type_id: 
   });
 }
 
-export const deleteLinks = (ids: number[]) => {
+export const deleteLinks = (ids: Id[]) => {
   return generateSerial({
     actions: [
       generateMutation({
@@ -67,7 +68,7 @@ export const deleteLinks = (ids: number[]) => {
   });
 }
 
-export const insertReserved = (reserved_ids: String[],  userId: Number ) => {
+export const insertReserved = (reserved_ids: String[],  userId: Id ) => {
   return generateSerial({
     actions: [
       generateMutation({
@@ -79,7 +80,7 @@ export const insertReserved = (reserved_ids: String[],  userId: Number ) => {
   });
 }
 
-export const deleteReserveds = (reserveds: number[]) => {
+export const deleteReserveds = (reserveds: Id[]) => {
   return generateSerial({
     actions: [
       generateMutation({
@@ -91,7 +92,7 @@ export const deleteReserveds = (reserveds: number[]) => {
   });
 }
 
-export const insertLink = (link: { from_id?: number; to_id?: number; type_id: number; }) => {
+export const insertLink = (link: { from_id?: Id; to_id?: Id; type_id: Id; }) => {
   return generateSerial({
     actions: [
       generateMutation({
@@ -102,7 +103,7 @@ export const insertLink = (link: { from_id?: number; to_id?: number; type_id: nu
     name: 'INSERT_LINK',
   });
 }
-export const deleteLink = (id: number) => {
+export const deleteLink = (id: Id) => {
   return generateSerial({
     actions: [
       generateMutation({
@@ -114,7 +115,7 @@ export const deleteLink = (id: number) => {
   });
 }
 
-export const insertString = (link_id: number, value: string) => {
+export const insertString = (link_id: Id, value: string) => {
   return generateSerial({
     actions: [
       generateMutation({
@@ -125,7 +126,7 @@ export const insertString = (link_id: number, value: string) => {
     name: 'INSERT_STRING',
   });
 }
-export const updateString = (id: number, value: string) => {
+export const updateString = (id: Id, value: string) => {
   return generateSerial({
     actions: [
       generateMutation({
@@ -136,7 +137,7 @@ export const updateString = (id: number, value: string) => {
     name: 'UPDATE_STRING',
   });
 }
-export const deleteString = (id: number) => {
+export const deleteString = (id: Id) => {
   return generateSerial({
     actions: [
       generateMutation({
@@ -148,7 +149,7 @@ export const deleteString = (id: number) => {
   });
 }
 
-export const insertBoolExp = (link_id: number, value: string) => {
+export const insertBoolExp = (link_id: Id, value: string) => {
   return generateSerial({
     actions: [
       generateMutation({
@@ -159,7 +160,7 @@ export const insertBoolExp = (link_id: number, value: string) => {
     name: 'INSERT_BOOL_EXP',
   });
 }
-export const updateBoolExp = (id: number, value: string) => {
+export const updateBoolExp = (id: Id, value: string) => {
   return generateSerial({
     actions: [
       generateMutation({
@@ -170,7 +171,7 @@ export const updateBoolExp = (id: number, value: string) => {
     name: 'UPDATE_BOOL_EXP',
   });
 }
-export const deleteBoolExp = (id: number) => {
+export const deleteBoolExp = (id: Id) => {
   return generateSerial({
     actions: [
       generateMutation({

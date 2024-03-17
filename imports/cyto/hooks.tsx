@@ -1,6 +1,6 @@
 import { Alert, AlertIcon, Box, Flex, HStack, IconButton, Popover, PopoverContent, PopoverTrigger, Portal, SlideFade, Spacer, Spinner, useDisclosure, useToast } from "@chakra-ui/react";
 import { useDeep, useDeepId, useDeepQuery, useDeepSubscription } from "@deep-foundation/deeplinks/imports/client";
-import { Link, useMinilinksFilter, useMinilinksHandle, useMinilinksQuery } from "@deep-foundation/deeplinks/imports/minilinks";
+import { Id, Link, useMinilinksFilter, useMinilinksHandle, useMinilinksQuery } from "@deep-foundation/deeplinks/imports/minilinks";
 import { useDebounceCallback } from "@react-hook/debounce";
 import React, { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -22,14 +22,14 @@ import { useOpenedMethods } from "./opened";
 
 export interface IInsertedLink {
   position: { x: number; y: number; };
-  from: number; to: number;
-  alterResolve?: (link: Link<number>) => void;
+  from: Id; to: Id;
+  alterResolve?: (link: Link<Id>) => void;
   props?: any;
 };
 
 export interface IUpdatedLink {
   position: { x: number; y: number; };
-  from: number; to: number;
+  from: Id; to: Id;
 };
 
 const delay = (time) => new Promise(res => setTimeout(res, time));
@@ -56,7 +56,7 @@ export const FinderPopover = React.memo(function FinderPopover({
     query = undefined,
     search = undefined,
   }: {
-    link: Link<number>;
+    link: Link<Id>;
     onSubmit: (link) => void;
     onChange?: (link) => void;
     onOpen?: () => void;
@@ -69,7 +69,7 @@ export const FinderPopover = React.memo(function FinderPopover({
     search?: string;
   }) {
   const deep = useDeep();
-  const [selectedLink, setSelectedLink] = useState<Link<number>>();
+  const [selectedLink, setSelectedLink] = useState<Link<Id>>();
   const { onOpen: _onOpen, onClose: _onClose, isOpen: _isOpen } = useDisclosure();
   const { data: Finder } = useDeepId('@deep-foundation/finder', 'Finder');
   return <Popover
@@ -123,7 +123,7 @@ export function CytoReactLinksCardInsertNode({
   const [spaceId, setSpaceId] = useSpaceId();
   const { data: Finder } = useDeepId('@deep-foundation/finder', 'Finder');
 
-  const [selectedLink, setSelectedLink] = useState<Link<number>>();
+  const [selectedLink, setSelectedLink] = useState<Link<Id>>();
 
   return <>
     {!!Finder && <ClientHandler
@@ -312,7 +312,7 @@ export function useLinkInserting(elements = [], reactElements = [], focus, cyRef
     },
     insertingCytoRef,
     insertingCyto,
-    startUpdatingLink: (id: number) => {
+    startUpdatingLink: (id: Id) => {
       const link = ml.byId[id];
       const linkName = link?.inByType?.[deep.idLocal('@deep-foundation/core', 'Contain')]?.[0]?.value?.value || link?.id;
       const Type = link.type;
@@ -335,7 +335,7 @@ export function useLinkInserting(elements = [], reactElements = [], focus, cyRef
       setUpdatingLink(undefined);
       setUpdatingCyto({ id, toast: t });
     },
-    startInsertingOfType: (id: number, From: number, To: number) => {
+    startInsertingOfType: (id: Id, From: Id, To: Id) => {
       const link = ml.byId[id];
       const isNode = !From && !To;
       const isPossibleNode = isNode || (From === To && From === deep.idLocal('@deep-foundation/core', 'Any'));
@@ -529,7 +529,7 @@ export function useLinkReactElements(elements = [], reactElements = [], cy, ml, 
     }
   }, [reactElements, Opened]);
 
-  const toggleLinkReactElement = async (id: number) => {
+  const toggleLinkReactElement = async (id: Id) => {
     const cy = cyRef.current;
     // const isEnabling = !linkReactElements[id];
     // if (isEnabling) {
@@ -550,7 +550,7 @@ export function useLinkReactElements(elements = [], reactElements = [], cy, ml, 
     //   //   'border-width': 0,
     //   // });
     // }
-    if (await isOpened(id)) {
+    if (isOpened(id)) {
       await close(id);
     } else {
       const { data: handler } = await deep.select({
@@ -570,10 +570,10 @@ export function useLinkReactElements(elements = [], reactElements = [], cy, ml, 
   };
 
   const AnyLinkComponent = useMemo(() => {
-    return function AnyLinkComponent({ id }: { id: number }) {
-      const [linkId, setLinkId] = useState(id);
+    return function AnyLinkComponent({ id }: { id: Id }) {
+      const [linkId, setLinkId] = useState<Id>(id);
       const deep = useDeep();
-      const [handlerId, setHandlerId] = useState();
+      const [handlerId, setHandlerId] = useState<Id>();
       const { onOpen, onClose, isOpen } = useDisclosure();
       const [search, setSearch] = useState('');
       const [spaceId] = useSpaceId();
@@ -803,7 +803,7 @@ export function useCyInitializer({
       //   // return element object to be passed to cy.add() for edge
       //   return {};
       // },
-      hoverDelay: 150, // time spent hovering over a target node before it is considered selected
+      hoverDelay: 0, // time spent hovering over a target node before it is considered selected
       snap: true, // when enabled, the edge can be drawn by just moving close to a target node (can be confusing on compound graphs)
       snapThreshold: 0, // the target node must be less than or equal to this many pixels away from the cursor/finger
       snapFrequency: 15, // the number of times per second (Hz) that snap checks done (lower is less expensive)

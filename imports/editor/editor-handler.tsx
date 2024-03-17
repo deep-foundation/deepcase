@@ -2,18 +2,19 @@ import React from 'react';
 import { VscAdd } from 'react-icons/vsc';
 import { CytoReactLinkAvatar } from '../cyto-react-avatar';
 import { Flex, Box, HStack, Text, Divider, VStack, Select, useColorMode, Container, Switch } from '@chakra-ui/react';
+import { Id } from '@deep-foundation/deeplinks/imports/minilinks';
 
 interface IReason {
-  id?: number;
+  id?: Id;
   name?: string;
 }
 
 interface IHandler {
-  id?: number;
+  id?: Id;
   avatarElement?: any;
   title?: string;
   reasons?: IReason[];
-  onChangeReason?: (reasonId?: number) => void;
+  onChangeReason?: (reasonId?: Id) => void;
   sync?: boolean;
   onChangeSync?: (sync?: boolean) => void;
   children?: any;
