@@ -243,7 +243,7 @@ export const DeepLoader = memo(function DeepLoader({
         (
           (!!l.from_id && (!l.from || !!l.from._applies.includes('not-loaded-ends-cyber')))
           ||
-          (!!l.to_id && (!l.to || !l.to._applies.includes('not-loaded-ends-cyber')))
+          (!!l.to_id && (!l.to || !!l.to._applies.includes('not-loaded-ends-cyber')))
         )
     ))), []),
     1000,
@@ -267,7 +267,7 @@ export const DeepLoader = memo(function DeepLoader({
     deep.minilinks,
     useCallback((l) => true, []),
     useCallback((l, ml) => {
-      return Object.keys(ml.byType).map(type => parseInt(type));
+      return Object.keys(ml.byType).filter(id => typeof(+id) === 'number' && !Number.isNaN(+id));
     }, []),
     1000,
   ) || [];
@@ -285,15 +285,16 @@ export const DeepLoader = memo(function DeepLoader({
     deep.minilinks,
     useCallback((l) => true, []),
     useCallback((l, ml) => {
-      return Object.keys(ml.byId).map(link => parseInt(link));
+      return Object.keys(ml.byId).filter(id => typeof(+id) === 'number' && !Number.isNaN(+id));
     }, []),
     1000,
   ) || [];
 
+  const queryAndSpaceLoadedIdsFilter = useCallback((l) => !!l?._namespaces?.includes('remote') && (!!l?._applies?.find(a => a.includes('query-') || a.includes('space') || a.includes('client-handlers'))), []);
   const queryAndSpaceLoadedIds = useMinilinksFilter(
     deep.minilinks,
-    useCallback((l) => !!l?._applies?.find(a => a.includes('query-') || a.includes('space')), []),
-    useCallback((l, ml) => (ml.links.filter(l => l._applies?.find(a => a.includes('query-') || a.includes('space') || a.includes('client-handlers'))).map(l => l.id)), []),
+    useCallback(queryAndSpaceLoadedIdsFilter, []),
+    useCallback((l, ml) => (ml.links.filter(queryAndSpaceLoadedIdsFilter).map(l => l.id)), []),
     1000,
   ) || [];
 
