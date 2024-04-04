@@ -9,14 +9,14 @@ import { IPackageProps, PackagesBlock } from './cyto-react-links-packages';
 import { Id } from '@deep-foundation/deeplinks/imports/minilinks';
 
 interface IGridPanel {
-  id?: Id;
+  id: Id;
   src?: string;
   alt?: string;
 }
 
 interface IListPanel {
-  id?: Id;
-  src?: string;
+  id: Id;
+  src: string;
   linkName?: string;
   containerName?: string;
 }
@@ -89,7 +89,7 @@ export const TypeIcon = React.memo(({
       display='flex' 
       justifyContent='center' 
       alignItems='center'
-      fontSize={typeof(src) === 'string' ? 'sm' : size > 2 ? 'xxs' : 'xs'}
+      fontSize={typeof(src) === 'string' ? 'sm' : size && size > 2 ? 'xxs' : 'xs'}
       {...props}
     >
       {src}
@@ -138,7 +138,7 @@ export const GridPanel = React.memo(({
           borderColor: 'primary'
         }}
         onClick={() => { onSelectLink && onSelectLink(d.id); }}
-        src={d.src}
+        src={d.src || ''}
       />))}
     </Box>
   )
@@ -154,8 +154,8 @@ const CytoListItem = React.memo(({
   onSelectLink,
   scrollRef,
 }:{
-  id?: Id;
-  src?: string;
+  id: Id;
+  src: string;
   linkName?: string;
   containerName?: string;
   borderColor?: string;
@@ -196,8 +196,8 @@ const CytoListItem = React.memo(({
       >
         <TypeIcon borderColor={borderColor} src={src} mr={2} ml={2} />
         <Flex direction='column' align='flex-start'>
-          <Text fontSize='xs'>{linkName}</Text>
-          <Text fontSize='xs'>{containerName}</Text>
+          {!!linkName && <Text fontSize='xs'>{linkName}</Text>}
+          {!!containerName && <Text fontSize='xs'>{containerName}</Text>}
         </Flex>
       </Box>
     </Box>
@@ -246,7 +246,7 @@ export const CytoReactLinksCard = React.memo(({
 }: {
   elements: {
     id: Id;
-    src?: string;
+    src: string;
     linkName: string;
     containerName: string;
   }[];
@@ -266,8 +266,8 @@ export const CytoReactLinksCard = React.memo(({
   const inputRef = useRef(null);
 
   useEffect(() => {
-    inputRef.current.focus();
-  })
+    inputRef?.current && inputRef?.current?.focus();
+  });
 
   const selectLink = useCallback((linkId) => {
     setSelectedLink((prevLinkId) => prevLinkId == linkId ? 0 : linkId);

@@ -156,11 +156,11 @@ const TerminalConnect = React.memo(({
         console.log('initializingState2', initializingState)
 
         await delay(2000);
-        setInitLocal(InitializingState.launched);
-        setGqlPath(defaultGqlPath);
-        setGqlSsl(defaultGqlSsl);
+        setInitLocal && setInitLocal(InitializingState.launched);
+        setGqlPath && setGqlPath(defaultGqlPath);
+        setGqlSsl && setGqlSsl(defaultGqlSsl);
         await delay(2000);
-        setPortal(false);
+        setPortal && setPortal(false);
       }, 2000);
     } else if (initializingState == 'removing') {
       console.log('initializingState0-r', initializingState);
@@ -176,10 +176,10 @@ const TerminalConnect = React.memo(({
         // control.start('shrink');
         console.log('initializingState2-r', initializingState);
         await delay(2000);
-        setInitLocal(InitializingState.notInit);
+        setInitLocal && setInitLocal(InitializingState.notInit);
         await delay(1000);
-        setGqlPath('');
-        setGqlSsl(false);
+        setGqlPath && setGqlPath('');
+        setGqlSsl && setGqlSsl(false);
       }, 2000);
     } else if (initializingState == 'launched' || initializingState == 'not init') {
       if (terminalRef.current) terminalRef.current.clear();
@@ -371,7 +371,7 @@ const InputAnimation = React.memo(({
           onClick={() => { 
             const [currentGqlPath, currentGqlSsl] = parseUrl(valueRemoteRoute);
             if(currentGqlPath) {
-              onStartRemoteRoute();
+              onStartRemoteRoute && onStartRemoteRoute();
             }
           }}
           children={
@@ -518,7 +518,7 @@ export const Connector = React.memo(({
   });
 
   // const [ portalOpen, setPortal ] = useState(true); 
-  // const onClosePortal = () => setPortal(false);
+  // const onClosePortal = () => setPortal && setPortal(false);
   
   const [remotesString, setRemotesString] = useLocalStorage('remote-routes', '[]');
   const remotes = JSON.parse(remotesString);
@@ -589,12 +589,12 @@ export const Connector = React.memo(({
     (async () => {
       const status = await checkSystemStatus(defaultServerUrl);
       if (status.result !== undefined) {
-        setInitLocal(InitializingState.notInit);
+        setInitLocal && setInitLocal(InitializingState.notInit);
         await delay(1000);
-        setInitLocal(InitializingState.launched);
+        setInitLocal && setInitLocal(InitializingState.launched);
         if (!gqlPath){
-          setGqlPath(defaultGqlPath);
-          setGqlSsl(defaultGqlSsl);
+          setGqlPath && setGqlPath(defaultGqlPath);
+          setGqlSsl && setGqlSsl(defaultGqlSsl);
         }
       }
     })();
@@ -619,7 +619,7 @@ export const Connector = React.memo(({
 
   return (<ModalWindow onClosePortal={() => {
     if (init == InitializingState.launched){
-      setPortal(false);
+      setPortal && setPortal && setPortal(false);
     }
   }} portalOpen={portalOpen}>
       <Box 
@@ -670,8 +670,8 @@ export const Connector = React.memo(({
                   // setValueRemote={}
                   onDeleteValue={() => {
                     if (gqlPath == rr.value) {
-                      setGqlPath('');
-                      setGqlSsl(false);
+                      setGqlPath && setGqlPath('');
+                      setGqlSsl && setGqlSsl(false);
                     }
                     remove(rr.id)
                     }
@@ -681,9 +681,9 @@ export const Connector = React.memo(({
                       const url = new URL(rr.value);
                       const status = await checkUrlStatus(url);
                       if (status.result !== undefined && !status.error) {
-                        setGqlPath(`${url.hostname}${url.port ? ':' + url.port : ''}${url.pathname}`);
-                        setGqlSsl(url.protocol == 'http:' ? false : true);
-                        setPortal(false);
+                        setGqlPath && setGqlPath(`${url.hostname}${url.port ? ':' + url.port : ''}${url.pathname}`);
+                        setGqlSsl && setGqlSsl(url.protocol == 'http:' ? false : true);
+                        setPortal && setPortal && setPortal(false);
                       } else {
                         console.log('URL error', JSON.stringify(status));
                       }
@@ -735,9 +735,9 @@ export const Connector = React.memo(({
                   initial='initial'
                   variants={initArea}
                   onClick={() => {
-                    setInitLocal(InitializingState.initializing);
+                    setInitLocal && setInitLocal(InitializingState.initializing);
                     // setTimeout(() => {
-                    //   setInitLocal(InitializingState.initialized);
+                    //   setInitLocal && setInitLocal(InitializingState.initialized);
                     // }, 3000)
                   }} 
                 >
@@ -766,7 +766,7 @@ export const Connector = React.memo(({
                   animate={controlInit}
                   initial='initializing'
                   variants={initArea}
-                  // onClick={() => setInitLocal(InitializingState.initialized)} 
+                  // onClick={() => setInitLocal && setInitLocal(InitializingState.initialized)} 
                 >
                   <Loading text="Initializing" 
                     sxFlex={{pt: 2, pb: 2}}
@@ -791,8 +791,8 @@ export const Connector = React.memo(({
                     ariaLabelLeft="go to launched deepcase"
                     ariaLabelRight="launched local deepcase"
                     ComponentRightIcon={BsFillPauseFill}
-                    // onClickLeft={() => setInitLocal(InitializingState.launched)} 
-                    // onClickRight={() => setInitLocal(InitializingState.notInit)} 
+                    // onClickLeft={() => setInitLocal && setInitLocal(InitializingState.launched)} 
+                    // onClickRight={() => setInitLocal && setInitLocal(InitializingState.notInit)} 
                   />
                 </Box>
                 <Box 
@@ -806,7 +806,7 @@ export const Connector = React.memo(({
                   animate={controlLaunch}
                   initial='initializing'
                   variants={initArea}
-                  // onClick={() => setInitLocal(InitializingState.notInit)}
+                  // onClick={() => setInitLocal && setInitLocal(InitializingState.notInit)}
                 >
                   <ButtonTextButton 
                     text='launched'
@@ -814,14 +814,14 @@ export const Connector = React.memo(({
                     ariaLabelRight="delete local deepcase"
                     // ComponentRightIcon={IoStopOutline}
                     onClickLeft={() => {
-                      setGqlPath(defaultGqlPath);
-                      setGqlSsl(defaultGqlSsl);
-                      setPortal(false);
+                      setGqlPath && setGqlPath(defaultGqlPath);
+                      setGqlSsl && setGqlSsl(defaultGqlSsl);
+                      setPortal && setPortal(false);
                     }}
                     leftButtonId="goToDeep"
                     rightButtonId="deleteLocalDeep"
                     onClickRight={() => {
-                      setInitLocal(InitializingState.removing)
+                      setInitLocal && setInitLocal(InitializingState.removing)
                     }} 
                   />
                 </Box>
@@ -853,12 +853,12 @@ export const Connector = React.memo(({
           </Box>
           <TerminalConnect 
             initializingState={init} 
-            setInitLocal={(state)=>setInitLocal(state)}
+            setInitLocal={(state)=>setInitLocal && setInitLocal(state)}
             key={21121}
             serverUrl={defaultServerUrl}
-            setGqlPath={(path) => setGqlPath(path)}
-            setGqlSsl={(ssl) => setGqlSsl(ssl)}
-            setPortal={(state) => setPortal(state)}
+            setGqlPath={(path) => setGqlPath && setGqlPath(path)}
+            setGqlSsl={(ssl) => setGqlSsl && setGqlSsl(ssl)}
+            setPortal={(state) => setPortal && setPortal(state)}
             defaultGqlPath={defaultGqlPath}
             defaultGqlSsl={defaultGqlSsl}
           />

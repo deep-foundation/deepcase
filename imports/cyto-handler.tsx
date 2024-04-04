@@ -62,9 +62,10 @@ export function useCytoHandlersApply(cyh, elements, stylesheets, iterator) {
     for (let key in cyh?.cytoHandlersRef?.current) {
       const el = cyh?.cytoHandlersRef?.current[key];
       const cyHandle = deep.minilinks?.byType[HandleCyto]?.find(l => l.from_id === deep.minilinks.byId?.[key]?.type_id);
-      if (el && chr[cyHandle?.id]) {
+      if (el && !!el?.elements?.length && cyHandle && chr[cyHandle?.id]) {
         cyh.drawedCytoHandlers.current[key] = el;
-        addElements.push(...el.elements || []);
+        // @ts-ignore
+        addElements.push(...(el.elements || []));
         stylesheetsByHandler[el?.handlerId] = el.stylesheets || [];
       }
     }
@@ -87,7 +88,7 @@ export const CytoHandlers = React.memo(function CytoHandlers({
   cy?: any;
 }) {
   const { data: HandleCyto } = useDeepId('@deep-foundation/handle-cyto', 'HandleCyto');
-  const arr = [];
+  const arr: any[] = [];
   for (let key in handled) {
     arr.push(<CytoHandler
       key={+key}
@@ -146,15 +147,15 @@ export const CytoHandler = React.memo(function CytoHandler({
     });
 
     return () => {
-      onChange(linkId);
+      onChange && onChange(linkId);
     };
   }, [file?.value?.value]);
 
   try {
     const r = Component ? Component({ link: ml.byId[linkId], elementsById, cy, ...props }) : {};
-    onChange(linkId, { ...r, handlerId });
+    onChange && onChange(linkId, { ...r, handlerId });
   } catch(error) {
-    onChange(linkId, { error, handlerId })
+    onChange && onChange(linkId, { error, handlerId })
   }
 
   return <></>;
