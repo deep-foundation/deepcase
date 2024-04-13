@@ -1,10 +1,9 @@
 import { useDeep } from "@deep-foundation/deeplinks/imports/client";
 import { useTokenController } from "@deep-foundation/deeplinks/imports/react-token";
-import React, { useEffect, useRef, useState } from "react";
-import Debug from 'debug';
-import { useSpaceId } from "./hooks";
-import { useEngineConnected } from "./engine";
 import { useLocalStore } from "@deep-foundation/store/local";
+import Debug from 'debug';
+import React, { useEffect, useState } from "react";
+import { useSpaceId } from "./hooks";
 
 const debug = Debug('deepcase:auto-guest');
 
@@ -16,7 +15,6 @@ export const AutoGuest = React.memo(function AutoGuest({
   const deep = useDeep();
   const [token] = useTokenController();
   const [spaceId, setSpaceId] = useSpaceId();
-  const [connected, setConnected] = useEngineConnected();
   const [isAuth, setIsAuth] = useState(false);
   const [t] = useLocalStore('dc-dg-token', '');
   // console.log({ token, deep, t });
@@ -39,7 +37,6 @@ export const AutoGuest = React.memo(function AutoGuest({
     if (!token) (async () => {
       const g = await deep.guest();
       console.log('g', g);
-      if (g.error) setConnected(false);
     })();
     setIsAuth(isAuth);
   }, [token, deep.linkId]);
