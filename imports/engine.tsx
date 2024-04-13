@@ -8,7 +8,7 @@ import { useApolloClientRegenerator } from '@deep-foundation/react-hasura/apollo
 
 const _call = (serverUrl: string, options: ICallOptions) => axios.post(`${serverUrl}/api/deeplinks`, options).then(console.log, console.log);
 
-export const NEXT_PUBLIC_ENGINES = !!+process.env.NEXT_PUBLIC_ENGINES;
+export const NEXT_PUBLIC_ENGINES = !!+process?.env?.NEXT_PUBLIC_ENGINES;
 
 let _useEngineConnected;
 
