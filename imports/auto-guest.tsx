@@ -11,7 +11,7 @@ const debug = Debug('deepcase:auto-guest');
 export const AutoGuest = React.memo(function AutoGuest({
   children,
 }: {
-  children: any;
+  children?: any;
 }) {
   const deep = useDeep();
   const [token] = useTokenController();
