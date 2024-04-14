@@ -40,7 +40,7 @@ export const ClientHandlerSlateProxy = ({ children }) => {
     const match = regex.exec(text);
     const firstGroup = match ? match[1] : null;
   
-    return firstGroup ? parseInt(firstGroup, 10) : null;
+    return firstGroup ? parseInt(firstGroup, 10) : undefined;
   }
 
   const text = children?.[0]?.props?.parent?.children?.[0]?.text || '';
@@ -51,13 +51,12 @@ export const ClientHandlerSlateProxy = ({ children }) => {
     },
   });
 
-  console.log('DEEPW', text, linkId, children);
-  // if(linkId) {
+  if(linkId) {
     return (<>
       <ClientHandler handlerId={739} linkId={linkId} ml={ml} />
       {children}
     </>)
-  // } else { 
-  //   return children
-  // }
+  } else { 
+    return null;
+  }
 }

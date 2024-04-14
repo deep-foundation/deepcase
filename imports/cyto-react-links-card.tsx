@@ -6,22 +6,23 @@ import { BsCheck2, BsDoorClosed, BsGrid3X2Gap, BsListUl, BsSearch } from 'react-
 import { TbPackages } from 'react-icons/tb';
 import { DotsLoader } from './dot-loader';
 import { IPackageProps, PackagesBlock } from './cyto-react-links-packages';
+import { Id } from '@deep-foundation/deeplinks/imports/minilinks';
 
 interface IGridPanel {
-  id?: number;
+  id: Id;
   src?: string;
   alt?: string;
 }
 
 interface IListPanel {
-  id?: number;
-  src?: string;
+  id: Id;
+  src: string;
   linkName?: string;
   containerName?: string;
 }
 
 export interface ITypeIcon {
-  src: string | number;
+  src: Id;
   borderColor?: any;
   borderWidth?: any;
   boxSize?: string;
@@ -88,7 +89,7 @@ export const TypeIcon = React.memo(({
       display='flex' 
       justifyContent='center' 
       alignItems='center'
-      fontSize={typeof(src) === 'string' ? 'sm' : size > 2 ? 'xxs' : 'xs'}
+      fontSize={typeof(src) === 'string' ? 'sm' : size && size > 2 ? 'xxs' : 'xs'}
       {...props}
     >
       {src}
@@ -108,8 +109,8 @@ export const GridPanel = React.memo(({
   borderColor?: string;
   borderColorSelected?: string;
   data: IGridPanel[];
-  selectedLink: number;
-  onSelectLink?: (linkId: number) => any;
+  selectedLink: Id;
+  onSelectLink?: (linkId: Id) => any;
   gridTemplateColumns?: string;
   columnGap?: number;
   rowGap?: number;
@@ -137,7 +138,7 @@ export const GridPanel = React.memo(({
           borderColor: 'primary'
         }}
         onClick={() => { onSelectLink && onSelectLink(d.id); }}
-        src={d.src}
+        src={d.src || ''}
       />))}
     </Box>
   )
@@ -153,13 +154,13 @@ const CytoListItem = React.memo(({
   onSelectLink,
   scrollRef,
 }:{
-  id?: number;
-  src?: string;
+  id: Id;
+  src: string;
   linkName?: string;
   containerName?: string;
   borderColor?: string;
-  selectedLink: number;
-  onSelectLink?: (linkId: number) => any;
+  selectedLink: Id;
+  onSelectLink?: (linkId: Id) => any;
   scrollRef?: any;
 }) => {
 
@@ -195,8 +196,8 @@ const CytoListItem = React.memo(({
       >
         <TypeIcon borderColor={borderColor} src={src} mr={2} ml={2} />
         <Flex direction='column' align='flex-start'>
-          <Text fontSize='xs'>{linkName}</Text>
-          <Text fontSize='xs'>{containerName}</Text>
+          {!!linkName && <Text fontSize='xs'>{linkName}</Text>}
+          {!!containerName && <Text fontSize='xs'>{containerName}</Text>}
         </Flex>
       </Box>
     </Box>
@@ -211,8 +212,8 @@ const ListPanel = React.memo(({
 }: {
   borderColor?: string;
   data: IListPanel[];
-  onSelectLink?: (linkId: number) => any;
-  selectedLink: number;
+  onSelectLink?: (linkId: Id) => any;
+  selectedLink: Id;
 }) => {
   const scrollRef = useRef(null);
 
@@ -244,20 +245,20 @@ export const CytoReactLinksCard = React.memo(({
   selectedLinkId = 0,
 }: {
   elements: {
-    id: number;
-    src?: string;
+    id: Id;
+    src: string;
     linkName: string;
     containerName: string;
   }[];
   packages?: IPackageProps[];
-  onSubmit?: (id: number) => any;
+  onSubmit?: (id: Id) => any;
   onClose?: () => any;
   loading?: boolean;
   noResults?: boolean;
   search?: any;
   onSearch?: any;
   fillSize?: boolean;
-  selectedLinkId?: number;
+  selectedLinkId?: Id;
 }) => {
   const [switchLayout, setSwitchLayout] = useState('grid');
   // const [switchLayout, setSwitchLayout] = useState('packages');
@@ -265,8 +266,8 @@ export const CytoReactLinksCard = React.memo(({
   const inputRef = useRef(null);
 
   useEffect(() => {
-    inputRef.current.focus();
-  })
+    inputRef?.current && inputRef?.current?.focus();
+  });
 
   const selectLink = useCallback((linkId) => {
     setSelectedLink((prevLinkId) => prevLinkId == linkId ? 0 : linkId);

@@ -4,7 +4,7 @@ import { useQueryStore } from '@deep-foundation/store/query';
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { layouts } from './cyto/layouts';
 import { useMediaQuery as useMediaQueryChakra } from '@chakra-ui/react';
-import { Link } from '@deep-foundation/deeplinks/imports/minilinks';
+import { Id, Link } from '@deep-foundation/deeplinks/imports/minilinks';
 
 export const defaultLeftWidth = 10;
 export const defaultCardWidth = 300;
@@ -36,12 +36,12 @@ export function useForceGraph() {
 export interface IInsertingCytoStore{
   isNode?: boolean;
   isPossibleNode?: boolean;
-  type_id?: number;
+  type_id?: Id;
   toast?: any;
-  From?: number;
-  To?: number;
-  from?: number;
-  to?: number;
+  From?: Id;
+  To?: Id;
+  from?: Id;
+  to?: Id;
   _selfLink?: boolean;
 }
 
@@ -53,11 +53,11 @@ export function useInsertingCytoStore() {
 }
 
 export interface IUpdatingCytoStore{
-  id?: number;
+  id?: Id;
   toast?: any;
   _selfLink?: boolean;
-  from?: number;
-  to?: number;
+  from?: Id;
+  to?: Id;
 }
 
 export function useUpdatingCytoStore() {
@@ -174,10 +174,10 @@ export function useActiveMethods() {
   const deep = useDeep();
   return useMemo(() => {
     return {
-      deactive: async function(id: number) {
+      deactive: async function(id: Id) {
         console.log(await deep.delete({ type_id: deep.idLocal('@deep-foundation/core', 'Active'), from_id: spaceId, to_id: id }));
       },
-      find: async function(id: number) {
+      find: async function(id: Id) {
         const q = await deep.select({
           type_id: deep.idLocal('@deep-foundation/core', 'Active'),
           from_id: spaceId,
@@ -185,7 +185,7 @@ export function useActiveMethods() {
         });
         return q?.data?.[0];
       },
-      active: async function(id: number) {
+      active: async function(id: Id) {
         const active = await this.find(id);
         const { data: [{ id: newId }] } = await deep.insert({
           type_id: deep.idLocal('@deep-foundation/core', 'Active'),
@@ -197,7 +197,7 @@ export function useActiveMethods() {
           } },
         });
       },
-      toggle: async function(id: number) {
+      toggle: async function(id: Id) {
         const active = await this.find(id);
         let oldId = active?.id;
         if (!oldId) await this.active(id);

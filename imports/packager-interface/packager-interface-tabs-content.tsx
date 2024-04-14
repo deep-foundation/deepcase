@@ -12,6 +12,7 @@ import { Loading } from '../loading-motion-bubble';
 
 import { makeUseAxios } from "axios-hooks";
 import axios from "axios";
+import { Id } from '@deep-foundation/deeplinks/imports/minilinks';
 
 const useAxios = makeUseAxios({ axios: axios.create() });
 
@@ -42,14 +43,14 @@ const variantsPackage = {
 };
 
 export interface IPackageInstalledVersion {
-  id: number;
+  id: Id;
   version: string;
-  packageId: number;
+  packageId: Id;
   isActive: boolean; 
 }
 
 export interface IPackage {
-  id: number;
+  id: Id;
   name: string;
   description?: any;
   versions?: IPackageInstalledVersion[];

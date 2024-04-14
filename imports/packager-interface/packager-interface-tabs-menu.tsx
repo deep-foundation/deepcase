@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useAnimation } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
 import { Install } from "./icons/install";
 import { Uninstall } from './icons/uninstall';
+import { Id } from '@deep-foundation/deeplinks/imports/minilinks';
 
 
 const tabInstall = {
@@ -127,7 +128,7 @@ export const TabsPackages = React.memo(({
   quantityInstall = 0,
   quantityUninstalled = 0,
 }:{
-  selectedTab?: number;
+  selectedTab?: Id;
   onSelectMode?: () => any;
   quantityInstall?: number;
   quantityUninstalled?: number;

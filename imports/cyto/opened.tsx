@@ -1,11 +1,12 @@
 import { useDeep, useDeepId } from "@deep-foundation/deeplinks/imports/client";
 import { useRefAutofill, useSpaceId } from "../hooks";
 import { useMemo } from "react";
+import { Id } from "@deep-foundation/deeplinks/imports/minilinks";
 
 export function useOpenedMethods(): {
-  open: (id: number, handlerId: number) => void;
-  close: (id: number) => void;
-  isOpened: (id: number) => Promise<boolean>;
+  open: (id: Id, handlerId: Id) => void;
+  close: (id: Id) => void;
+  isOpened: (id: Id) => boolean;
 } {
   const [spaceId] = useSpaceId();
   const spaceIdRef = useRefAutofill(spaceId);
@@ -17,8 +18,8 @@ export function useOpenedMethods(): {
       OpenedHandler = await deep.id('@deep-foundation/deepcase-opened', 'OpenedHandler');
     })();
     return {
-      isOpened: async (id) => {
-        const q = await deep.select({
+      isOpened: (id) => {
+        const q = deep.minilinks.query({
           type_id: OpenedHandler,
           from: {
             type_id: Opened,
@@ -26,7 +27,7 @@ export function useOpenedMethods(): {
             to_id: id,
           },
         });
-        const openedHandler = q?.data?.[0];
+        const openedHandler = q?.[0];
         return !!openedHandler
       },
       close: async (id) => {

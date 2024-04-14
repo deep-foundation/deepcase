@@ -1,3 +1,4 @@
+import { Id } from "@deep-foundation/deeplinks/imports/minilinks";
 import React, { useEffect, useRef } from "react";
 import ReactResizeDetector from 'react-resize-detector';
 
@@ -39,7 +40,7 @@ export const CytoReactLayout = React.memo(function CytoReactLayout({
   cy: any;
   elements: any[];
   generateId?: (id: string, spaceId: string) => string;
-  spaceId?: number;
+  spaceId?: Id;
 }) {
   const divRef = useRef<HTMLDivElement>();
 
@@ -92,7 +93,7 @@ export const CytoReactLayout = React.memo(function CytoReactLayout({
           stl.msTransform = val;
           stl.transform = val;
         }
-        cy.$(`#id`).style({ });
+        cy.$(`#${id}`).style({ });
       }
     }
 

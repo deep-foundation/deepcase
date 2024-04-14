@@ -5,9 +5,11 @@ import { isAndroid, isIOS } from 'react-device-detect';
 import { VscChromeClose } from 'react-icons/vsc';
 import { useChackraColor } from '../get-color';
 import { useDeep } from '@deep-foundation/deeplinks/imports/client';
+import { Id } from '@deep-foundation/deeplinks/imports/minilinks';
 
 interface ITab {
-  id: number;
+  id: Id;
+  title?: string;
   saved?: boolean;
   loading?: boolean;
   active?: boolean;

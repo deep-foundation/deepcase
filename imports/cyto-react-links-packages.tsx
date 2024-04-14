@@ -6,6 +6,7 @@ import { DotsLoader } from './dot-loader';
 import { TbArrowRotaryFirstRight, TbBookDownload, TbAtom } from 'react-icons/tb';
 import { GridPanel } from './cyto-react-links-card';
 import _ from 'lodash';
+import { Id } from '@deep-foundation/deeplinks/imports/minilinks';
 
 
 const iconVariants = {
@@ -26,13 +27,13 @@ const iconVariants = {
   }
 };
 export interface IPackage {
-  id?: number;
+  id?: Id;
   src?: string;
   containerName?: string;
   version?: string;
   isActive?: boolean; 
   typeElements?: {
-    id: number;
+    id: Id;
     src?: any;
   }[];
 }
@@ -114,7 +115,7 @@ const PackageItemAccordion = React.memo(({
   isActive,
   typeElements = arrElem,
 }:IPackage) => {
-  const [expanded, setExpanded] = useState<false | number>(false);
+  const [expanded, setExpanded] = useState<false | Id>(false);
   const [selectedLink, setSelectedLink] = useState(id);
   const isOpen = id === expanded;
 

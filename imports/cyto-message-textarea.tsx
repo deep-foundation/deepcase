@@ -23,7 +23,7 @@ export const MessageTextArea = React.memo(() => {
   return (<Popover 
     isLazy
     placement='right-start'
-    initialFocusRef={initialFocusRef}
+    initialFocusRef={initialFocusRef as any}
     colorScheme={colorGrayToWhite}
     // styleConfig={{borderColor: 'none'}}
   >
@@ -46,7 +46,7 @@ export const MessageTextArea = React.memo(() => {
     <PopoverContent color={white}>
       <PopoverBody p={0} color={white}>
         <Textarea
-          ref={initialFocusRef}
+          ref={initialFocusRef as any}
           colorScheme={colorWhiteToGray}
           value={value}
           onChange={handleInputChange}

@@ -1,27 +1,22 @@
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Button, Box, HStack, Flex, IconButton } from '@chakra-ui/react';
-import { useDeep, useDeepQuery, useDeepSubscription } from '@deep-foundation/deeplinks/imports/client';
-import { Link, MinilinksInstance, MinilinksResult, useMinilinksApply, useMinilinksFilter } from '@deep-foundation/deeplinks/imports/minilinks';
-import { ClientHandlerRenderer, evalClientHandler } from '../client-handler';
+import { Box } from '@chakra-ui/react';
+import { useDeep, useDeepSubscription } from '@deep-foundation/deeplinks/imports/client';
+import { Id, useMinilinksFilter } from '@deep-foundation/deeplinks/imports/minilinks';
 import { useLocalStore } from '@deep-foundation/store/local';
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { useCytoEditor } from './hooks';
-import { CytoReactLinkAvatar } from '../cyto-react-avatar';
+import { useDebounceCallback } from '@react-hook/debounce';
+import json5 from 'json5';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { ClientHandlerRenderer, evalClientHandler } from '../client-handler';
 import { EditorComponentView } from '../editor/editor-component-view';
 import { EditorGrid } from '../editor/editor-grid';
-import { EditorHandler } from '../editor/editor-handler';
-import { EditorHandlers } from '../editor/editor-handlers';
 import { EditorSwitcher } from '../editor/editor-switcher';
-import { CloseButton, EditorTabs } from '../editor/editor-tabs';
 import { EditorTextArea } from '../editor/editor-textarea';
-import json5 from 'json5';
-import { useDebounceCallback } from '@react-hook/debounce';
 import { CatchErrors } from '../react-errors';
 import { CytoEditorHandlers } from './handlers';
-import { VscClearAll } from 'react-icons/vsc';
+import { useCytoEditor } from './hooks';
 
 // global._callClientHandler = callClientHandler;
 export interface EditorTab {
-  id: number;
+  id: Id;
   saved: boolean;
   active?: boolean;
   loading?: boolean;

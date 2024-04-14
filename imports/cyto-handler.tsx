@@ -7,6 +7,7 @@ import { evalClientHandler, r } from './client-handler';
 import { useDebounceCallback } from '@react-hook/debounce';
 import { useCytoHandlersSwitch, useInsertingCytoStore } from './hooks';
 import { useCytoHandlersRules } from './cyto/hooks';
+import { Id } from '@deep-foundation/deeplinks/imports/minilinks';
 const MonacoEditor = dynamic(() => import('@monaco-editor/react').then(m => m.default), { ssr: false });
 
 export interface CytoHandlerRendererProps {
@@ -16,17 +17,17 @@ export interface CytoHandlerRendererProps {
 };
 
 export interface CytoHandlerProps extends Partial<CytoHandlerRendererProps> {
-  linkId: number;
-  handlerId?: number;
-  onChange?: (id: number, handled?: {
-    handlerId?: number;
+  linkId: Id;
+  handlerId?: Id;
+  onChange?: (id: Id, handled?: {
+    handlerId?: Id;
     error?: any;
     elements?: any[];
     stylesheets?: any[];
   }) => void;
   elementsById: { [key: string]: any };
   cy?: any;
-  HandleCyto?: number;
+  HandleCyto?: Id;
 }
 
 export function useCytoHandlers() {
@@ -61,9 +62,10 @@ export function useCytoHandlersApply(cyh, elements, stylesheets, iterator) {
     for (let key in cyh?.cytoHandlersRef?.current) {
       const el = cyh?.cytoHandlersRef?.current[key];
       const cyHandle = deep.minilinks?.byType[HandleCyto]?.find(l => l.from_id === deep.minilinks.byId?.[key]?.type_id);
-      if (el && chr[cyHandle?.id]) {
+      if (el && !!el?.elements?.length && cyHandle && chr[cyHandle?.id]) {
         cyh.drawedCytoHandlers.current[key] = el;
-        addElements.push(...el.elements || []);
+        // @ts-ignore
+        addElements.push(...(el.elements || []));
         stylesheetsByHandler[el?.handlerId] = el.stylesheets || [];
       }
     }
@@ -80,13 +82,13 @@ export const CytoHandlers = React.memo(function CytoHandlers({
   elementsById,
   cy,
 }: {
-  onChange: (id: number, result: any) => void;
-  handled: { [key: string]: number };
+  onChange: (id: Id, result: any) => void;
+  handled: { [key: string]: Id };
   elementsById: { [key: string]: any };
   cy?: any;
 }) {
   const { data: HandleCyto } = useDeepId('@deep-foundation/handle-cyto', 'HandleCyto');
-  const arr = [];
+  const arr: any[] = [];
   for (let key in handled) {
     arr.push(<CytoHandler
       key={+key}
@@ -145,15 +147,15 @@ export const CytoHandler = React.memo(function CytoHandler({
     });
 
     return () => {
-      onChange(linkId);
+      onChange && onChange(linkId);
     };
   }, [file?.value?.value]);
 
   try {
     const r = Component ? Component({ link: ml.byId[linkId], elementsById, cy, ...props }) : {};
-    onChange(linkId, { ...r, handlerId });
+    onChange && onChange(linkId, { ...r, handlerId });
   } catch(error) {
-    onChange(linkId, { error, handlerId })
+    onChange && onChange(linkId, { error, handlerId })
   }
 
   return <></>;
