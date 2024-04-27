@@ -19,6 +19,24 @@ export function ProviderConnected({
   return <>{children}</>;
 }
 
+export function StaticProviders({
+  children,
+}: {
+  children: JSX.Element;
+}) {
+  return <>
+    <QueryStoreProvider>
+      <CookiesStoreProvider>
+        <LocalStoreProvider>
+          <TokenProvider>
+            {children}
+          </TokenProvider>
+        </LocalStoreProvider>
+      </CookiesStoreProvider>
+    </QueryStoreProvider>
+  </>;
+}
+
 export function Provider({
   gqlPath,
   gqlSsl,
@@ -31,50 +49,22 @@ export function Provider({
   const ThemeProviderCustom = ChakraProvider;
   const themeCustom = themeChakra;
 
-  // <Analitics
-  //   yandexMetrikaAccounts={[84726091]}
-  //   googleAnalyticsAccounts={['G-DC5RRWLRNV']}
-  // >
-  // </Analitics>
-// useEffect(() => {
-//     (async () => {
-//       if (typeof (window) !== undefined) {
-//         localStorage.logs = 0;
-//         await import ('aframe');
-//         if (localStorage?.debug?.length > 0) {
-//           localStorage.debug = localStorage.debug.replace('*:error,*:info,*:warn', '');
-//         }
-//         await import('aframe-forcegraph-component');
-//         await import('super-hands');
-//         await import('aframe-environment-component');
-//       }
-//     })();
-//   }, []);
-
   return (<>
     <ThemeProviderCustom theme={themeCustom}>
-      <QueryStoreProvider>
-        <CookiesStoreProvider>
-          <LocalStoreProvider>
-            <TokenProvider>
-              <ApolloClientTokenizedProvider options={useMemo(() => ({
-                client: 'deeplinks-app', path: gqlPath, ssl: gqlSsl, ws: !!(process as any)?.browser,
-                fetchPolicy: 'no-cache',
-                query: {
-                  fetchPolicy: 'no-cache',
-                },
-                watchQuery: {
-                  fetchPolicy: 'no-cache',
-                },
-               }), [gqlPath, gqlSsl])}>
-                <ProviderConnected>
-                  {children}
-                </ProviderConnected>
-              </ApolloClientTokenizedProvider>
-            </TokenProvider>
-          </LocalStoreProvider>
-        </CookiesStoreProvider>
-      </QueryStoreProvider>
+      <ApolloClientTokenizedProvider options={useMemo(() => ({
+        client: 'deeplinks-app', path: gqlPath, ssl: gqlSsl, ws: !!(process as any)?.browser,
+        fetchPolicy: 'no-cache',
+        query: {
+          fetchPolicy: 'no-cache',
+        },
+        watchQuery: {
+          fetchPolicy: 'no-cache',
+        },
+        }), [gqlPath, gqlSsl])}>
+        <ProviderConnected>
+          {children}
+        </ProviderConnected>
+      </ApolloClientTokenizedProvider>
     </ThemeProviderCustom>
   </>)
 };
