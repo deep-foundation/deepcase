@@ -613,7 +613,13 @@ export const Connector = React.memo(({
       // console.log('docker', dockerComposeStatus);
       // console.log('docker', dockerComposeStatus?.data?.result?.stdout.toString());
       // console.log('docker', !/^-?[a-z0-9]+\r?\n?$/.test(dockerComposeStatus?.data?.result?.stdout.toString()));
-      if (!/^-?[a-z0-9.-]+\r?\n?$/.test(dockerComposeStatus?.data?.result?.stdout.toString())) setIsExistDocker(false);
+      const dockerComposeVersionString = dockerComposeStatus?.data?.result?.stdout.toString();
+
+      // alert(JSON.stringify(dockerComposeStatus?.data.error.stderr.toString(), null, 2));
+
+      // alert(dockerComposeVersionString);
+
+      if (!/^-?[a-z0-9.-]+\r?\n?$/.test(dockerComposeVersionString)) setIsExistDocker(false);
     })();
   }, []);
 
