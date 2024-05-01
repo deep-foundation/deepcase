@@ -9,7 +9,7 @@
   "scripts": {
     "npm-pull": "npm-pull",
     "npm-release": "npm-release",
-    "git-publish": "npm i @deep-foundation/deeplinks@latest --package-lock-only && git restore package.json && npm version patch --no-git-tag-version && git checkout . && git commit -m \"publish\" && git push origin main",
+    "git-publish": "npm i @deep-foundation/deeplinks@latest --package-lock-only && git restore package.json && npm version patch --no-git-tag-version && git add . -a && git commit -m \"publish\" && git push origin main",
     "package:build": "tsc --project tsconfig.json",
     "package:publish": "npm run build && npm publish --access public",
     "package:unbuild": "rimraf ./*.js && rimraf ./*.js.map && rimraf ./*.d.ts && (cd ./imports && rimraf ./*.js && rimraf ./*.js.map && rimraf ./*.d.ts && cd ../)",
