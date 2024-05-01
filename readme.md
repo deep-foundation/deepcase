@@ -5,8 +5,8 @@
 
 ## For maintainers
 
-Please publish new version of this package using only this command:
+Please publish new version to git (npm automatically in github actions) with this command:
 
 ```bash
-npm run npm-release
+npm run git-release
 ```
