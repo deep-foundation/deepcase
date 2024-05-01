@@ -8,5 +8,5 @@
 Please publish new version to git (npm automatically in github actions) with this command:
 
 ```bash
-npm run git-release
+npm run git-publish
 ```
