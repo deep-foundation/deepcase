@@ -14,7 +14,8 @@
     "package:build": "tsc --project tsconfig.json",
     "package:publish": "npm run build && npm publish --access public",
     "package:unbuild": "rimraf ./*.js && rimraf ./*.js.map && rimraf ./*.d.ts && (cd ./imports && rimraf ./*.js && rimraf ./*.js.map && rimraf ./*.d.ts && cd ../)",
-    "package:watch": "tsc -w --project tsconfig.json"
+    "package:watch": "tsc -w --project tsconfig.json",
+    "package:release": "npm-release"
   },
   "dependencies": {
     "@amcharts/amcharts5": "^5.5.1",
