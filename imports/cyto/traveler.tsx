@@ -1,3 +1,4 @@
+import { serializeWhere } from '@deep-foundation/deeplinks/imports/client';
 import { Id } from '@deep-foundation/deeplinks/imports/minilinks';
 import _flatten from 'lodash/flatten';
 import _isEqual from 'lodash/isEqual';
@@ -24,7 +25,7 @@ export function initializeTraveler(ncy, deepRef, spaceIdRef) {
       } },
       to: { data: {
         type_id: deep.idLocal('@deep-foundation/core', 'Query'),
-        object: { data: { value: query } },
+        object: { data: { value: deep.serializeWhere(query) } },
         in: { data: [
           {
             type_id: deep.idLocal('@deep-foundation/core', 'Contain'),
