@@ -38,7 +38,7 @@ import {
 import { Editable, Slate, useFocused, useSlate, withReact, ReactEditor } from 'slate-react';
 import { withHistory } from 'slate-history';
 import { htmlToSlate, slateToHtml } from 'slate-serializers';
-import { State, MarkdownParser } from 'markup-it';
+// import { State, MarkdownParser } from 'markup-it';
 import { ClientHandlerSlateProxy } from './client-handler-slate-proxy';
 import dynamic from 'next/dynamic';
 import { OnMount } from '@monaco-editor/react';
@@ -497,8 +497,8 @@ export const DeepWysiwyg = React.memo(function DeepWysiwyg({
 
 // const randomBorderColor = Math.floor(Math.random()*16777215).toString(16);
 
-  const state = State.create(MarkdownParser);
-  const document = state.deserializeToDocument('Hello **World**');
+  // const state = State.create(MarkdownParser);
+  // const document = state.deserializeToDocument('Hello **World**');
 
   return (<Box 
       // as={motion.div} animate={boxControl} variants={boxVariants} initial='initial'
