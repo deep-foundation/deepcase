@@ -1,3 +1,5 @@
+export {}
+
 // import * as THREE from "three";
 // import { useState, useRef, useEffect, useMemo } from "react";
 // import { Entity, Scene } from "aframe-react";
