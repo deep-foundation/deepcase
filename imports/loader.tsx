@@ -315,11 +315,12 @@ export const DeepLoader = memo(function DeepLoader({
   }, [typeIds, queryAndSpaceLoadedIds]);
 
   const typesQuery = useMemo(() => {
+    const idsNotTypes = ids.filter(id => deep.minilinks.byId?.[id]?._applies?.find(a => !a.includes('types')));
     return { value: { value: {
       down: {
         tree_id: { _eq: deep.idLocal('@deep-foundation/core', 'typesTree') },
-        link_id: { _in: ids },
-        parent_id: { _nin: ids },
+        link_id: { _in: idsNotTypes },
+        parent_id: { _nin: idsNotTypes },
       },
     } } };
   }, [ids]);
