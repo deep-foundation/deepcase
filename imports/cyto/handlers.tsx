@@ -313,7 +313,7 @@ export const CytoEditorHandlersSupport = React.memo(function CytoEditorHandlersS
         from_id: container,
       } }
     });
-  }, [container]);
+  }, [container, linkId]);
 
   const onDeleteHandler = useCallback(async (handlerId) => {
     await deep.delete(handlerId);
