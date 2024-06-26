@@ -624,9 +624,9 @@ export const Connector = React.memo(({
   }, []);
 
   return (<ModalWindow onClosePortal={() => {
-    if (init == InitializingState.launched){
-      setPortal && setPortal && setPortal(false);
-    }
+    // if (init == InitializingState.launched){
+      setPortal && setPortal(false);
+    // }
   }} portalOpen={portalOpen}>
       <Box 
         display='flex'
