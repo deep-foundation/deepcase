@@ -1048,7 +1048,7 @@ export function useCyInitializer({
             setTimeout(()=>{
               openInsertCard({
                 position: ev.position, from: 0, to: 0,
-                props: { query: `{ type_id: { _id: ['@deep-foundadtion/core', 'Package'] } }` },
+                props: { search: `` },
               });
             },1);
           }
