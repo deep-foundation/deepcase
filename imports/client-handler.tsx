@@ -357,26 +357,8 @@ export function useFindClientHandler({
   const [hid, setHid] = useState<any>();
   useEffect(() => { (async () => {
     if (hid) return;
-    if (handlerId) {
-      const { data: handlers } = await deep.select({
-        execution_provider_id: { _eq: deep.idLocal('@deep-foundation/core', 'JSExecutionProvider'), },
-        isolation_provider_id: { _eq: deep.idLocal('@deep-foundation/core', 'ClientJSIsolationProvider'), },
-        handler_id: { _eq: handlerId },
-      }, { table: 'handlers', returning: 'handler_id dist_id src_id' },);
-      if (handlers?.[0]) setHid(handlers?.[0]);
-    } else {
-      const { data: handlers } = await deep.select({
-        execution_provider_id: { _eq: deep.idLocal('@deep-foundation/core', 'JSExecutionProvider'), },
-        isolation_provider_id: { _eq: deep.idLocal('@deep-foundation/core', 'ClientJSIsolationProvider'), },
-        handler: {
-          in: {
-            type_id: { _eq: await deep.id('@deep-foundation/deepcase', 'Context') },
-            from_id: { _in: context }
-          },
-        },
-      }, { table: 'handlers', returning: 'handler_id dist_id src_id' },);
-      if (handlers?.[0]) setHid(handlers?.[0]);
-    }
+    const handler = await deep._findHandler({ context, handlerId });
+    if (handler) setHid(handler);
   })(); }, [context, handlerId, hid]);
   return hid;
 }
