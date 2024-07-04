@@ -621,7 +621,7 @@ export const CytoEditor = React.memo(function CytoEditor() {
                 setFillSize={setFillSize}
               >
                 {handlerId && [<ClientHandler key={`${currentLink?.id || 0}-${tabId}-${handlerId}`} handlerId={handlerId} fillSize={fillSize} linkId={currentLink?.id} ml={deep.minilinks} />]}
-                {!handlerId && typeof(Component) === 'function' && [<CatchErrors 
+                {false && !handlerId && typeof(Component) === 'function' && [<CatchErrors 
                   key={Component.toString()}
                   errorRenderer={(error) => {
                     console.log('EditorComponentView', 'errorRenderer', error);
