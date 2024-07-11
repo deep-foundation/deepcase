@@ -99,7 +99,15 @@ const themeChakra = extendTheme({
       siteBg: {
         default: 'whiteBg',
         _dark: 'gray.700',
-      }
+      },
+      newBackground: {
+        default: 'blue.900',
+        _dark: 'blue.50',
+      },
+      newButton: {
+        default: 'blue.900',
+        _dark: 'blue.50',
+      },
     },
   },
   styles: {
@@ -148,6 +156,13 @@ const themeChakra = extendTheme({
     
     Button: {
       variants: {
+        newButton: {
+          bg: 'blue.900',
+          color: 'white',
+          _hover: {
+            bg: 'gray.900',
+          },
+        },
         unstyled: {
           display: 'flex',
           alignItems: 'center',
